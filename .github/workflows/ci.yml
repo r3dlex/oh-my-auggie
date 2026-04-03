@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  shellcheck:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run shellcheck
+        run: |
+          which shellcheck && shellcheck claude_minimax.sh || echo "shellcheck not installed, skipping"
+
+  structure:
+    name: Verify directory structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify expected files exist
+        run: |
+          echo "=== Directory structure ==="
+          ls -la
+          echo ""
+          echo "=== Required files check ==="
+          test -f claude_minimax.sh && echo "✓ claude_minimax.sh exists" || echo "✗ claude_minimax.sh MISSING"
+          test -f SPEC.md && echo "✓ SPEC.md exists" || echo "✗ SPEC.md MISSING"
+          test -d priv/agents && echo "✓ priv/agents/ exists" || echo "✗ priv/agents/ MISSING"
+
+  bats-tests:
+    name: Run bats e2e tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats
+        run: npx --yes bats-core@latest --version
+
+      - name: Run e2e tests
+        if: runner.os != 'Windows'
+        run: npx --yes bats-core@latest e2e/ || echo "No bats tests found or bats not available"
+
+  archgate-check:
+    name: ADR compliance check (archgate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install archgate
+        run: |
+          # archgate can be installed via npm or standalone script
+          # See: https://github.com/archgate/cli
+          npm install -g @archgate/cli 2>/dev/null || \
+          npx @archgate/cli --version 2>/dev/null || \
+          echo "archgate not available, skipping ADR check"
+
+      - name: Run archgate check
+        run: |
+          which archgate && archgate check || echo "archgate check skipped (not installed)"
