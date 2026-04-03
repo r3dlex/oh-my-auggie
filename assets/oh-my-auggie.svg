@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e94560"/>
+      <stop offset="50%" style="stop-color:#f5a623"/>
+      <stop offset="100%" style="stop-color:#e94560"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="120" rx="16" fill="url(#bg)"/>
+
+  <!-- Funky border -->
+  <rect x="4" y="4" width="392" height="112" rx="14" fill="none" stroke="url(#glow)" stroke-width="3" stroke-dasharray="12,6"/>
+
+  <!-- Terminal prompt chars -->
+  <text x="24" y="52" font-family="monospace" font-size="22" fill="#4ecca3" font-weight="bold">$</text>
+  <text x="50" y="52" font-family="monospace" font-size="22" fill="#e94560" font-weight="bold">auggie</text>
+
+  <!-- Magic sparkle / wand effect -->
+  <text x="52" y="88" font-family="Georgia, serif" font-size="36" fill="url(#glow)" font-style="italic" font-weight="bold">oh-my-</text>
+  <text x="188" y="88" font-family="Georgia, serif" font-size="36" fill="#f5a623" font-style="italic" font-weight="bold">★</text>
+  <text x="212" y="88" font-family="Georgia, serif" font-size="36" fill="url(#glow)" font-style="italic" font-weight="bold">auggie</text>
+
+  <!-- Sparkle accents -->
+  <circle cx="360" cy="24" r="5" fill="#f5a623" opacity="0.9"/>
+  <circle cx="376" cy="36" r="3" fill="#e94560" opacity="0.7"/>
+  <circle cx="348" cy="18" r="3" fill="#4ecca3" opacity="0.8"/>
+
+  <!-- Small dots constellation -->
+  <circle cx="30" cy="90" r="2" fill="#4ecca3" opacity="0.5"/>
+  <circle cx="20" cy="100" r="1.5" fill="#e94560" opacity="0.4"/>
+  <circle cx="40" cy="105" r="1.5" fill="#f5a623" opacity="0.5"/>
+</svg>
