@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+# @requires: auggie jq
+# oma_execute — Executor agent wrapper for OMA orchestrator
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/oma_lib.sh"
+
+# Usage: oma_execute "<task_json>"
+# task_json is a JSON array of task objects
+main() {
+  local task_json="${1:-}"
+  if [ -z "$task_json" ]; then
+    echo "ERROR: oma_execute requires task JSON as argument" >&2
+    exit 1
+  fi
+
+  # Validate it's valid JSON array
+  local parsed
+  parsed=$(oma_parse_json "$task_json" "[]")
+  if ! echo "$parsed" | jq -e 'type == "array"' >/dev/null 2>&1; then
+    echo "ERROR: oma_execute received malformed task JSON" >&2
+    exit 1
+  fi
+
+  local executor_prompt
+  executor_prompt="$(cat "${SCRIPT_DIR}/../agents/executor.md")" || {
+    echo "ERROR: priv/agents/executor.md not found" >&2
+    exit 1
+  fi
+
+  local num_tasks
+  num_tasks=$(echo "$parsed" | jq 'length')
+
+  # Group tasks by parallel_group field; execute sequentially across groups
+  local current_group=""
+  local group_pids=()
+  local group_tasks=()
+  local all_failed=0
+
+  for i in $(seq 0 $((num_tasks - 1))); do
+    local task_id task_desc group
+    task_id=$(echo "$parsed" | jq -r ".[$i].id // \"task-$i\"")
+    # Validate task_id to prevent path traversal attacks (e.g., "../../../etc/cron.d/backdoor")
+    if ! [[ "$task_id" =~ ^[a-zA-Z0-9_-]{1,64}$ ]]; then
+      echo "ERROR: task_id contains invalid characters: $task_id" >&2
+      exit 3
+    fi
+    task_desc=$(echo "$parsed" | jq -r ".[$i].description // \"\"")
+    group=$(echo "$parsed" | jq -r ".[$i].parallel_group // \"default\"")
+
+    if [ "$group" != "$current_group" ] && [ -n "$current_group" ]; then
+      # Barrier: wait for current group
+      local failed=0
+      for pid in "${group_pids[@]}"; do
+        wait "$pid" || ((failed++))
+      done
+      # Verify result files exist
+      for t in "${group_tasks[@]}"; do
+        if [ ! -f "/tmp/oma_result_${t}.json" ]; then
+          echo "ERROR: result file missing for $t — possible SIGCHLD race" >&2
+          ((failed++))
+        fi
+      done
+      if [ "$failed" -gt 0 ]; then
+        all_failed=1
+      fi
+      group_pids=()
+      group_tasks=()
+    fi
+
+    current_group="$group"
+
+    # Launch task in background
+    (
+      local result
+      result=$(oma_try_auggie "Task: ${task_desc}
+
+## Executor Role
+${executor_prompt}") && {
+        echo '{"id":"'"$task_id"'","status":"success","output":'"$(echo "$result" | jq -Rs '.')"'}'
+      } || {
+        echo '{"id":"'"$task_id"'","status":"fail","output":'"$(echo "$result" | jq -Rs '.' 2>/dev/null || echo '""')"'}'
+      }
+    } > "/tmp/oma_result_${task_id}.json"
+
+    group_pids+=($!)
+    group_tasks+=("$task_id")
+  done
+
+  # Final barrier for last group
+  if [ ${#group_pids[@]} -gt 0 ]; then
+    local failed=0
+    for pid in "${group_pids[@]}"; do
+      wait "$pid" || ((failed++))
+    done
+    for t in "${group_tasks[@]}"; do
+      if [ ! -f "/tmp/oma_result_${t}.json" ]; then
+        echo "ERROR: result file missing for $t — possible SIGCHLD race" >&2
+        ((failed++))
+      fi
+    done
+    if [ "$failed" -gt 0 ]; then
+      all_failed=1
+    fi
+  fi
+
+  # Aggregate results
+  local results="["
+  local first=true
+  for i in $(seq 0 $((num_tasks - 1))); do
+    local task_id
+    task_id=$(echo "$parsed" | jq -r ".[$i].id // \"task-$i\"")
+    # Validate task_id to prevent path traversal attacks (e.g., "../../../etc/cron.d/backdoor")
+    if ! [[ "$task_id" =~ ^[a-zA-Z0-9_-]{1,64}$ ]]; then
+      echo "ERROR: task_id contains invalid characters: $task_id" >&2
+      exit 3
+    fi
+    if [ -f "/tmp/oma_result_${task_id}.json" ]; then
+      local r
+      r=$(cat "/tmp/oma_result_${task_id}.json")
+      [ "$first" = true ] && first=false || results+=","
+      results+="$r"
+    fi
+  done
+  results+="]"
+
+  echo "$results"
+  exit $all_failed
+}
+
+main "$@"

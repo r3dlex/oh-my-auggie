@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# @requires: auggie jq
+# oma_verify — Architect/Verifier agent wrapper for OMA orchestrator
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/oma_lib.sh"
+
+# Usage: oma_verify "<task_json>" "<execute_results>"
+main() {
+  local task_json="${1:-}"
+  local execute_results="${2:-}"
+
+  if [ -z "$task_json" ] || [ -z "$execute_results" ]; then
+    echo "ERROR: oma_verify requires task JSON and execute results" >&2
+    exit 1
+  fi
+
+  local architect_prompt
+  architect_prompt="$(cat "${SCRIPT_DIR}/../agents/architect.md")" || {
+    echo "ERROR: priv/agents/architect.md not found" >&2
+    exit 1
+  }
+
+  local output
+  output=$(oma_try_auggie "## Tasks
+${task_json}
+
+## Executor Results
+${execute_results}
+
+## Architect Role
+${architect_prompt}") || {
+    echo "ERROR: oma_verify failed — auggie returned non-zero" >&2
+    exit 1
+  }
+
+  # Two-tier verdict extraction
+  local verdict="PARSE_ERROR"
+  local verdict_line
+
+  # Primary: strict markdown h3 anchor
+  verdict_line=$(echo "$output" | grep '^### Verdict$' | tail -1)
+  if [ -n "$verdict_line" ]; then
+    verdict=$(echo "$output" | grep -A1 '^### Verdict$' | tail -1 | tr -d '[:space:]')
+  else
+    # Fallback: case-insensitive grep for "verdict:" pattern
+    verdict_line=$(echo "$output" | grep -i '^[*]*[vV]erdict[:* ]' | tail -1)
+    if [ -n "$verdict_line" ]; then
+      verdict=$(echo "$verdict_line" | sed 's/^[^:]*: *//' | tr -d '[:space:]*')
+    else
+      echo "PARSE_ERROR: could not extract verdict from auggie output" >&2
+      verdict="PARSE_ERROR"
+    fi
+  fi
+
+  # Validate verdict value
+  case "$verdict" in
+    PASS|FAIL|PARTIAL|PARSE_ERROR) ;;
+    *) verdict="PARSE_ERROR" ;;
+  esac
+
+  # Build structured result
+  local result
+  result=$(jq -n \
+    --arg v "$verdict" \
+    --arg a "$output" \
+    '{verdict: $v, assessment: $a, issues: []}')
+
+  echo "$result"
+
+  # Exit codes per aggregation policy
+  case "$verdict" in
+    PASS) exit 0 ;;
+    FAIL) exit 1 ;;
+    PARTIAL|PARSE_ERROR) exit 2 ;;
+  esac
+}
+
+main "$@"

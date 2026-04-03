@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# oh-my-auggie — CLI entry point for OMA orchestrator
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ORCHESTRATOR_SCRIPT="$SCRIPT_DIR/orchestrator.sh"
+
+show_help() {
+  cat <<'EOF'
+oh-my-auggie — OMA Orchestrator
+
+Usage:
+  oh-my-auggie orchestrator --goal "description" [--context-dir /path]
+
+Examples:
+  oh-my-auggie orchestrator --goal "add user authentication"
+  oh-my-auggie orchestrator --goal "fix the login bug" --context-dir ./src
+
+Runtime dependency: auggie (https://www.augmentcode.com)
+EOF
+}
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  show_help
+  exit 0
+fi
+
+if [ "$1" = "orchestrator" ]; then
+  shift
+  if [ ! -x "$ORCHESTRATOR_SCRIPT" ]; then
+    echo "ERROR: orchestrator.sh not found or not executable" >&2
+    exit 1
+  fi
+  exec "$ORCHESTRATOR_SCRIPT" "$@"
+fi
+
+show_help
+exit 1

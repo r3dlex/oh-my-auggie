@@ -33,6 +33,31 @@ We will invoke `auggie` as a subprocess via shell execution. We will NOT attempt
 - Cannot hook into auggie's internal state or events
 - Output parsing is brittle if auggie changes its stdout format
 
+### stderr Handling
+
+The orchestrator uses `oma_try_auggie()` which provides three debug modes controlled by `OMA_DEBUG`:
+- `OMA_DEBUG=0` (default): silent, stderr discarded
+- `OMA_DEBUG=1`: capture stderr to temp file, show only on error
+- `OMA_DEBUG=2`: capture stderr to temp file, always show
+
+### Output Parsing Risk
+
+LLM stdout is treated as untrusted input. All parse operations use `jq` with null-guarding fallback. If auggie changes its output format, `PARSE_ERROR` annotations are emitted and routed to the Architect gate.
+
+## Invocation Patterns
+
+All orchestrator stage scripts use `oma_try_auggie()` from `priv/orchestrator/oma_lib.sh`:
+
+```sh
+source "$(dirname "$0")/oma_lib.sh"
+output=$(oma_try_auggie "$USER_PROMPT")
+```
+
+The `auggie` binary is detected via `oma_detect_auggie()` which searches in order:
+1. `/opt/homebrew/bin/auggie` (macOS Homebrew)
+2. `/usr/local/bin/auggie` (Linux)
+3. `$PATH` via `command -v auggie`
+
 ## References
 
 - [auggie CLI](https://www.augmentcode.com)

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# @requires: auggie
+# oma_explore — Explorer agent wrapper for OMA orchestrator
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/oma_lib.sh"
+
+# Usage: oma_explore "<user_goal>"
+main() {
+  local user_goal="${1:-}"
+  if [ -z "$user_goal" ]; then
+    echo "ERROR: oma_explore requires a user goal as argument" >&2
+    exit 1
+  fi
+
+  local explorer_prompt
+  explorer_prompt="$(cat "${SCRIPT_DIR}/../agents/explorer.md")" || {
+    echo "ERROR: priv/agents/explorer.md not found" >&2
+    exit 1
+  }
+
+  local output
+  output=$(oma_try_auggie "${user_goal}
+
+## Your Role
+${explorer_prompt}") || {
+    echo "ERROR: oma_explore failed — auggie returned non-zero" >&2
+    exit 1
+  }
+
+  echo "$output"
+  exit 0
+}
+
+main "$@"

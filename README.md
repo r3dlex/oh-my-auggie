@@ -29,7 +29,6 @@ Contributions welcome! This is a community project — no corporation behind it,
 ### For Contributors
 
 - Fork the repo and open PRs against `main`
-- Run `shellcheck claude_minimax.sh` before submitting shell scripts
 - Run `bats e2e/` to execute the test suite
 - See [SPEC.md](./SPEC.md) for project architecture
 
@@ -67,12 +66,34 @@ oh-my-auggie is production-ready for enterprise use:
 git clone https://github.com/archgate/oh-my-auggie.git
 cd oh-my-auggie
 
-# Run the main script (requires auggie to be installed)
-./claude_minimax.sh
-
 # Run the test suite
 bats e2e/
 ```
+
+## Orchestrator (Explorer → Planner → Executor → Architect)
+
+oh-my-auggie includes an autonomous multi-agent orchestrator that chains four specialized agents:
+
+```
+./oh-my-auggie orchestrator --goal "add user authentication"
+```
+
+**Stages:**
+1. **Explorer** — Maps the codebase structure and dependencies
+2. **Planner** — Decomposes the goal into concrete tasks
+3. **Executor** — Implements tasks (parallel where possible)
+4. **Architect** — Verifies implementation and renders a verdict (PASS/FAIL/PARTIAL)
+
+**Runtime dependency:** `auggie` (version >= 0.22.0) — [install docs](https://www.augmentcode.com)
+
+**Key features:**
+- Shell-native, zero extra dependencies
+- Explicit barrier synchronization for parallel execution
+- Defensive JSON parsing with `jq` and null-guarding fallback
+- Full exit code semantics (0=PASS, 1=FAIL, 2=PARTIAL, 10/11=auggie errors)
+- `OMA_DEBUG` env var for stderr visibility control (0=silent, 1=show on error, 2=always show)
+
+See [`priv/orchestrator.sh`](./priv/orchestrator.sh) for the implementation.
 
 ## Architecture Decisions
 

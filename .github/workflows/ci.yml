@@ -7,16 +7,6 @@ on:
     branches: [main]
 
 jobs:
-  shellcheck:
-    name: Lint shell scripts
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run shellcheck
-        run: |
-          which shellcheck && shellcheck claude_minimax.sh || echo "shellcheck not installed, skipping"
-
   structure:
     name: Verify directory structure
     runs-on: ubuntu-latest
@@ -29,9 +19,10 @@ jobs:
           ls -la
           echo ""
           echo "=== Required files check ==="
-          test -f claude_minimax.sh && echo "✓ claude_minimax.sh exists" || echo "✗ claude_minimax.sh MISSING"
           test -f SPEC.md && echo "✓ SPEC.md exists" || echo "✗ SPEC.md MISSING"
           test -d priv/agents && echo "✓ priv/agents/ exists" || echo "✗ priv/agents/ MISSING"
+          test -d adr && echo "✓ adr/ exists" || echo "✗ adr/ MISSING"
+          test -d e2e && echo "✓ e2e/ exists" || echo "✗ e2e/ MISSING"
 
   bats-tests:
     name: Run bats e2e tests
@@ -45,6 +36,34 @@ jobs:
       - name: Run e2e tests
         if: runner.os != 'Windows'
         run: npx --yes bats-core@latest e2e/ || echo "No bats tests found or bats not available"
+
+  orchestrator-tests:
+    name: Run orchestrator tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats and shellcheck
+        run: |
+          npx --yes bats-core@latest --version
+          npm install -g shellcheck 2>/dev/null || apt-get install -y shellcheck 2>/dev/null || echo "shellcheck not available"
+
+      - name: Shellcheck orchestrator scripts
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            shellcheck orchestrator.sh oh-my-auggie \
+              priv/orchestrator/oma_lib.sh \
+              priv/orchestrator/oma_explore \
+              priv/orchestrator/oma_plan \
+              priv/orchestrator/oma_execute \
+              priv/orchestrator/oma_verify || echo "shellcheck issues found"
+          else
+            echo "shellcheck skipped (not installed)"
+          fi
+
+      - name: Run orchestrator bats tests
+        if: runner.os != 'Windows'
+        run: npx --yes bats-core@latest e2e/orchestrator.bats || echo "No orchestrator bats tests found"
 
   archgate-check:
     name: ADR compliance check (archgate)

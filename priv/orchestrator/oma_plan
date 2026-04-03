@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# @requires: auggie jq
+# oma_plan — Planner agent wrapper for OMA orchestrator
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/oma_lib.sh"
+
+# Usage: oma_plan "<user_goal>" "<explore_output>"
+main() {
+  local user_goal="${1:-}"
+  local explore_output="${2:-}"
+  if [ -z "$user_goal" ]; then
+    echo "ERROR: oma_plan requires a user goal as argument" >&2
+    exit 1
+  fi
+
+  local planner_prompt
+  planner_prompt="$(cat "${SCRIPT_DIR}/../agents/planner.md")" || {
+    echo "ERROR: priv/agents/planner.md not found" >&2
+    exit 1
+  }
+
+  local output
+  output=$(oma_try_auggie "${user_goal}
+
+## Explorer Context
+${explore_output}
+
+## Planner Instructions
+${planner_prompt}") || {
+    echo "ERROR: oma_plan failed — auggie returned non-zero" >&2
+    exit 1
+  }
+
+  # Validate JSON: parse and check it's a non-empty array
+  local parsed
+  parsed=$(oma_parse_json "$output" "[]")
+
+  # Guard: oma_parse_json emits "PARSE_ERROR:" prefix on parse failure
+  if [[ "$parsed" == "PARSE_ERROR:"* ]] || [ -z "$parsed" ]; then
+    echo "ERROR: oma_plan produced invalid JSON" >&2
+    echo "RAW: $parsed" >&2
+    exit 2
+  fi
+
+  # Guard: ensure parsed is valid JSON at all
+  if ! echo "$parsed" | jq -e '.' >/dev/null 2>&1; then
+    echo "ERROR: oma_plan produced invalid JSON" >&2
+    echo "RAW: $parsed" >&2
+    exit 2
+  fi
+
+  local task_count
+  task_count=$(echo "$parsed" | jq -r 'if type == "array" then length else empty end' 2>/dev/null)
+
+  if [ -z "$task_count" ] || ! [[ "$task_count" =~ ^[0-9]+$ ]] || [ "$task_count" -lt 1 ] || [ "$task_count" -gt 10 ]; then
+    echo "ERROR: oma_plan produced invalid task list (count: $task_count, expected 1-10)" >&2
+    echo "RAW: $parsed" >&2
+    exit 2
+  fi
+
+  echo "$parsed"
+  exit 0
+}
+
+main "$@"

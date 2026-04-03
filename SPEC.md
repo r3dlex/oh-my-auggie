@@ -23,11 +23,14 @@ oh-my-auggie is a community-driven CLI toolkit that brings "oh-my-*" style conve
 
 ```
 oh-my-auggie/
-├── claude_minimax.sh     # Main CLI entry point
 ├── assets/               # Logo and branding
-├── priv/agents/          # Agent prompts (internal use by auggie)
-├── spec/                 # Architecture and design records
-└── e2e/                 # End-to-end tests
+├── priv/
+│   ├── agents/          # Agent prompts (Explorer, Planner, Executor, Architect)
+│   └── orchestrator/    # Orchestrator stage scripts (oma_lib.sh, oma_explore, oma_plan, oma_execute, oma_verify)
+├── priv/orchestrator.sh # Master pipeline (4-stage: EXPLORE → PLAN → EXECUTE → VERIFY)
+├── oh-my-auggie          # CLI entry point
+├── adr/                  # Architecture Decision Records
+└── e2e/                 # End-to-end tests (oh-my-auggie.bats, orchestrator.bats)
 ```
 
 ### Key Integration Points
