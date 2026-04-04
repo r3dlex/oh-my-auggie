@@ -1,10 +1,26 @@
-/_build
-/cover
-/deps
+# ── OMA runtime state ─────────────────────────────────────────────────────────
+.oma/
+.omc/
+.claude/
+
+# ── Verification scripts (local dev artifacts) ─────────────────────────────────
+verify-*.sh
+
+# ── OS artifacts ──────────────────────────────────────────────────────────────
+.DS_Store
+*.log
+*.tmp
+*.swp
+*~
+
+# ── Build artifacts ───────────────────────────────────────────────────────────
+_build/
+cover/
+deps/
 /doc
 /.fetch
 erl_crash.dump
 *.ez
 *.beam
+/elixir_ls/
 /config/*.secret.exs
-.elixir_ls/
