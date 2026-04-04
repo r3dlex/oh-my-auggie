@@ -32,9 +32,9 @@ jobs:
           bats --version
 
       - name: Run e2e tests
-        env:
-          PATH: "$HOME/.local/bin:$PATH"
-        run: bats e2e/oma-core-loop.bats
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          bats e2e/oma-core-loop.bats
 
   shellcheck:
     name: shellcheck
