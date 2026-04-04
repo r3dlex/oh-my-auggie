@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "hooks": [
+    {
+      "name": "session-start",
+      "type": "SessionStart",
+      "command": "${PLUGIN_ROOT}/hooks/session-start.sh",
+      "description": "Injects OMA orchestration context and restores active mode from .oma/state.json on session start"
+    },
+    {
+      "name": "delegation-enforce",
+      "type": "PreToolUse",
+      "command": "${PLUGIN_ROOT}/hooks/delegation-enforce.sh",
+      "description": "Blocks direct file edits (Edit, Write, remove_files) when OMA orchestration mode is active. Enforces delegation to oma-executor."
+    },
+    {
+      "name": "stop-gate",
+      "type": "Stop",
+      "command": "${PLUGIN_ROOT}/hooks/stop-gate.sh",
+      "description": "Blocks agent completion when ralph mode is active and oma-architect has not returned PASS verdict"
+    }
+  ]
+}

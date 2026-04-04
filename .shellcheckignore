@@ -1,0 +1,4 @@
+# shellcheckignore
+# Suppress SC1090: "Not a constant source" — ${PLUGIN_ROOT} is an Auggie plugin variable
+# that is only set when Auggie loads the plugin, not at shellcheck lint time.
+SC1090
