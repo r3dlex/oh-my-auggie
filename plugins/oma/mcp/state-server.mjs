@@ -2,7 +2,7 @@
 // OMA MCP State Server — zero npm dependencies, stdio transport
 // Implements: state_read, state_write, mode_get, mode_set, task_log, notepad_read, notepad_write, skill_list, skill_inject
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { createInterface } from 'readline';
 import { dirname } from 'path';
 
@@ -64,6 +64,15 @@ function appendTaskLog(entry) {
   const log = readTaskLog();
   log.push({ ...entry, timestamp: new Date().toISOString() });
   writeFileSync(TASK_LOG_FILE, JSON.stringify(log, null, 2));
+}
+
+function readJsonSafe(path, fallback = null) {
+  if (!existsSync(path)) return fallback;
+  try {
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch {
+    return fallback;
+  }
 }
 
 // ── JSON-RPC response helpers ────────────────────────────────────────────────
@@ -263,7 +272,7 @@ const tools = {
 
       try {
         const content = readFileSync(skillPath, 'utf8');
-        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n/);
         const bodyContent = frontmatterMatch ? content.replace(/^---[\s\S]*?\n---\n*/, '') : content;
 
         return {
@@ -274,6 +283,70 @@ const tools = {
         };
       } catch (e) {
         return { ok: false, error: `Failed to read skill: ${e.message}` };
+      }
+    }
+  },
+
+  oma_team_status: {
+    description: 'Read status of all OMA team workers',
+    inputSchema: { type: 'object', properties: {} },
+    handler: () => {
+      const teamDir = `${OMA_DIR}/team`;
+      if (!existsSync(teamDir)) {
+        return { ok: true, workers: [] };
+      }
+      try {
+        const entries = readdirSync(teamDir).filter(n => /^worker-\d+$/.test(n));
+        const workers = [];
+        for (const entry of entries) {
+          const dir = `${teamDir}/${entry}`;
+          const id = parseInt(entry.split('-')[1], 10);
+          const meta = readJsonSafe(`${dir}/meta.json`, null);
+          const status = readJsonSafe(`${dir}/status.json`, null);
+          workers.push({
+            id,
+            status: status?.status || 'unknown',
+            pid: status?.pid || null,
+            parent_pid: meta?.parent_pid || null,
+            spawned_at: meta?.spawned_at || null,
+            log_path: `${dir}/log.txt`,
+          });
+        }
+        return { ok: true, workers };
+      } catch (e) {
+        return { ok: false, error: e.message, workers: [] };
+      }
+    }
+  },
+
+  oma_team_stream: {
+    description: 'Stream recent activity from all OMA team workers',
+    inputSchema: { type: 'object', properties: {} },
+    handler: () => {
+      const teamDir = `${OMA_DIR}/team`;
+      if (!existsSync(teamDir)) {
+        return { ok: true, streams: [] };
+      }
+      try {
+        const entries = readdirSync(teamDir).filter(n => /^worker-\d+$/.test(n));
+        const streams = [];
+        for (const entry of entries) {
+          const id = parseInt(entry.split('-')[1], 10);
+          const dir = `${teamDir}/${entry}`;
+          const status = readJsonSafe(`${dir}/status.json`, null);
+          const logPath = `${dir}/log.txt`;
+          let excerpt = [];
+          if (existsSync(logPath)) {
+            try {
+              const content = readFileSync(logPath, 'utf8');
+              excerpt = content.split('\n').filter(l => l.length > 0).slice(-20);
+            } catch { /* ignore */ }
+          }
+          streams.push({ id, status: status?.status || 'unknown', excerpt });
+        }
+        return { ok: true, streams };
+      } catch (e) {
+        return { ok: false, error: e.message, streams: [] };
       }
     }
   }
