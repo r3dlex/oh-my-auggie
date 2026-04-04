@@ -66,7 +66,10 @@ bats_require_test_helpers() { return 0; }
 }
 
 @test "MCP: oma_mode_get returns mode and active status" {
-  echo '{"mode":"ralph","active":true}' > "$STATE_FILE"
+  # Server reads from hardcoded .oma/state.json — write there so server sees the state
+  mkdir -p "$SCRIPT_DIR/.oma"
+  echo '{"mode":"ralph","active":true}' > "$SCRIPT_DIR/.oma/state.json"
+  cd "$SCRIPT_DIR"
   response="$(mcp_call "oma_mode_get" '{}' | node "$PLUGIN_DIR/mcp/state-server.mjs" 2>/dev/null)"
   printf '%s\n' "$response" | grep -q '"mode":"ralph"'
   printf '%s\n' "$response" | grep -q '"active":true'
