@@ -1,15 +1,15 @@
 name: CI
 
 # ── Auto-merge setup ────────────────────────────────────────────────────────────
-# When creating a PR, use: gh pr create --auto-merge --admin --fill
-# This tells GitHub to auto-merge the PR once all CI checks pass AND
-# the PR is approved. No workflow configuration needed — GitHub handles
-# the merge_blocked / merge_group events automatically when --auto-merge
-# is set at PR creation time.
+# Create PR: gh pr create --base main --fill
+# Enable auto-merge: gh pr merge --auto --squash --repo OWNER/REPO
+# GitHub auto-merges once all CI checks pass AND PR is approved.
+# No workflow configuration needed — GitHub handles merge_blocked /
+# merge_group events automatically.
 #
 # Branch protection note: if main has "Require pull request reviews before
 # merging" enabled, the PR still needs an approving review before GitHub
-# will auto-merge — even with --auto-merge set at creation time.
+# will auto-merge — even with --auto set at merge time.
 
 on:
   push:
