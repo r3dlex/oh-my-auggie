@@ -44,7 +44,7 @@ oh-my-auggie/
 ├── assets/
 │   └── oh-my-auggie.svg
 ├── e2e/
-│   └── oma-core-loop.bats        # 25+ test cases
+│   └── oma-core-loop.bats        # 34 test cases
 └── .github/workflows/
     └── ci.yml                    # bats + shellcheck + manifest validation
 ```

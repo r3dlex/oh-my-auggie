@@ -4,103 +4,145 @@
   <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
 </p>
 
-> **The "oh-my-*" experience for [Augment Code's `auggie` CLI](https://www.augmentcode.com)** — multi-agent orchestration, opinionated conventions, and enterprise-grade CI/CD built right in.
+> **Multi-agent orchestration for [Augment Code's `auggie` CLI](https://www.augmentcode.com)** — the "oh-my-*" experience for auggie.
 
 ---
 
-## What is oh-my-auggie?
+## Installation
 
-oh-my-auggie is a community-driven toolkit that wraps [Augment Code's `auggie` CLI](https://www.augmentcode.com) with the kind of polish, automation, and production-readiness you'd expect from mature open-source tooling. Think `oh-my-zsh` for your AI coding CLI.
+### Prerequisites
 
-Whether you're an individual developer who lives in the terminal or an enterprise team standardizing on AI-assisted development, oh-my-auggie helps you get more out of auggie — with less configuration.
+- `auggie` >= 0.22.0 — [install docs](https://www.augmentcode.com)
+- `node` >= 18 (for the MCP state server)
 
-## Features
-
-- **Multi-Agent Orchestrator** — Explorer → Planner → Executor → Architect pipeline that autonomously drives complex tasks to completion
-- **Shell-native** — Zero extra runtime dependencies; pure bash scripts that integrate seamlessly into any workflow
-- **ADR Governance** — Architectural decisions tracked and enforced via [archgate](https://github.com/archgate/cli), because good teams document their choices
-- **CI/CD Native** — GitHub Actions config included; bats tests and shellcheck run on every push
-- **Enterprise Ready** — No hidden dependencies, predictable behavior, compliance-friendly documentation
-
-## Quick Start
+### Marketplace Install (recommended)
 
 ```bash
-# Clone and run
+auggie plugin marketplace add archgate/oh-my-auggie
+auggie plugin install oma@oh-my-auggie
+```
+
+That's it. The plugin registers all commands, agents, hooks, and the MCP state server automatically.
+
+### Manual Install
+
+```bash
 git clone https://github.com/archgate/oh-my-auggie.git
 cd oh-my-auggie
-
-# Run the test suite
-bats e2e/
-
-# Invoke the orchestrator
-./oh-my-auggie orchestrator --goal "add user authentication"
+auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 ```
 
-**Runtime dependency:** `auggie` (>= 0.22.0) — [install docs](https://www.augmentcode.com)
+---
 
-## The Orchestrator
+## Commands
 
-oh-my-auggie's crown jewel: a 4-stage autonomous pipeline that chains four specialized agents:
+Once installed, these slash commands are available:
+
+| Command | Description |
+|---------|-------------|
+| `/oma:autopilot` | Full autonomous pipeline — expand, plan, implement, QA, validate |
+| `/oma:ralph` | Persistence loop — keeps working until all acceptance criteria pass |
+| `/oma:ultrawork` | High-throughput parallel execution via concurrent subagents |
+| `/oma:team` | Coordinated team of N agents |
+| `/oma:ultraqa` | QA cycling: test, verify, fix, repeat |
+| `/oma:ralplan` | Consensus planning with Architect + Critic review |
+| `/oma:plan` | Strategic planning with analyst/architect review |
+| `/oma:cancel` | Cancel active mode and clear state |
+| `/oma:status` | Show current mode and state |
+| `/oma:ask <model>` | Query with a specific model |
+| `/oma:note` | Write to notepad (priority, working, manual) |
+| `/oma:doctor` | Diagnose installation issues |
+
+### Keyword Triggers
+
+Drop the `/oma:` prefix — these activate automatically when detected in conversation:
+
+| Keyword | Activates |
+|---------|-----------|
+| `autopilot` | `/oma:autopilot` |
+| `ralph`, "don't stop" | `/oma:ralph` |
+| `ulw`, `ultrawork` | `/oma:ultrawork` |
+| `ralplan` | `/oma:ralplan` |
+| `canceloma` | `/oma:cancel` |
+| `deslop`, "anti-slop" | deslop cleanup pass |
+
+---
+
+## Architecture
+
+```
+oh-my-auggie/
+├── plugins/oma/
+│   ├── agents/          # 4 subagents (v0.1): explorer, planner, executor, architect
+│   ├── commands/        # 5 commands (v0.1): autopilot, ralph, status, cancel, help
+│   ├── hooks/           # 3 hooks: session-start, delegation-enforce, stop-gate
+│   ├── rules/           # orchestration.md, enterprise.md (additive)
+│   └── mcp/
+│       └── state-server.mjs   # Zero-dependency MCP state server
+├── .augment-plugin/
+│   └── marketplace.json  # Auggie marketplace manifest
+└── e2e/
+    └── oma-core-loop.bats   # 34 integration tests
+```
+
+**State files** (stored in `.oma/` — git-ignored):
+
+| File | Purpose |
+|------|---------|
+| `.oma/state.json` | mode, active, iteration |
+| `.oma/notepad.json` | priority, working, manual sections |
+| `.oma/task.log.json` | architect/executor verdict history |
+
+---
+
+## Profiles
+
+| Profile | Description |
+|---------|-------------|
+| **Community** (default) | Full parallelization, no approval gates |
+| **Enterprise** | Cost-aware model routing, ADR requirements, approval gates |
+
+Enterprise is activated by creating `.oma/config.json` with `{ "profile": "enterprise" }`. Enterprise only *adds* rules — it never removes community features.
+
+---
+
+## Development
 
 ```bash
-./oh-my-auggie orchestrator --goal "add user authentication"
+# Run the test suite
+bats e2e/oma-core-loop.bats
+
+# Lint hook scripts
+shellcheck plugins/oma/hooks/*.sh
+
+# Validate all manifests
+node -e "
+  const fs = require('fs');
+  const files = [
+    '.augment-plugin/marketplace.json',
+    'plugins/oma/.augment-plugin/plugin.json',
+    'plugins/oma/.augment-plugin/.mcp.json',
+    'plugins/oma/hooks/hooks.json',
+    '.claude-plugin/plugin.json'
+  ];
+  for (const f of files) {
+    try { JSON.parse(fs.readFileSync(f)); console.log('OK: ' + f); }
+    catch(e) { console.error('FAIL: ' + f + ' - ' + e.message); process.exit(1); }
+  }
+"
 ```
 
-| Stage | Agent | Role |
-|-------|-------|------|
-| 1 | **Explorer** | Maps codebase structure and dependencies |
-| 2 | **Planner** | Decomposes the goal into concrete, parallelizable tasks |
-| 3 | **Executor** | Implements tasks (parallel where possible) |
-| 4 | **Architect** | Verifies implementation and renders a verdict (PASS/FAIL/PARTIAL) |
-
-**Key features:**
-- Explicit barrier synchronization for parallel execution groups
-- Defensive JSON parsing with `jq` and null-guarding fallback
-- `OMA_DEBUG` env var for stderr visibility control (`0=silent, 1=show on error, 2=always show`)
-- Full exit code semantics (`0=PASS, 1=FAIL, 2=PARTIAL, 10/11=auggie errors`)
-
-See [`orchestrator.sh`](./orchestrator.sh) for the full pipeline.
-
-## Architecture Decisions
-
-We use [archgate](https://github.com/archgate/cli) to track and enforce architectural decisions. See the [adr/](./adr/) directory for current ADRs, and the [archgate ADR archive](https://github.com/archgate/cli/blob/main/adr/) for upstream decisions.
-
-## Community
-
-Contributions welcome! This is a community project — no corporation behind it, just developers helping developers.
-
-### For Contributors
-
-- Fork the repo and open PRs against `main`
-- Run `bats e2e/` to execute the test suite
-- Run `shellcheck orchestrator.sh oh-my-auggie priv/orchestrator/*.sh` to lint scripts
-- See [SPEC.md](./SPEC.md) for full project architecture
-
-### For Users
-
-- Star the repo and watch it grow
-- Open issues for bugs and feature requests
-- Join discussions for questions and ideas
-
-## Enterprise
-
-oh-my-auggie is production-ready for enterprise use:
-
-- **Predictable behavior**: Shell scripts with no hidden dependencies — what you see is what you execute
-- **CI/CD native**: Works in any CI system; GitHub Actions config included with bats tests and shellcheck
-- **Compliance-friendly**: ADRs tracked via [archgate](https://github.com/archgate/cli) so architectural decisions are documented and enforceable
-- **Vendor-neutral**: Not affiliated with Augment Code — this is a community convenience layer
-
-> **Want enterprise support, custom integrations, or dedicated features?** Open a discussion or reach out through the project's issue tracker.
+---
 
 ## Links
 
 | Resource | URL |
 |----------|-----|
 | Augment Code | https://www.augmentcode.com |
-| auggie CLI | https://www.augmentcode.com/docs/cli |
-| archgate CLI | https://github.com/archgate/cli |
-| archgate ADR Archive | https://github.com/archgate/cli/blob/main/adr/ |
+| auggie CLI docs | https://www.augmentcode.com/docs/cli |
+| Plugin docs | https://www.augmentcode.com/docs/cli/plugins |
+| Hooks docs | https://www.augmentcode.com/docs/cli/hooks |
+| MCP docs | https://www.augmentcode.com/docs/cli/integrations |
 | oh-my-auggie | https://github.com/archgate/oh-my-auggie |
 
 ---
