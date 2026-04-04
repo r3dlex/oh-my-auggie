@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "name": "oh-my-auggie",
+  "display_name": "oh-my-auggie (OMA)",
+  "tagline": "Multi-agent orchestration for Augment Code — the \"oh-my-*\" experience for auggie",
+  "description": "A community-driven multi-agent orchestration toolkit for Augment Code's auggie CLI. Provides autonomous pipeline (Explorer → Planner → Executor → Architect), persistence loops, CI/CD-native workflows, and enterprise-ready conventions.",
+  "category": "orchestration",
+  "tags": [
+    "multi-agent",
+    "orchestration",
+    "automation",
+    "ci-cd",
+    "enterprise",
+    "developer-tools"
+  ],
+  "homepage": "https://github.com/archgate/oh-my-auggie",
+  "repository": {
+    "type": "github",
+    "owner": "archgate",
+    "name": "oh-my-auggie"
+  },
+  "authors": [
+    {
+      "name": "oh-my-auggie contributors",
+      "url": "https://github.com/archgate/oh-my-auggie/graphs/contributors"
+    }
+  ],
+  "license": "MIT",
+  "version": {
+    "current": "0.1.0",
+    "minimum_auggie_version": "0.22.0"
+  },
+  "installation": {
+    "command": "auggie plugin marketplace add archgate/oh-my-auggie && auggie plugin install oma@oh-my-auggie",
+    "requires_auth": false
+  },
+  "compatibility": {
+    "augment_plugin": true,
+    "claude_plugin": true
+  },
+  "links": {
+    "docs": "https://github.com/archgate/oh-my-auggie#readme",
+    "issues": "https://github.com/archgate/oh-my-auggie/issues",
+    "changelog": "https://github.com/archgate/oh-my-auggie/releases"
+  }
+}
