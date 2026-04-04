@@ -91,4 +91,4 @@ The following enterprise features require hooks integration and are deferred to 
 | auggie CLI | https://www.augmentcode.com/docs/cli |
 | archgate CLI | https://github.com/archgate/cli |
 | archgate ADR Archive | https://github.com/archgate/cli/blob/main/adr/ |
-| oh-my-auggie | https://github.com/archgate/oh-my-auggie |
+| oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |

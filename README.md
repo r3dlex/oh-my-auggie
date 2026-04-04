@@ -18,7 +18,7 @@
 ### Marketplace Install (recommended)
 
 ```bash
-auggie plugin marketplace add archgate/oh-my-auggie
+auggie plugin marketplace add r3dlex/oh-my-auggie
 auggie plugin install oma@oh-my-auggie
 ```
 
@@ -27,7 +27,7 @@ That's it. The plugin registers all commands, agents, hooks, and the MCP state s
 ### Manual Install
 
 ```bash
-git clone https://github.com/archgate/oh-my-auggie.git
+git clone https://github.com/r3dlex/oh-my-auggie.git
 cd oh-my-auggie
 auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 ```
@@ -143,7 +143,7 @@ node -e "
 | Plugin docs | https://www.augmentcode.com/docs/cli/plugins |
 | Hooks docs | https://www.augmentcode.com/docs/cli/hooks |
 | MCP docs | https://www.augmentcode.com/docs/cli/integrations |
-| oh-my-auggie | https://github.com/archgate/oh-my-auggie |
+| oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---
 

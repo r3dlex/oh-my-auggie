@@ -98,6 +98,6 @@ These words in conversation automatically activate modes:
 
 ## Links
 
-- **Docs:** https://github.com/archgate/oh-my-auggie
+- **Docs:** https://github.com/r3dlex/oh-my-auggie
 - **Auggie:** https://www.augmentcode.com
 - **archgate CLI:** https://github.com/archgate/cli
