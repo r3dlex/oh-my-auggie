@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // OMA MCP State Server — zero npm dependencies, stdio transport
-// Implements: state_read, state_write, mode_get, mode_set, task_log, notepad_read, notepad_write
+// Implements: state_read, state_write, mode_get, mode_set, task_log, notepad_read, notepad_write, skill_list, skill_inject
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { createInterface } from 'readline';
@@ -189,6 +189,92 @@ const tools = {
       notepad[section] = content;
       writeNotepad(notepad);
       return { ok: true, section };
+    }
+  },
+
+  oma_skill_list: {
+    description: 'List available OMA skills',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: { type: 'string', description: 'Filter by category (optional)' }
+      }
+    },
+    handler: ({ category } = {}) => {
+      const { readFileSync, readdirSync, existsSync } = { readFileSync, readdirSync, existsSync };
+      const skillsDir = 'plugins/oma/skills';
+      const skills = [];
+
+      if (existsSync(skillsDir)) {
+        try {
+          const skillDirs = readdirSync(skillsDir).filter(f => {
+            const fullPath = `${skillsDir}/${f}`;
+            return existsSync(`${fullPath}/SKILL.md`);
+          });
+
+          for (const dir of skillDirs) {
+            const skillPath = `${skillsDir}/${dir}/SKILL.md`;
+            try {
+              const content = readFileSync(skillPath, 'utf8');
+              const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+              if (frontmatterMatch) {
+                const fm = frontmatterMatch[1];
+                const nameMatch = fm.match(/^name:\s*(.+)$/m);
+                const descMatch = fm.match(/^description:\s*(.+)$/m);
+                const catMatch = fm.match(/^category:\s*(.+)$/m);
+                const name = nameMatch ? nameMatch[1].trim() : dir;
+                const skillDesc = descMatch ? descMatch[1].trim() : '';
+                const skillCat = catMatch ? catMatch[1].trim() : 'general';
+
+                if (!category || skillCat === category) {
+                  skills.push({ name, description: skillDesc, category: skillCat, path: skillPath });
+                }
+              }
+            } catch (e) {
+              // Skip malformed skill files
+            }
+          }
+        } catch (e) {
+          // Skills directory not accessible
+        }
+      }
+
+      return { skills, count: skills.length };
+    }
+  },
+
+  oma_skill_inject: {
+    description: 'Inject a skill context into the current session',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        skill: { type: 'string', description: 'Skill name to inject' },
+        prompt: { type: 'string', description: 'Optional additional prompt context' }
+      },
+      required: ['skill']
+    },
+    handler: ({ skill, prompt } = {}) => {
+      const { readFileSync, existsSync } = { readFileSync, existsSync };
+      const skillPath = `plugins/oma/skills/${skill}/SKILL.md`;
+
+      if (!existsSync(skillPath)) {
+        return { ok: false, error: `Skill not found: ${skill}` };
+      }
+
+      try {
+        const content = readFileSync(skillPath, 'utf8');
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        const bodyContent = frontmatterMatch ? content.replace(/^---[\s\S]*?\n---\n*/, '') : content;
+
+        return {
+          ok: true,
+          skill,
+          content: bodyContent.trim(),
+          prompt: prompt || null
+        };
+      } catch (e) {
+        return { ok: false, error: `Failed to read skill: ${e.message}` };
+      }
     }
   }
 };
