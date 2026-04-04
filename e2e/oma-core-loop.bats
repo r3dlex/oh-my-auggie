@@ -264,6 +264,156 @@ bats_require_test_helpers() { return 0; }
 }
 
 # ------------------------------------------------------------------------------
+# MCP Skill Tools Tests
+# ------------------------------------------------------------------------------
+
+@test "MCP: tools/list includes oma_skill_list" {
+  response="$(printf '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}\n' | node "$PLUGIN_DIR/mcp/state-server.mjs" 2>/dev/null)"
+  printf '%s\n' "$response" | grep -q 'oma_skill_list'
+}
+
+@test "MCP: tools/list includes oma_skill_inject" {
+  response="$(printf '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}\n' | node "$PLUGIN_DIR/mcp/state-server.mjs" 2>/dev/null)"
+  printf '%s\n' "$response" | grep -q 'oma_skill_inject'
+}
+
+# ------------------------------------------------------------------------------
+# Enterprise State Files Tests
+# ------------------------------------------------------------------------------
+
+@test "Enterprise: .oma/approvals.json is valid JSON" {
+  run node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('$SCRIPT_DIR/.oma/approvals.json')); console.log('valid')"
+  [ "$status" -eq 0 ]
+  [ "$output" = "valid" ]
+}
+
+@test "Enterprise: .oma/cost-log.json is valid JSON" {
+  run node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('$SCRIPT_DIR/.oma/cost-log.json')); console.log('valid')"
+  [ "$status" -eq 0 ]
+  [ "$output" = "valid" ]
+}
+
+@test "Enterprise: .oma/adr/ directory exists" {
+  [ -d "$SCRIPT_DIR/.oma/adr" ]
+}
+
+# ------------------------------------------------------------------------------
+# Enterprise Profile Activation Tests
+# ------------------------------------------------------------------------------
+
+@test "Enterprise: config.json with enterprise profile activates enterprise rules" {
+  # Create temp config with enterprise profile
+  export OMA_DIR="$(mktemp -d)"
+  echo '{"profile":"enterprise","enterprise":{"cost_management":true,"approval_gates":true,"adr_requirements":true}}' > "$OMA_DIR/config.json"
+
+  # Approval gate should check config and block when no approval exists
+  printf '{"tool_name":"Edit","tool_input":{"file_path":"src/auth/login.ts"}}' > /tmp/approval_test_input.json
+  set +e
+  HOOK_TYPE=PreToolUse bash "$PLUGIN_DIR/hooks/approval-gate.sh" < /tmp/approval_test_input.json > /dev/null 2>&1
+  status=$?
+  set -e
+  rm -rf "$OMA_DIR" /tmp/approval_test_input.json
+  test "$status" -eq 2
+}
+
+@test "Enterprise: config.json with community profile does not activate approval gate" {
+  # Create temp config with community profile
+  export OMA_DIR="$(mktemp -d)"
+  echo '{"profile":"community"}' > "$OMA_DIR/config.json"
+
+  # Approval gate should not block even with sensitive path
+  printf '{"tool_name":"Edit","tool_input":{"file_path":"src/auth/login.ts"}}' > /tmp/approval_test_input.json
+  set +e
+  HOOK_TYPE=PreToolUse bash "$PLUGIN_DIR/hooks/approval-gate.sh" < /tmp/approval_test_input.json > /dev/null 2>&1
+  status=$?
+  set -e
+  rm -rf "$OMA_DIR" /tmp/approval_test_input.json
+  test "$status" -eq 0
+}
+
+@test "Enterprise: ADR enforcement allows non-architectural changes" {
+  export OMA_DIR="$(mktemp -d)"
+  echo '{"profile":"enterprise"}' > "$OMA_DIR/config.json"
+  mkdir -p "$OMA_DIR/adr"
+
+  # Non-architectural change should be allowed
+  printf '{"tool_name":"Edit","tool_input":{"file_path":"README.md"}}' > /tmp/adr_test_input.json
+  set +e
+  HOOK_TYPE=PreToolUse bash "$PLUGIN_DIR/hooks/adr-enforce.sh" < /tmp/adr_test_input.json > /dev/null 2>&1
+  status=$?
+  set -e
+  rm -rf "$OMA_DIR" /tmp/adr_test_input.json
+  test "$status" -eq 0
+}
+
+@test "Enterprise: Approval gate blocks secrets without approval" {
+  export OMA_DIR="$(mktemp -d)"
+  echo '{"profile":"enterprise"}' > "$OMA_DIR/config.json"
+  echo '{"approvals":[],"version":"0.1"}' > "$OMA_DIR/approvals.json"
+
+  # Secrets path should be blocked without dual approval
+  printf '{"tool_name":"Edit","tool_input":{"file_path":"config/secrets.yml"}}' > /tmp/approval_test_input.json
+  set +e
+  HOOK_TYPE=PreToolUse bash "$PLUGIN_DIR/hooks/approval-gate.sh" < /tmp/approval_test_input.json > /dev/null 2>&1
+  status=$?
+  set -e
+  rm -rf "$OMA_DIR" /tmp/approval_test_input.json
+  test "$status" -eq 2
+}
+
+@test "Enterprise: Approval gate blocks auth changes without Security approval" {
+  export OMA_DIR="$(mktemp -d)"
+  echo '{"profile":"enterprise"}' > "$OMA_DIR/config.json"
+  echo '{"approvals":[],"version":"0.1"}' > "$OMA_DIR/approvals.json"
+
+  # Auth path should be blocked without Security approval
+  printf '{"tool_name":"Edit","tool_input":{"file_path":"src/auth/auth.ts"}}' > /tmp/approval_test_input.json
+  set +e
+  HOOK_TYPE=PreToolUse bash "$PLUGIN_DIR/hooks/approval-gate.sh" < /tmp/approval_test_input.json > /dev/null 2>&1
+  status=$?
+  set -e
+  rm -rf "$OMA_DIR" /tmp/approval_test_input.json
+  test "$status" -eq 2
+}
+
+@test "Enterprise: Approval gate blocks migrations without DBA approval" {
+  export OMA_DIR="$(mktemp -d)"
+  echo '{"profile":"enterprise"}' > "$OMA_DIR/config.json"
+  echo '{"approvals":[],"version":"0.1"}' > "$OMA_DIR/approvals.json"
+
+  # Migration path should be blocked without DBA approval
+  printf '{"tool_name":"Edit","tool_input":{"file_path":"db/migration_001.sql"}}' > /tmp/approval_test_input.json
+  set +e
+  HOOK_TYPE=PreToolUse bash "$PLUGIN_DIR/hooks/approval-gate.sh" < /tmp/approval_test_input.json > /dev/null 2>&1
+  status=$?
+  set -e
+  rm -rf "$OMA_DIR" /tmp/approval_test_input.json
+  test "$status" -eq 2
+}
+
+# ------------------------------------------------------------------------------
+# Manifest Validation Tests (v0.2)
+# ------------------------------------------------------------------------------
+
+@test "Manifest: plugin.json version is 0.2.0" {
+  version="$(node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync('$PLUGIN_DIR/.augment-plugin/plugin.json')); console.log(p.version)")"
+  [ "$version" = "0.2.0" ]
+}
+
+@test "Manifest: plugin.json lists 19 agents" {
+  count="$(node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync('$PLUGIN_DIR/.augment-plugin/plugin.json')); console.log(p.agents ? p.agents.length : 0)")"
+  [ "$count" -eq 19 ]
+}
+
+@test "Manifest: hooks.json registers all 6 hook types" {
+  hooks_json="$PLUGIN_DIR/hooks/hooks.json"
+  grep -q '"SessionStart"' "$hooks_json"
+  grep -q '"PreToolUse"' "$hooks_json"
+  grep -q '"Stop"' "$hooks_json"
+  grep -q '"PostToolUse"' "$hooks_json"
+}
+
+# ------------------------------------------------------------------------------
 # Shellcheck Tests (skip if not installed)
 # ------------------------------------------------------------------------------
 
@@ -288,6 +438,30 @@ bats_require_test_helpers() { return 0; }
     skip "shellcheck not installed"
   fi
   run shellcheck "$PLUGIN_DIR/hooks/stop-gate.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "Shellcheck: approval-gate.sh passes" {
+  if ! command -v shellcheck >/dev/null 2>&1; then
+    skip "shellcheck not installed"
+  fi
+  run shellcheck "$PLUGIN_DIR/hooks/approval-gate.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "Shellcheck: adr-enforce.sh passes" {
+  if ! command -v shellcheck >/dev/null 2>&1; then
+    skip "shellcheck not installed"
+  fi
+  run shellcheck "$PLUGIN_DIR/hooks/adr-enforce.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "Shellcheck: cost-track.sh passes" {
+  if ! command -v shellcheck >/dev/null 2>&1; then
+    skip "shellcheck not installed"
+  fi
+  run shellcheck "$PLUGIN_DIR/hooks/cost-track.sh"
   [ "$status" -eq 0 ]
 }
 
