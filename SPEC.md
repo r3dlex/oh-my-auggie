@@ -108,6 +108,4 @@ oh-my-auggie/
 
 - Augment Code: https://www.augmentcode.com
 - auggie CLI docs: https://www.augmentcode.com/docs/cli
-- archgate CLI: https://github.com/archgate/cli
-- archgate ADR archive: https://github.com/archgate/cli/blob/main/adr/
-- oh-my-auggie: https://github.com/archgate/oh-my-auggie
+- oh-my-auggie: https://github.com/r3dlex/oh-my-auggie

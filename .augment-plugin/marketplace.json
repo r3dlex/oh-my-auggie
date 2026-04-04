@@ -13,16 +13,16 @@
     "enterprise",
     "developer-tools"
   ],
-  "homepage": "https://github.com/archgate/oh-my-auggie",
+  "homepage": "https://github.com/r3dlex/oh-my-auggie",
   "repository": {
     "type": "github",
-    "owner": "archgate",
+    "owner": "r3dlex",
     "name": "oh-my-auggie"
   },
   "authors": [
     {
       "name": "oh-my-auggie contributors",
-      "url": "https://github.com/archgate/oh-my-auggie/graphs/contributors"
+      "url": "https://github.com/r3dlex/oh-my-auggie/graphs/contributors"
     }
   ],
   "license": "MIT",
@@ -31,7 +31,7 @@
     "minimum_auggie_version": "0.22.0"
   },
   "installation": {
-    "command": "auggie plugin marketplace add archgate/oh-my-auggie && auggie plugin install oma@oh-my-auggie",
+    "command": "auggie plugin marketplace add r3dlex/oh-my-auggie && auggie plugin install oma@oh-my-auggie",
     "requires_auth": false
   },
   "compatibility": {
@@ -39,8 +39,8 @@
     "claude_plugin": true
   },
   "links": {
-    "docs": "https://github.com/archgate/oh-my-auggie#readme",
-    "issues": "https://github.com/archgate/oh-my-auggie/issues",
-    "changelog": "https://github.com/archgate/oh-my-auggie/releases"
+    "docs": "https://github.com/r3dlex/oh-my-auggie#readme",
+    "issues": "https://github.com/r3dlex/oh-my-auggie/issues",
+    "changelog": "https://github.com/r3dlex/oh-my-auggie/releases"
   }
 }

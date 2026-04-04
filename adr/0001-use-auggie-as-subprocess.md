@@ -16,7 +16,7 @@ We will build OMA as a native Auggie plugin that distributes through the Auggie 
 
 **Consequences:**
 
-1. **Plugin-first**: OMA installs via `auggie plugin marketplace add archgate/oh-my-auggie && auggie plugin install oma@oh-my-auggie`
+1. **Plugin-first**: OMA installs via `auggie plugin marketplace add r3dlex/oh-my-auggie && auggie plugin install oma@oh-my-auggie`
 2. **Standalone CLI**: A companion `oma` CLI wraps auggie for v0.2-deferred features (tmux team workers, comprehensive tool access)
 3. **Dual execution modes**: Plugin mode for v0.1 primitives; standalone mode for full orchestration
 4. **MCP server per-repo**: Each working copy gets its own MCP server for state persistence
