@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "version": "0.1.0",
+  "description": "OMA MCP state server — zero-dependency Node.js stdio",
+  "main": "state-server.mjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {}
+}

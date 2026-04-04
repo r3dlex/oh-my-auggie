@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "name": "oma",
+  "display_name": "oh-my-auggie (OMA)",
+  "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
+  "version": "0.1.0",
+  "minimum_auggie_version": "0.22.0",
+  "entry_points": {
+    "commands": "commands",
+    "agents": "agents",
+    "hooks": "hooks/hooks.json",
+    "mcp": ".mcp.json"
+  },
+  "dependencies": [],
+  "permissions": [],
+  "compatibility": {
+    "augment_plugin": true,
+    "claude_plugin": true
+  }
+}
