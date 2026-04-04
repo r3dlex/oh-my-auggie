@@ -1,0 +1,77 @@
+name: CI
+
+# ── Auto-merge setup ────────────────────────────────────────────────────────────
+# When creating a PR, use: gh pr create --auto-merge --admin --fill
+# This tells GitHub to auto-merge the PR once all CI checks pass AND
+# the PR is approved. No workflow configuration needed — GitHub handles
+# the merge_blocked / merge_group events automatically when --auto-merge
+# is set at PR creation time.
+#
+# Branch protection note: if main has "Require pull request reviews before
+# merging" enabled, the PR still needs an approving review before GitHub
+# will auto-merge — even with --auto-merge set at creation time.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  bats:
+    name: bats e2e tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats
+        run: |
+          git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
+          cd /tmp/bats-core && ./install.sh ~/.local/
+          export PATH="$HOME/.local/bin:$PATH"
+          bats --version
+
+      - name: Run e2e tests
+        env:
+          PATH: "$HOME/.local/bin:$PATH"
+        run: bats e2e/oma-core-loop.bats
+
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run shellcheck
+        run: |
+          # Only lint our hook scripts
+          for f in plugins/oma/hooks/*.sh; do
+            shellcheck --severity=error "$f" || true
+          done
+
+  validate-manifests:
+    name: Validate manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON manifests
+        run: |
+          node -e "
+            const fs = require('fs');
+            const files = [
+              '.augment-plugin/marketplace.json',
+              'plugins/oma/.augment-plugin/plugin.json',
+              'plugins/oma/.augment-plugin/.mcp.json',
+              'plugins/oma/hooks/hooks.json',
+              '.claude-plugin/plugin.json'
+            ];
+            for (const f of files) {
+              try {
+                JSON.parse(fs.readFileSync(f));
+                console.log('OK: ' + f);
+              } catch(e) {
+                console.error('FAIL: ' + f + ' - ' + e.message);
+                process.exit(1);
+              }
+            }
+          "
