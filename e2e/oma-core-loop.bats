@@ -445,7 +445,7 @@ bats_require_test_helpers() { return 0; }
   if ! command -v shellcheck >/dev/null 2>&1; then
     skip "shellcheck not installed"
   fi
-  run shellcheck "$PLUGIN_DIR/hooks/approval-gate.sh"
+  run shellcheck --severity=error "$PLUGIN_DIR/hooks/approval-gate.sh"
   [ "$status" -eq 0 ]
 }
 
@@ -453,7 +453,7 @@ bats_require_test_helpers() { return 0; }
   if ! command -v shellcheck >/dev/null 2>&1; then
     skip "shellcheck not installed"
   fi
-  run shellcheck "$PLUGIN_DIR/hooks/adr-enforce.sh"
+  run shellcheck --severity=error "$PLUGIN_DIR/hooks/adr-enforce.sh"
   [ "$status" -eq 0 ]
 }
 
@@ -461,7 +461,7 @@ bats_require_test_helpers() { return 0; }
   if ! command -v shellcheck >/dev/null 2>&1; then
     skip "shellcheck not installed"
   fi
-  run shellcheck "$PLUGIN_DIR/hooks/cost-track.sh"
+  run shellcheck --severity=error "$PLUGIN_DIR/hooks/cost-track.sh"
   [ "$status" -eq 0 ]
 }
 
