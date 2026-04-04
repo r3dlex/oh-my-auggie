@@ -1,0 +1,37 @@
+#!/bin/sh
+# oma — OMA CLI Companion (POSIX shell, no bashisms)
+# All logic lives in cli/oma.mjs; this wrapper just sets up the environment.
+
+set -e
+
+# Resolve the directory containing this script (follows symlinks)
+OMA_BIN="$(cd "$(dirname "$0")" && pwd)"
+OMA_ROOT="$(cd "$OMA_BIN/.." && pwd)"
+
+# Determine OMA_DIR: walk up from PWD for .oma/, else fall back to $HOME/.oma
+OMA_DIR=""
+_check="$PWD"
+while true; do
+  if [ -d "$_check/.oma" ]; then
+    OMA_DIR="$_check/.oma"
+    break
+  fi
+  if [ "$_check" = "/" ] || [ -z "$_check" ]; then
+    OMA_DIR="${HOME:-/tmp}/.oma"
+    break
+  fi
+  _check="$(dirname "$_check")"
+done
+
+export OMA_DIR
+
+# Resolve the Node.js entry point relative to the script location
+OMA_CLI="$OMA_ROOT/cli/oma.mjs"
+
+if [ ! -f "$OMA_CLI" ]; then
+  echo "oma: error: cli/oma.mjs not found at $OMA_CLI" >&2
+  exit 2
+fi
+
+# Run the Node.js CLI, passing through all arguments
+exec node "$OMA_CLI" "$@"
