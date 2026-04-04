@@ -31,6 +31,12 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           bats --version
 
+      - name: Create enterprise state files
+        run: |
+          mkdir -p .oma/adr
+          echo '{"approvals":[],"version":"0.1"}' > .oma/approvals.json
+          echo '{"sessions":[],"version":"0.1"}' > .oma/cost-log.json
+
       - name: Run e2e tests
         run: |
           export PATH="$HOME/.local/bin:$PATH"
