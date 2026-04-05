@@ -56,6 +56,10 @@ model: sonnet4.6
 - Register trigger keywords
 - Validate skill format
 
+### Phase 6: HUD Auto-Enable
+- Write `hud-active: true` to `.oma/state.json`
+- This causes the session-start hook to auto-display the HUD on next session load
+
 ---
 
 ## Options
@@ -75,3 +79,4 @@ model: sonnet4.6
 - Back up existing config before `--fresh`
 - Some steps require confirmation
 - Rollback on failure if possible
+- After successful setup, `hud-active: true` is written to `.oma/state.json` so the HUD auto-displays on next session start

@@ -50,6 +50,28 @@ function main() {
     sessionContext += `\n[OMA] Running on Auggie ${auggieVersion}.`;
   }
 
+  // HUD auto-display: if hud-active is set, emit HUD display
+  if (state['hud-active'] === true) {
+    const hud = {
+      type: 'hud',
+      display: true,
+      mode: state.mode ?? 'none',
+      active: state.active ?? false,
+      task: state.task ?? '',
+      position: state['hud-position'] ?? 'top-right',
+      opacity: state['hud-opacity'] ?? 0.8,
+      elements: state['hud-elements'] ?? {
+        mode: true,
+        iteration: true,
+        tokens: false,
+        time: true,
+        agents: true,
+        progress: true
+      }
+    };
+    console.log('\n[OMA HUD]' + JSON.stringify(hud));
+  }
+
   if (sessionContext) {
     console.log(sessionContext.trim());
   }
