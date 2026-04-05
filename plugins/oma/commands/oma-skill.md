@@ -45,8 +45,15 @@ model: sonnet4.6
 - Supports fuzzy matching
 
 **Add:**
-- Fetches from OMC skill registry
-- Installs to `~/.claude/skills/` or project `.skills/`
+- Fetches from OMC skill registry or GitHub URL
+- Installs to `plugins/oma/skills/` or project `.skills/`
+- Remote installation: `/oma:skill sync https://github.com/user/repo/tree/main/skills/skill-name`
+
+**Sync (remote install):**
+- `/oma:skill sync` — sync all skills from configured remote sources
+- `/oma:skill sync <url>` — install a skill directly from a GitHub URL
+- Supports GitHub tree URLs (fetches the SKILL.md directly)
+- Example: `/oma:skill sync https://github.com/user/repo/tree/main/skills/my-skill`
 
 **Remove:**
 - Deletes skill file
