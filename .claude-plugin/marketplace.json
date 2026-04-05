@@ -1,14 +1,31 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "oh-my-auggie",
+  "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
   "owner": {
-    "name": "oh-my-auggie contributors"
+    "name": "oh-my-auggie contributors",
+    "email": "andredburgstahler@gmail.com"
   },
   "plugins": [
     {
-      "name": "oma",
+      "name": "oh-my-auggie",
+      "description": "Multi-agent orchestration plugin for Augment Code with 20+ agents, 28 skills, TypeScript hooks, MCP state server, and enterprise-ready workflows",
+      "version": "0.1.0",
+      "author": {
+        "name": "oh-my-auggie contributors"
+      },
       "source": "./plugins/oma",
-      "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
-      "version": "0.1.0"
+      "category": "productivity",
+      "homepage": "https://github.com/r3dlex/oh-my-auggie",
+      "tags": [
+        "multi-agent",
+        "orchestration",
+        "automation",
+        "ci-cd",
+        "enterprise",
+        "developer-tools"
+      ]
     }
-  ]
+  ],
+  "version": "0.1.0"
 }
