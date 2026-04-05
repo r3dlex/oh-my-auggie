@@ -1,0 +1,23 @@
+{
+  "name": "@r3dlex/oh-my-auggie",
+  "version": "0.0.0",
+  "description": "TypeScript hooks and tests for oh-my-auggie",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "prepare": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitest/coverage-v8": "^1.6.1",
+    "execa": "^9.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  }
+}

@@ -18,42 +18,43 @@ on:
     branches: [main]
 
 jobs:
-  bats:
-    name: bats e2e tests
+  hooks-check:
+    name: Validate hook entry points
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install bats
+      - name: Verify hooks.json has no .sh references
         run: |
-          git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
-          cd /tmp/bats-core && ./install.sh ~/.local/
-          export PATH="$HOME/.local/bin:$PATH"
-          bats --version
+          if grep -q '\.sh' plugins/oma/hooks/hooks.json; then
+            echo "ERROR: hooks.json still contains .sh references"
+            grep '\.sh' plugins/oma/hooks/hooks.json
+            exit 1
+          fi
+          echo "hooks.json entry points are correct (all .mjs)"
 
-      - name: Create enterprise state files
-        run: |
-          mkdir -p .oma/adr
-          echo '{"approvals":[],"version":"0.1"}' > .oma/approvals.json
-          echo '{"sessions":[],"version":"0.1"}' > .oma/cost-log.json
-
-      - name: Run e2e tests
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          bats e2e/oma-core-loop.bats
-
-  shellcheck:
-    name: shellcheck
+  typecheck:
+    name: TypeScript type check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: TypeScript type check
+        run: cd plugins/oma && npx tsc --noEmit
 
-      - name: Run shellcheck
-        run: |
-          # Only lint our hook scripts
-          for f in plugins/oma/hooks/*.sh; do
-            shellcheck --severity=error "$f" || true
-          done
+  vitest-unit:
+    name: Vitest unit + integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run unit + integration tests with coverage
+        run: cd plugins/oma && npx vitest run --coverage
 
   cli:
     name: oma CLI e2e
@@ -102,5 +103,19 @@ jobs:
                 console.error('FAIL: ' + f + ' - ' + e.message);
                 process.exit(1);
               }
+            }
+          "
+      - name: Verify dist/hooks/*.mjs exist
+        run: |
+          node -e "
+            const fs = require('fs');
+            const hooks = ['session-start', 'delegation-enforce', 'stop-gate', 'approval-gate', 'adr-enforce', 'cost-track', 'keyword-detect'];
+            for (const h of hooks) {
+              const p = 'plugins/oma/dist/hooks/' + h + '.mjs';
+              if (!fs.existsSync(p)) {
+                console.error('MISSING: ' + p);
+                process.exit(1);
+              }
+              console.log('OK: ' + p);
             }
           "

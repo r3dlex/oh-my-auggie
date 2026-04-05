@@ -4,43 +4,43 @@
     {
       "name": "session-start",
       "type": "SessionStart",
-      "command": "${PLUGIN_ROOT}/hooks/session-start.sh",
+      "command": "${PLUGIN_ROOT}/hooks/session-start.js",
       "description": "Injects OMA orchestration context and restores active mode from .oma/state.json on session start"
     },
     {
       "name": "delegation-enforce",
       "type": "PreToolUse",
-      "command": "${PLUGIN_ROOT}/hooks/delegation-enforce.sh",
+      "command": "${PLUGIN_ROOT}/hooks/delegation-enforce.mjs",
       "description": "Blocks direct file edits (Edit, Write, remove_files) when OMA orchestration mode is active. Enforces delegation to oma-executor."
     },
     {
       "name": "stop-gate",
       "type": "Stop",
-      "command": "${PLUGIN_ROOT}/hooks/stop-gate.sh",
+      "command": "${PLUGIN_ROOT}/hooks/stop-gate.mjs",
       "description": "Blocks agent completion when ralph mode is active and oma-architect has not returned PASS verdict"
     },
     {
       "name": "approval-gate",
       "type": "PreToolUse",
-      "command": "${PLUGIN_ROOT}/hooks/approval-gate.sh",
+      "command": "${PLUGIN_ROOT}/hooks/approval-gate.mjs",
       "description": "Requires approval for sensitive paths (auth, config, migration, secrets) when enterprise profile is active"
     },
     {
       "name": "adr-enforce",
       "type": "PreToolUse",
-      "command": "${PLUGIN_ROOT}/hooks/adr-enforce.sh",
+      "command": "${PLUGIN_ROOT}/hooks/adr-enforce.mjs",
       "description": "Enforces ADR references for architectural changes when enterprise profile is active"
     },
     {
       "name": "cost-track",
       "type": "PostToolUse",
-      "command": "${PLUGIN_ROOT}/hooks/cost-track.sh",
+      "command": "${PLUGIN_ROOT}/hooks/cost-track.mjs",
       "description": "Tracks model usage and cost per session for enterprise cost management"
     },
     {
       "name": "keyword-detect",
       "type": "PostToolUse",
-      "command": "${PLUGIN_ROOT}/hooks/keyword-detect.sh",
+      "command": "${PLUGIN_ROOT}/hooks/keyword-detect.mjs",
       "description": "Detects keywords in conversation that auto-activate modes (autopilot, ralph, ultrawork, ccg, ralplan, interview, deslop, canceloma)"
     }
   ]
