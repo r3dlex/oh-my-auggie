@@ -1,0 +1,26 @@
+{
+  "name": "@r3dlex/oh-my-auggie",
+  "version": "0.3.0",
+  "description": "OMA plugin with TypeScript hooks -- Windows-compatible",
+  "type": "module",
+  "main": "plugins/oma/dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./plugins/oma/dist/index.js"
+    }
+  },
+  "scripts": {
+    "test": "cd plugins/oma && vitest run",
+    "test:coverage": "cd plugins/oma && vitest run --coverage",
+    "build": "cd plugins/oma && tsc",
+    "typecheck": "cd plugins/oma && tsc --noEmit"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0",
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
