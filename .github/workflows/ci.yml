@@ -30,7 +30,7 @@ jobs:
             grep '\.sh' plugins/oma/hooks/hooks.json
             exit 1
           fi
-          echo "hooks.json entry points are correct (all .mjs)"
+          echo "hooks.json entry points are correct (all .js)"
 
   typecheck:
     name: TypeScript type check
@@ -41,6 +41,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Install dependencies
+        run: cd plugins/oma && npm install
       - name: TypeScript type check
         run: cd plugins/oma && npx tsc --noEmit
 
@@ -53,6 +55,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Install dependencies
+        run: cd plugins/oma && npm install
       - name: Run unit + integration tests with coverage
         run: cd plugins/oma && npx vitest run --coverage
 
@@ -61,19 +65,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Install bats
         run: |
           git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
           cd /tmp/bats-core && ./install.sh ~/.local/
           export PATH="$HOME/.local/bin:$PATH"
           bats --version
-
       - name: Run CLI e2e tests
         run: |
           export PATH="$HOME/.local/bin:$PATH"
@@ -105,13 +106,13 @@ jobs:
               }
             }
           "
-      - name: Verify dist/hooks/*.mjs exist
+      - name: Verify dist/hooks/*.js exist
         run: |
           node -e "
             const fs = require('fs');
             const hooks = ['session-start', 'delegation-enforce', 'stop-gate', 'approval-gate', 'adr-enforce', 'cost-track', 'keyword-detect'];
             for (const h of hooks) {
-              const p = 'plugins/oma/dist/hooks/' + h + '.mjs';
+              const p = 'plugins/oma/dist/hooks/' + h + '.js';
               if (!fs.existsSync(p)) {
                 console.error('MISSING: ' + p);
                 process.exit(1);
