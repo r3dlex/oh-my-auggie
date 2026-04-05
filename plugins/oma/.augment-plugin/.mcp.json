@@ -9,25 +9,24 @@
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@context7/mcp-server"],
+      "args": ["-y", "@upstash/context7-mcp"],
       "env": {},
       "protocol": "stdio"
     },
     "exa": {
       "command": "npx",
-      "args": ["-y", "@exa-js/mcp-server"],
+      "args": ["-y", "exa-mcp-server"],
       "env": {
         "EXA_API_KEY": "${EXA_API_KEY}"
       },
       "protocol": "stdio"
     },
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-      },
-      "protocol": "stdio"
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
     }
   }
 }
