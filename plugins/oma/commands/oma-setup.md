@@ -66,6 +66,7 @@ model: sonnet4.6
 | `--verify` | Check installation without changes |
 | `--update` | Pull latest from registry |
 | `--minimal` | Install core only, skip optional |
+| `--resume` | Resume interrupted setup from previous state |
 
 ---
 

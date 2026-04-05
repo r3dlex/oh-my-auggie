@@ -33,6 +33,11 @@ model: sonnet4.6
 - [ ] All hook scripts executable
 - [ ] State directory `.oma/` writable
 
+### Legacy Content Check
+- [ ] No `.omc/` directories from OMC migration
+- [ ] No legacy `.mcp.json` in plugin root
+- [ ] No duplicate hook definitions
+
 ### Agents
 - [ ] All agent files present
 - [ ] Agent YAML frontmatter valid
