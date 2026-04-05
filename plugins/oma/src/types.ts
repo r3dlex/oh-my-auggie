@@ -38,6 +38,8 @@ export interface ApprovalConfig {
   approvals: ApprovalRecord[];
 }
 
+export type OmaOs = 'macos' | 'linux' | 'wsl';
+
 export interface CostEntry {
   model: string;
   inputTokens: number;
