@@ -1,0 +1,14 @@
+{
+  "name": "oh-my-auggie",
+  "owner": {
+    "name": "oh-my-auggie contributors"
+  },
+  "plugins": [
+    {
+      "name": "oma",
+      "source": "./plugins/oma",
+      "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
+      "version": "0.1.0"
+    }
+  ]
+}
