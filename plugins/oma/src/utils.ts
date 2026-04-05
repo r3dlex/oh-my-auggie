@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, renameSync } from 'fs';
 import { execSync } from 'child_process';
 import { resolve, join } from 'path';
 import { Readable } from 'stream';
-import type { HookInput, OmaState, ApprovalRecord } from './types.js';
+import type { HookInput, OmaState, ApprovalRecord, OmaOs } from './types.js';
 
 // ─── stdin ─────────────────────────────────────────────────────────────────
 
@@ -106,6 +106,61 @@ export function normalizePath(p: string): string {
  */
 export function resolveOmaDir(): string {
   return resolve(process.env.OMA_DIR ?? '.oma');
+}
+
+// ─── OS detection ─────────────────────────────────────────────────────────
+
+/**
+ * Detects the current operating system.
+ * Returns:
+ *   - 'macos' on Darwin (macOS)
+ *   - 'linux' on Linux (including WSL linux kernel)
+ *   - 'wsl' when running on Windows with WSL detected (WSL2 or WSL1)
+ *
+ * Pure Windows (non-WSL) is not supported — returns 'wsl' as a best-effort
+ * since the CLI primarily runs over WSL on Windows.
+ */
+export function detectOs(): OmaOs {
+  const platform = process.platform;
+
+  if (platform === 'darwin') {
+    return 'macos';
+  }
+
+  if (platform === 'linux') {
+    // Detect WSL by checking /proc/version for "Microsoft" or "WSL"
+    try {
+      const version = readFileSync('/proc/version', 'utf8').toLowerCase();
+      if (version.includes('microsoft') || version.includes('wsl')) {
+        return 'wsl';
+      }
+    } catch {
+      // /proc/version not accessible — plain Linux
+    }
+    return 'linux';
+  }
+
+  // process.platform === 'win32' — check if we're running under WSL
+  if (platform === 'win32') {
+    // WSL sets this env var when running Linux binaries under win32
+    if (process.env.WSL_DISTRO_NAME || process.env.WSLENV) {
+      return 'wsl';
+    }
+    // Also check via running a small command
+    try {
+      const result = execSync('uname -r', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+      if (result.toLowerCase().includes('microsoft')) {
+        return 'wsl';
+      }
+    } catch {
+      // Not WSL
+    }
+    // Pure Windows — fall back to wsl for compatibility
+    return 'wsl';
+  }
+
+  // Default fallback
+  return 'linux';
 }
 
 // ─── Git availability ───────────────────────────────────────────────────────
