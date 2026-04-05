@@ -48,11 +48,14 @@ model: sonnet4.6
 
 ### Process
 
-1. **Scan** target for known anti-patterns
-2. **Flag** each issue with severity (HIGH/MEDIUM/LOW)
-3. **Fix** HIGH and MEDIUM issues automatically
-4. **Report** findings with before/after diffs
-5. **Preserve** all functional behavior — regression-safe
+1. **Protect current behavior** — run regression tests or establish baseline
+2. **Scan** target for known anti-patterns
+3. **Flag** each issue with severity (HIGH/MEDIUM/LOW)
+4. **Write cleanup plan** — list concrete smells, order from safest deletion to riskier consolidation
+5. **Fix** HIGH and MEDIUM issues automatically
+6. **Run quality gates** — regression tests must stay green
+7. **Report** findings with before/after diffs
+8. **Preserve** all functional behavior — regression-safe
 
 ### Constraints
 
