@@ -16,7 +16,7 @@ const KEYWORDS = [
   ['ultrawork', '/oma:ultrawork'],
   ['ccg', '/oma:ccg'],
   ['ralplan', '/oma:ralplan'],
-  ['deep interview', '/oma:interview'],
+  ['deep interview', '/oma:deep-interview'],
   ['deslop', '/oma:deslop'],
   ['anti-slop', '/oma:deslop'],
   ['canceloma', '/oma:cancel'],
