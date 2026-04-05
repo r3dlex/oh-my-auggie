@@ -37,12 +37,10 @@ model: sonnet4.6
 
 | Server | Description | Auth |
 |--------|-------------|------|
-| `github` | GitHub API integration | Token |
-| `filesystem` | Direct filesystem access | Path |
-| `slack` | Slack workspace integration | Token |
-| `aws` | AWS SDK access | IAM |
-| `docker` | Docker daemon control | Socket |
-| `postgres` | PostgreSQL database | Connection string |
+| `context7` | Code search and context (context7.com) | None |
+| `exa` | Web search (exa.ai) | EXA_API_KEY env var |
+| `github` | GitHub API integration | GITHUB_TOKEN env var |
+| `oma-state` | OMA session state management | None (built-in) |
 
 ### Configuration
 
