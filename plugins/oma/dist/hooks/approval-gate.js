@@ -1,5 +1,5 @@
 import { readAllStdin } from '../utils.js';
-import { loadConfig, loadJsonFile, isEnterpriseProfile, resolveOmaDir, isApprovalExpired } from '../utils.js';
+import { loadJsonFile, isEnterpriseProfile, resolveOmaDir, isApprovalExpired, getMergedConfig } from '../utils.js';
 import { join } from 'path';
 const FILE_MODIFYING_TOOLS = new Set(['Edit', 'Write', 'remove_files', 'str-replace-editor', 'save-file', 'Bash']);
 /**
@@ -44,8 +44,8 @@ export function hasValidApproval(filePath, required, approvals) {
     return approvals.some((r) => r.type === required && !isApprovalExpired(r));
 }
 export async function main() {
+    const config = getMergedConfig();
     const omaDir = resolveOmaDir();
-    const config = loadConfig(omaDir);
     // Only enforce in enterprise profile
     if (!isEnterpriseProfile(config)) {
         process.exit(0);

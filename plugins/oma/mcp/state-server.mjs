@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 // OMA MCP State Server — zero npm dependencies, stdio transport
-// Implements: state_read, state_write, mode_get, mode_set, task_log, notepad_read, notepad_write, skill_list, skill_inject
+// Implements: state_read, state_write, mode_get, mode_set, task_log, notepad_read, notepad_write, skill_list, skill_inject, oma_config_read, oma_config_write, oma_config_reset
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from 'fs';
 import { createInterface } from 'readline';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { homedir } from 'os';
 
 // OMA_DIR is derived from the script's location: <plugin-root>/.oma
 // This ensures state is always stored in the plugin's .oma dir regardless of cwd
@@ -77,6 +78,120 @@ function readJsonSafe(path, fallback = null) {
     return JSON.parse(readFileSync(path, 'utf8'));
   } catch {
     return fallback;
+  }
+}
+
+// ── Two-tiered config helpers ───────────────────────────────────────────────
+
+const DEFAULT_CONFIG = {
+  version: '1.0',
+  hud: { enabled: true, style: 'default' },
+  orchestration: { mode: 'ralph', maxIterations: 100 },
+  paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' },
+  profile: 'default'
+};
+
+function expandTilde(p) {
+  if (typeof p !== 'string') return p;
+  if (p.startsWith('~/') || p === '~') {
+    return resolve(homedir(), p.slice(2));
+  }
+  return p;
+}
+
+function resolveGlobalOmaDir() {
+  return expandTilde('~/.oma');
+}
+
+function resolveLocalOmaDir() {
+  return expandTilde('.oma');
+}
+
+function loadJsonFileSafe(path) {
+  try {
+    if (!existsSync(path)) return null;
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function saveJsonFileSafe(path, data) {
+  const dir = dirname(path);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  const tmp = path + '.tmp.' + Date.now();
+  writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+  try {
+    renameSync(tmp, path);
+  } catch (err) {
+    if (err.code === 'EXDEV') {
+      writeFileSync(path, JSON.stringify(data, null, 2), 'utf8');
+    } else {
+      throw err;
+    }
+  }
+}
+
+function deepMerge(base, overlay) {
+  const result = { ...base };
+  for (const key of Object.keys(overlay ?? {})) {
+    if (typeof overlay[key] === 'object' && overlay[key] !== null && !Array.isArray(overlay[key])) {
+      const baseObj = base[key] ?? {};
+      result[key] = { ...baseObj, ...overlay[key] };
+    } else {
+      result[key] = overlay[key];
+    }
+  }
+  return result;
+}
+
+function getMergedConfig() {
+  const globalPath = resolveGlobalOmaDir();
+  const localPath = resolveLocalOmaDir();
+  const globalConfig = loadJsonFileSafe(join(globalPath, 'config.json')) ?? {};
+  const localConfig = loadJsonFileSafe(join(localPath, 'config.json')) ?? {};
+  let merged = deepMerge(DEFAULT_CONFIG, globalConfig);
+  merged = deepMerge(merged, localConfig);
+  if (globalConfig.profile !== undefined) {
+    merged.profile = globalConfig.profile;
+  }
+  return merged;
+}
+
+function getConfigKey(key) {
+  const config = getMergedConfig();
+  const parts = key.split('.');
+  let value = config;
+  for (const part of parts) {
+    if (value && typeof value === 'object' && part in value) {
+      value = value[part];
+    } else {
+      return undefined;
+    }
+  }
+  return value;
+}
+
+function setConfigKey(key, value, scope = 'global') {
+  const basePath = scope === 'global' ? resolveGlobalOmaDir() : resolveLocalOmaDir();
+  const configPath = join(basePath, 'config.json');
+  const config = loadJsonFileSafe(configPath) ?? { ...DEFAULT_CONFIG };
+  const parts = key.split('.');
+  let target = config;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (!(parts[i] in target)) target[parts[i]] = {};
+    target = target[parts[i]];
+  }
+  target[parts[parts.length - 1]] = value;
+  saveJsonFileSafe(configPath, config);
+  return config;
+}
+
+function resetConfig(scope = 'global') {
+  const basePath = scope === 'global' ? resolveGlobalOmaDir() : resolveLocalOmaDir();
+  const configPath = join(basePath, 'config.json');
+  if (existsSync(configPath)) {
+    require('fs').unlinkSync(configPath);
   }
 }
 
@@ -353,6 +468,50 @@ const tools = {
       } catch (e) {
         return { ok: false, error: e.message, streams: [] };
       }
+    }
+  },
+
+  oma_config_read: {
+    description: 'Read the merged OMA config (global + local, with defaults applied)',
+    inputSchema: { type: 'object', properties: {} },
+    handler: () => {
+      return { config: getMergedConfig() };
+    }
+  },
+
+  oma_config_write: {
+    description: 'Write a config key-value pair (default scope: global)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: 'Config key (dot notation, e.g. "hud.style")' },
+        value: { description: 'Value to set' },
+        scope: { type: 'string', enum: ['global', 'local'], description: 'Config scope', default: 'global' }
+      },
+      required: ['key', 'value']
+    },
+    handler: ({ key, value, scope = 'global' }) => {
+      // profile is global-only
+      if (key === 'profile' && scope === 'local') {
+        const current = getMergedConfig();
+        return { ok: false, warning: `profile is global-only and cannot be overridden locally. Current profile: ${current.profile}` };
+      }
+      setConfigKey(key, value, scope);
+      return { ok: true, key, value, scope };
+    }
+  },
+
+  oma_config_reset: {
+    description: 'Reset config file to defaults (scope: global or local)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scope: { type: 'string', enum: ['global', 'local'], description: 'Config scope to reset', default: 'global' }
+      }
+    },
+    handler: ({ scope = 'global' }) => {
+      resetConfig(scope);
+      return { ok: true, scope };
     }
   }
 };

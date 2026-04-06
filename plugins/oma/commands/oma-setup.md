@@ -157,7 +157,7 @@ fi
 
 **Step 1 — Verify plugin installation:**
 ```bash
-PLUGIN_ROOT="$HOME/.auggie/plugins/oma"
+PLUGIN_ROOT="${AUGMENT_PLUGIN_ROOT:-"$HOME/.augment/plugins/marketplaces/oh-my-auggie/plugins/oma"}"
 REQUIRED_FILES=(
   "$PLUGIN_ROOT/.augment-plugin/plugin.json"
   "$PLUGIN_ROOT/hooks/hooks.json"

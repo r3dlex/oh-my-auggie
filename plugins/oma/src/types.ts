@@ -40,6 +40,31 @@ export interface ApprovalConfig {
 
 export type OmaOs = 'macos' | 'linux' | 'wsl';
 
+// ─── Config interfaces ────────────────────────────────────────────────────────
+
+export interface HudConfig {
+  enabled: boolean;
+  style: 'default' | 'compact' | 'minimal';
+}
+
+export interface OrchestrationConfig {
+  mode: 'ralph' | 'autopilot' | 'ultrawork' | 'ultraqa' | 'team';
+  maxIterations: number;
+}
+
+export interface PathsConfig {
+  omaDir: string;
+  plansDir: string;
+}
+
+export interface Config {
+  version: string;
+  hud: HudConfig;
+  orchestration: OrchestrationConfig;
+  paths: PathsConfig;
+  profile: 'default' | 'enterprise';
+}
+
 export interface CostEntry {
   model: string;
   inputTokens: number;

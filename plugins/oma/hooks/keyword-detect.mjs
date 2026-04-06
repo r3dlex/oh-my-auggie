@@ -11,15 +11,17 @@ const STATE_FILE = join(OMA_DIR, 'state.json');
 const KEYWORDS = [
   ['autopilot', '/oma:autopilot'],
   ['ralph', '/oma:ralph'],
-  ["don't stop", '/oma:ralph'],
   ['ulw', '/oma:ultrawork'],
   ['ultrawork', '/oma:ultrawork'],
   ['ccg', '/oma:ccg'],
   ['ralplan', '/oma:ralplan'],
-  ['deep interview', '/oma:deep-interview'],
+  ['deep-interview', '/oma:deep-interview'],
   ['deslop', '/oma:deslop'],
   ['anti-slop', '/oma:deslop'],
   ['canceloma', '/oma:cancel'],
+  ['setup', '/oma:setup'],
+  ['ultraqa', '/oma:ultraqa'],
+  ['team', '/oma:team'],
 ];
 
 function getLastUserMessage() {

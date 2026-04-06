@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../../src/utils.js', () => ({
   readAllStdin: vi.fn(() => ''),
-  loadConfig: vi.fn(),
+  getMergedConfig: vi.fn(() => ({ profile: 'default' })),
   isEnterpriseProfile: vi.fn(),
   normalizePath: vi.fn((p: string) => p), // passthrough for tests
   isGitAvailable: vi.fn(),

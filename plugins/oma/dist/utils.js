@@ -1,6 +1,7 @@
-import { readFileSync, writeFileSync, renameSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from 'fs';
 import { execSync } from 'child_process';
-import { resolve, join } from 'path';
+import { resolve, join, dirname } from 'path';
+import { homedir } from 'os';
 // ─── stdin ─────────────────────────────────────────────────────────────────
 /**
  * Reads all of process.stdin and returns it as a string.
@@ -96,6 +97,57 @@ export function normalizePath(p) {
 export function resolveOmaDir() {
     return resolve(process.env.OMA_DIR ?? '.oma');
 }
+// ─── OS detection ─────────────────────────────────────────────────────────
+/**
+ * Detects the current operating system.
+ * Returns:
+ *   - 'macos' on Darwin (macOS)
+ *   - 'linux' on Linux (including WSL linux kernel)
+ *   - 'wsl' when running on Windows with WSL detected (WSL2 or WSL1)
+ *
+ * Pure Windows (non-WSL) is not supported — returns 'wsl' as a best-effort
+ * since the CLI primarily runs over WSL on Windows.
+ */
+export function detectOs() {
+    const platform = process.platform;
+    if (platform === 'darwin') {
+        return 'macos';
+    }
+    if (platform === 'linux') {
+        // Detect WSL by checking /proc/version for "Microsoft" or "WSL"
+        try {
+            const version = readFileSync('/proc/version', 'utf8').toLowerCase();
+            if (version.includes('microsoft') || version.includes('wsl')) {
+                return 'wsl';
+            }
+        }
+        catch {
+            // /proc/version not accessible — plain Linux
+        }
+        return 'linux';
+    }
+    // process.platform === 'win32' — check if we're running under WSL
+    if (platform === 'win32') {
+        // WSL sets this env var when running Linux binaries under win32
+        if (process.env.WSL_DISTRO_NAME || process.env.WSLENV) {
+            return 'wsl';
+        }
+        // Also check via running a small command
+        try {
+            const result = execSync('uname -r', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+            if (result.toLowerCase().includes('microsoft')) {
+                return 'wsl';
+            }
+        }
+        catch {
+            // Not WSL
+        }
+        // Pure Windows — fall back to wsl for compatibility
+        return 'wsl';
+    }
+    // Default fallback
+    return 'linux';
+}
 // ─── Git availability ───────────────────────────────────────────────────────
 /**
  * Checks whether `git` is available in the current PATH.
@@ -145,4 +197,159 @@ export function isApprovalExpired(record) {
     const now = Date.now();
     const expiry = new Date(record.expires).getTime();
     return now > expiry + CLOCK_SKEW_TOLERANCE_MS;
+}
+/**
+ * Expands ~ in a path to the user's home directory.
+ * Works cross-platform: Unix (~) and Windows (~) both resolve via os.homedir().
+ * e.g. "~/.oma" -> "/home/user/.oma" or "C:\Users\username\.oma"
+ */
+export function expandTilde(p) {
+    if (typeof p !== 'string')
+        return p;
+    if (p.startsWith('~/') || p === '~') {
+        return resolve(homedir(), p.slice(2));
+    }
+    return p;
+}
+/**
+ * Returns the global OMA config directory path (~/.oma).
+ * Cross-platform: uses os.homedir() for Windows/Unix consistency.
+ */
+export function resolveGlobalOmaDir() {
+    return expandTilde('~/.oma');
+}
+/**
+ * Returns the local OMA config directory path (project-level .oma/).
+ * Uses process.cwd() as the project root.
+ */
+export function resolveLocalOmaDir() {
+    return expandTilde('.oma');
+}
+/**
+ * Loads a JSON config file safely, returns null if absent or corrupt.
+ */
+export function loadJsonFileSafe(path) {
+    try {
+        if (!existsSync(path))
+            return null;
+        return JSON.parse(readFileSync(path, 'utf8'));
+    }
+    catch {
+        return null;
+    }
+}
+/**
+ * Saves a JSON config file atomically.
+ * Creates parent directories if absent.
+ */
+export function saveJsonFileSafe(path, data) {
+    const dir = dirname(path);
+    if (!existsSync(dir))
+        mkdirSync(dir, { recursive: true });
+    const tmp = path + '.tmp.' + Date.now();
+    writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+    try {
+        renameSync(tmp, path);
+    }
+    catch (err) {
+        // Windows cross-filesystem rename fallback
+        if (typeof err === 'object' && err !== null && 'code' in err && err.code === 'EXDEV') {
+            writeFileSync(path, JSON.stringify(data, null, 2), 'utf8');
+        }
+        else {
+            throw err;
+        }
+    }
+}
+/**
+ * Deep-merges two config objects (shallow-top, deep-nested).
+ * Handles undefined base values via `baseObj = base[key] ?? {}`.
+ */
+export function deepMerge(base, overlay) {
+    const result = { ...base };
+    for (const key of Object.keys(overlay ?? {})) {
+        if (typeof overlay[key] === 'object' &&
+            overlay[key] !== null &&
+            !Array.isArray(overlay[key])) {
+            const baseObj = (base[key] ?? {});
+            result[key] = { ...baseObj, ...overlay[key] };
+        }
+        else {
+            result[key] = overlay[key];
+        }
+    }
+    return result;
+}
+export const DEFAULT_CONFIG = {
+    version: '1.0',
+    hud: { enabled: true, style: 'default' },
+    orchestration: { mode: 'ralph', maxIterations: 100 },
+    paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' },
+    profile: 'default',
+};
+/**
+ * Returns the fully merged OMA config.
+ * Merge order: DEFAULT_CONFIG <- global config <- local config
+ * `profile` is global-only: local cannot override it.
+ */
+export function getMergedConfig() {
+    const globalPath = resolveGlobalOmaDir();
+    const localPath = resolveLocalOmaDir();
+    const globalConfig = loadJsonFileSafe(join(globalPath, 'config.json')) ?? {};
+    const localConfig = loadJsonFileSafe(join(localPath, 'config.json')) ?? {};
+    let merged = deepMerge(DEFAULT_CONFIG, globalConfig);
+    merged = deepMerge(merged, localConfig);
+    // profile is global-only: local cannot override it
+    if (globalConfig.profile !== undefined) {
+        merged.profile = globalConfig.profile;
+    }
+    return merged;
+}
+/**
+ * Reads a specific key from the merged config.
+ * Supports dot notation: "hud.style" -> config.hud.style
+ */
+export function getConfigKey(key) {
+    const config = getMergedConfig();
+    const parts = key.split('.');
+    let value = config;
+    for (const part of parts) {
+        if (value && typeof value === 'object' && part in value) {
+            value = value[part];
+        }
+        else {
+            return undefined;
+        }
+    }
+    return value;
+}
+/**
+ * Sets a specific key in a config file (global by default, local with --local flag).
+ * Supports dot notation for nested keys.
+ */
+export function setConfigKey(key, value, scope = 'global') {
+    const basePath = scope === 'global' ? resolveGlobalOmaDir() : resolveLocalOmaDir();
+    const configPath = join(basePath, 'config.json');
+    const config = loadJsonFileSafe(configPath) ?? { ...DEFAULT_CONFIG };
+    const parts = key.split('.');
+    let target = config;
+    for (let i = 0; i < parts.length - 1; i++) {
+        if (!(parts[i] in target))
+            target[parts[i]] = {};
+        target = target[parts[i]];
+    }
+    target[parts[parts.length - 1]] = value;
+    saveJsonFileSafe(configPath, config);
+    return config;
+}
+/**
+ * Resets a config file to defaults (global or local scope).
+ */
+export function resetConfig(scope = 'global') {
+    const basePath = scope === 'global' ? resolveGlobalOmaDir() : resolveLocalOmaDir();
+    const configPath = join(basePath, 'config.json');
+    if (existsSync(configPath)) {
+        const fs = require('fs');
+        fs.unlinkSync(configPath);
+    }
 }
