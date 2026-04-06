@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "oma-state": {
-      "command": "node",
-      "args": ["${PLUGIN_ROOT}/mcp/state-server.mjs"],
+      "command": "sh",
+      "args": ["-c", "exec node \"${PLUGIN_ROOT}/mcp/state-server.mjs\""],
       "env": {},
       "protocol": "stdio"
     }

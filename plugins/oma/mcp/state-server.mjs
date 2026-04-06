@@ -4,9 +4,14 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { createInterface } from 'readline';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
-const OMA_DIR = '.oma';
+// OMA_DIR is derived from the script's location: <plugin-root>/.oma
+// This ensures state is always stored in the plugin's .oma dir regardless of cwd
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const OMA_DIR = join(__dirname, '..', '.oma');
 const STATE_FILE = `${OMA_DIR}/state.json`;
 const NOTEPAD_FILE = `${OMA_DIR}/notepad.json`;
 const TASK_LOG_FILE = `${OMA_DIR}/task.log.json`;
