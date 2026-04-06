@@ -3,75 +3,45 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/session-start.mjs",
-            "timeout": 5
-          }
-        ]
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/session-start.mjs",
+        "timeout": 5000
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|remove_files|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/delegation-enforce.mjs",
-            "timeout": 3
-          }
-        ]
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/delegation-enforce.mjs",
+        "timeout": 5000
       },
       {
-        "matcher": "Edit|Write|remove_files",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/approval-gate.mjs",
-            "timeout": 3
-          }
-        ]
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/approval-gate.mjs",
+        "timeout": 5000
       },
       {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/adr-enforce.mjs",
-            "timeout": 3
-          }
-        ]
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/adr-enforce.mjs",
+        "timeout": 5000
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/cost-track.mjs",
-            "timeout": 3
-          },
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/keyword-detect.mjs",
-            "timeout": 3
-          }
-        ]
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/cost-track.mjs",
+        "timeout": 5000
+      },
+      {
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/keyword-detect.mjs",
+        "timeout": 5000
       }
     ],
     "Stop": [
       {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${PLUGIN_ROOT}/hooks/stop-gate.mjs",
-            "timeout": 5
-          }
-        ]
+        "type": "command",
+        "command": "node ${PLUGIN_ROOT}/hooks/stop-gate.mjs",
+        "timeout": 5000
       }
     ]
   }
