@@ -4,6 +4,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { createInterface } from 'readline';
 
 const OMA_DIR = process.env.OMA_DIR ?? '.oma';
 const CONFIG_FILE = join(OMA_DIR, 'config.json');
@@ -57,14 +58,15 @@ function hasValidApproval(filePath, requiredApproval, approvalsJson) {
   });
 }
 
-function main() {
+async function main() {
   if (!isEnterprise()) {
     process.exit(0);
   }
 
+  const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
   let hookInput = '';
-  for await (const chunk of process.stdin) {
-    hookInput += chunk;
+  for await (const line of rl) {
+    hookInput += line + '\n';
   }
 
   const toolMatch = hookInput.match(/"tool_name"\s*:\s*"([^"]+)"/);

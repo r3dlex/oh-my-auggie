@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { existsSync, readdirSync } from 'fs';
-import { readAllStdin, loadConfig, isEnterpriseProfile, normalizePath, isGitAvailable, resolveOmaDir } from '../utils.js';
+import { readAllStdin, isEnterpriseProfile, normalizePath, isGitAvailable, getMergedConfig, resolveOmaDir } from '../utils.js';
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function adrDirExists(adrDir) {
     return existsSync(adrDir);
@@ -61,8 +61,8 @@ function adrFilesExist(adrDir) {
 }
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export async function main() {
+    const config = getMergedConfig();
     const omaDir = resolveOmaDir();
-    const config = loadConfig(omaDir);
     // Only enforce in enterprise profile
     if (!isEnterpriseProfile(config)) {
         process.exit(0);

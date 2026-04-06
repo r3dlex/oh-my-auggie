@@ -18,7 +18,7 @@ oh-my-auggie/
 │   └── oma/
 │       ├── .augment-plugin/
 │       │   ├── plugin.json       # Plugin name, version, entry points
-│       │   └── .mcp.json         # MCP server config (${PLUGIN_ROOT}/mcp/state-server.mjs)
+│       │   └── .mcp.json         # MCP server config (${AUGMENT_PLUGIN_ROOT}/mcp/state-server.mjs)
 │       ├── agents/                # 19 subagent markdown files
 │       │   ├── oma-explorer.md
 │       │   ├── oma-planner.md

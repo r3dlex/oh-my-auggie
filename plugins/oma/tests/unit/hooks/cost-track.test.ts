@@ -9,6 +9,7 @@ vi.mock('fs', () => ({
 
 vi.mock('../../../src/utils.js', () => ({
   resolveOmaDir: vi.fn(() => '/mock/oma'),
+  getMergedConfig: vi.fn(() => ({ profile: 'default' })),
   readAllStdin: vi.fn(() => Promise.resolve('')),
 }));
 

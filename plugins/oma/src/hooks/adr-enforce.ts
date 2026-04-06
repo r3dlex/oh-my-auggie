@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { existsSync, readdirSync } from 'fs';
-import { readAllStdin, loadConfig, isEnterpriseProfile, normalizePath, isGitAvailable, resolveOmaDir } from '../utils.js';
+import { readAllStdin, isEnterpriseProfile, normalizePath, isGitAvailable, getMergedConfig, resolveOmaDir } from '../utils.js';
 import type { HookInput } from '../types.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -67,8 +67,8 @@ function adrFilesExist(adrDir: string): boolean {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export async function main(): Promise<void> {
+  const config = getMergedConfig();
   const omaDir = resolveOmaDir();
-  const config = loadConfig(omaDir);
 
   // Only enforce in enterprise profile
   if (!isEnterpriseProfile(config)) {
