@@ -3,7 +3,7 @@ import type { ApprovalRecord } from '../../../src/types.js';
 
 vi.mock('../../../src/utils.js', () => ({
   readAllStdin: vi.fn(() => ''),
-  loadConfig: vi.fn(),
+  getMergedConfig: vi.fn(() => ({ profile: 'default' })),
   loadJsonFile: vi.fn(),
   isEnterpriseProfile: vi.fn(),
   resolveOmaDir: vi.fn(() => '/mock/oma'),

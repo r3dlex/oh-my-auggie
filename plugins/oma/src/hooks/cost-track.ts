@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { loadConfig, resolveOmaDir } from '../utils.js';
+import { resolveOmaDir, getMergedConfig } from '../utils.js';
 import type { HookInput } from '../types.js';
 
 // ─── Pricing constants ────────────────────────────────────────────────────────
