@@ -22,6 +22,7 @@ model: sonnet4.6
 **Examples:**
 - `/oma:ultraqa run full test suite for auth module`
 - `/oma:ultraqa verify payment integration end-to-end`
+- `/oma:tdd` — Use TDD first for new features; `/oma:ultraqa` cycles on the test suite afterward
 
 ---
 
