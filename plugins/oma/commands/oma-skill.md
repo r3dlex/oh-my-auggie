@@ -20,8 +20,10 @@ model: sonnet4.6
 - `/oma:skill list` — List all available skills
 - `/oma:skill search <term>` — Search skills by keyword
 - `/oma:skill add <name>` — Add a skill from registry
-- `/oma:skill remove <name>` — Remove a skill
+- `/oma:skill remove <name>` — Remove a skill (see Remove vs Delete note below)
 - `/oma:skill edit <name>` — Edit a skill's content
+- `/oma:skill setup <scope>` — Set up skills for a given scope (user, project, or plugin)
+- `/oma:skill sync [source]` — Sync skills from remote sources
 
 **Examples:**
 - `/oma:skill list`
@@ -29,6 +31,10 @@ model: sonnet4.6
 - `/oma:skill add ralph`
 - `/oma:skill remove unused-skill`
 - `/oma:skill edit my-custom-skill`
+- `/oma:skill setup user`
+- `/oma:skill setup project`
+- `/oma:skill sync`
+- `/oma:skill sync https://github.com/user/repo/tree/main/skills/my-skill`
 
 ---
 
@@ -55,9 +61,16 @@ model: sonnet4.6
 - Supports GitHub tree URLs (fetches the SKILL.md directly)
 - Example: `/oma:skill sync https://github.com/user/repo/tree/main/skills/my-skill`
 
+**Setup:**
+- `/oma:skill setup user` — Initializes the user-level skills directory (`~/.augment/plugins/marketplaces/oh-my-auggie/plugins/oma/skills-learned/`)
+- `/oma:skill setup project` — Initializes the project-level skills directory (`.oma/skills/`)
+- `/oma:skill setup plugin` — Initializes the plugin-internal skills directory (`plugins/oma/skills/`)
+- Each scope has different precedence: project > user > built-in (plugin-internal)
+
 **Remove:**
-- Deletes skill file
+- Deletes skill file from the target location
 - Confirms before deletion
+- **Note:** Use `remove` only. `delete` is not a supported subcommand alias.
 
 **Edit:**
 - Opens skill file in edit mode
@@ -85,6 +98,16 @@ Built-in skills (cannot be removed):
 - release, session, visual-verdict, learner
 - writer-memory, notifications, science, research
 - deepinit, interview, deslop
+
+### Delegation Requirement (OMA Orchestration Mode)
+
+When OMA orchestration mode is active, write operations **MUST** delegate to `oma-executor`:
+
+- `/oma:skill add <name>` — delegate to `oma-executor`
+- `/oma:skill remove <name>` — delegate to `oma-executor`
+- `/oma:skill edit <name>` — delegate to `oma-executor`
+
+Read-only operations (`list`, `search`, `info`) may proceed directly.
 
 ### Constraints
 
