@@ -1,0 +1,216 @@
+{
+  "savedAt": "2026-04-07T08:07:30.607Z",
+  "version": "1.0.0",
+  "results": [
+    {
+      "hookName": "keyword-detect/short-ralph",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/short-autopilot",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/short-ultrawork",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/short-deslop",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/short-canceloma",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/medium-ralph",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/medium-ultrawork",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/medium-deep",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/long-pr-text",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/edge-no-keyword",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/edge-case-sensitivity",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "keyword-detect/edge-partial-word",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 416
+    },
+    {
+      "hookName": "delegation-enforce/edit-active-ralph",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/write-active-autopilot",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/edit-inactive",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/edit-no-mode",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/bash-any",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/read-any",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/edit-active-ultrawork",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "delegation-enforce/edit-active-none-mode",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 625
+    },
+    {
+      "hookName": "approval-gate/auth-needs-security",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/config-needs-devops",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/migration-needs-dba",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/secrets-needs-both",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/normal-file-no-approval",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/enterprise-with-valid-security",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/secrets-with-both-approvals",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0.001,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/non-enterprise-allow",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/auth-star-file",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    },
+    {
+      "hookName": "approval-gate/expired-approval-block",
+      "avgLatencyMs": 0,
+      "p50LatencyMs": 0,
+      "p95LatencyMs": 0,
+      "runs": 500
+    }
+  ]
+}

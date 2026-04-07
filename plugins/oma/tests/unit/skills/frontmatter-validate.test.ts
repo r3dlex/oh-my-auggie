@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { readdirSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 
@@ -16,11 +16,17 @@ function parseFrontmatter(content: string): Record<string, unknown> {
   return fm;
 }
 
+// Project root = plugins/oma/ (where npm test runs)
+const projectRoot = resolve(process.cwd());
+const skillsDir = join(projectRoot, 'skills');
+const skillDirs = readdirSync(skillsDir).filter(d =>
+  readdirSync(join(skillsDir, d)).includes('SKILL.md')
+);
+
 describe('frontmatter validation', () => {
-  const skillsDir = resolve('skills');
-  const skillDirs = readdirSync(skillsDir).filter(d =>
-    readdirSync(join(skillsDir, d)).includes('SKILL.md')
-  );
+  it('has at least 30 skill directories with SKILL.md', () => {
+    expect(skillDirs.length).toBeGreaterThanOrEqual(30);
+  });
 
   it.each(skillDirs)('skill %s has valid frontmatter', (skillDir) => {
     const skillPath = join(skillsDir, skillDir, 'SKILL.md');
