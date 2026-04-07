@@ -229,6 +229,94 @@ echo "allowAgentTeams enabled in $SETTINGS_FILE"
 
 ---
 
+### Phase 3.5: Rule Templates
+
+**Step 1 — Describe rule templates:**
+```
+OMA can install Augment Code rule templates — files that augment's CLAUDE.md
+loads to enforce project conventions (coding style, git workflow, security, etc.).
+Rule templates are sourced from $AUGMENT_PLUGIN_ROOT/templates/rules/ and installed to
+$PROJECT_DIR/.augment/rules/.
+```
+
+**Step 2 — Available templates:**
+
+| Template | Description |
+|----------|-------------|
+| `coding-style.md` | Code formatting, naming conventions, comments |
+| `git-workflow.md` | Commit style, branch strategy, PR guidelines |
+| `security.md` | Security best practices, secrets management |
+| `rib-specific.md` | RIB architecture patterns (RIB projects only) |
+
+**Step 3 — Detect RIB project:**
+```bash
+RIB_PROJECT=false
+if [ -d "$PROJECT_DIR/backend/src/" ] || [ -d "$PROJECT_DIR/e2e/" ] || [ -d "$PROJECT_DIR/binpool/" ]; then
+  RIB_PROJECT=true
+  echo "[RIB project detected — rib-specific.md available]"
+fi
+```
+
+**Step 4 — Interactive selection:**
+```
+Install rule templates?
+  [s]kip
+  [a]ll templates
+  [1] coding-style.md
+  [2] git-workflow.md
+  [3] security.md
+  [4] rib-specific.md (RIB only)
+```
+
+**Step 5 — Bash invocation:**
+```bash
+RULES_SOURCE="${AUGMENT_PLUGIN_ROOT:-"$HOME/.augment/plugins/marketplaces/oh-my-auggie/plugins/oma"}/templates/rules"
+RULES_TARGET="$PROJECT_DIR/.augment/rules"
+mkdir -p "$RULES_TARGET"
+
+# Map selections to template files
+SELECTED_TEMPLATES=()
+[ "$CHOICE" = "a" ] || echo "$CHOICE" | grep -q "1" && SELECTED_TEMPLATES+=("coding-style.md")
+[ "$CHOICE" = "a" ] || echo "$CHOICE" | grep -q "2" && SELECTED_TEMPLATES+=("git-workflow.md")
+[ "$CHOICE" = "a" ] || echo "$CHOICE" | grep -q "3" && SELECTED_TEMPLATES+=("security.md")
+[ "$RIB_PROJECT" = "true" ] && ([ "$CHOICE" = "a" ] || echo "$CHOICE" | grep -q "4" ]) && SELECTED_TEMPLATES+=("rib-specific.md")
+
+for TPL in "${SELECTED_TEMPLATES[@]}"; do
+  if [ -f "$RULES_SOURCE/$TPL" ]; then
+    cp "$RULES_SOURCE/$TPL" "$RULES_TARGET/$TPL"
+    echo "[INSTALLED] $TPL"
+  fi
+done
+
+# Invoke setup-rules.mjs for post-install processing
+if [ -f "$RULES_SOURCE/setup-rules.mjs" ] && [ ${#SELECTED_TEMPLATES[@]} -gt 0 ]; then
+  node "$RULES_SOURCE/setup-rules.mjs" --templates "${SELECTED_TEMPLATES[*]}" --target "$RULES_TARGET"
+fi
+```
+
+**Non-interactive / --verify mode:**
+```bash
+# --verify: list what would be installed without installing
+# --overwrite-existing: replace existing rule files
+# --rename-existing: rename existing files with .bak- timestamp
+# --skip-existing: skip templates that already exist
+VERIFY_MODE=false
+OVERWRITE=false
+RENAME=false
+SKIP=false
+
+for ARG in "$@"; do
+  case $ARG in
+    --verify) VERIFY_MODE=true ;;
+    --overwrite-existing) OVERWRITE=true ;;
+    --rename-existing) RENAME=true ;;
+    --skip-existing) SKIP=true ;;
+  esac
+done
+```
+
+---
+
 ### Phase 4: Completion
 
 **Step 1 — Welcome message:**
