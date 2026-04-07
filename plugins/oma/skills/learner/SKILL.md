@@ -16,6 +16,53 @@ Extract reusable skills and patterns from work sessions.
 - To capture tribal knowledge
 - When doing something novel well
 
+## Skillify: 5-Step Extraction Workflow
+
+When a repeatable task pattern emerges during a session, follow these steps to capture it as a reusable OMA skill.
+
+### Step 1: Identify Repeatable Task
+- Is this something done more than once?
+- Does the context (codebase, config, environment) repeat?
+- Would another agent benefit from this knowledge?
+
+### Step 2: Extract Inputs, Steps, and Criteria
+- List every input the task requires (file paths, IDs, flags, etc.)
+- Document the ordered steps to complete it
+- Note success criteria and failure modes
+
+### Step 3: Decide Placement
+Choose the right scope based on reusability:
+
+| Scope | Path | When to Use |
+|-------|------|-------------|
+| **Built-in** | `plugins/oma/skills/` | Universal, high-value, plugin-wide |
+| **User** | `~/.augment/plugins/marketplaces/oh-my-auggie/plugins/oma/skills-learned/` | Personal, machine-specific |
+| **Project** | `.oma/skills/` | Team-shared, codebase-specific |
+
+### Step 4: Draft SKILL.md with YAML Frontmatter
+```markdown
+---
+name: {skill-name}
+description: {one-line description}
+trigger: /oma:{skill-name}
+allowed-tools: [Read, Glob, Bash, Edit, Write]
+model: sonnet4.6
+---
+
+## Skill: {skill-name}
+
+{body content}
+```
+
+### Step 5: Flag Fuzzy Items for Human Review
+Mark anything uncertain with a note:
+```
+<!-- TODO: Verify {item} with human before publishing -->
+```
+Items to flag: hard-coded values, version-dependent steps, untested edge cases.
+
+---
+
 ## Learning Capture Process
 
 ### 1. Identify Learnings
@@ -127,6 +174,51 @@ trigger: /oma:{skill-name}
 ### Next Steps
 {how to apply}
 ```
+
+## Quality Gate: 3 Questions
+
+Before finalizing any extracted skill, answer all three questions. A skill should pass at least 2 of 3 to be worth capturing.
+
+### 1. Non-Googleable?
+Would a web search not readily find this solution?
+
+- If **yes**: high value to capture (hard-won knowledge)
+- If **no**: the web already has it; consider linking instead of capturing
+
+### 2. Codebase-Specific?
+Does it depend on project context, local paths, custom tooling, or undocumented behavior?
+
+- If **yes**: strong candidate for project/project scope
+- If **no**: candidate for built-in or user scope
+
+### 3. Hard-Won?
+Did it require debugging, iteration, or repeated failure to discover?
+
+- If **yes**: high value to capture so others don't repeat the effort
+- If **no**: the knowledge is likely obvious or already well-documented
+
+---
+
+## Skillify Output Format
+
+When skillify is complete, report:
+
+```
+## Skillify Complete
+
+**Skill Name:** {name}
+**Target Location:** {path}
+**Trigger:** /oma:{name}
+
+### Draft Workflow
+{steps extracted}
+
+### Open Questions
+- {fuzzy item 1}
+- {fuzzy item 2}
+```
+
+---
 
 ## Constraints
 
