@@ -262,3 +262,89 @@ Monitor progress via inbound `SendMessage` from executors and periodic `TaskList
 | `worktree path not under repo` | Path traversal attempt | Names are sanitized; check executor ID format |
 | `metadata parse error` | Corrupted worktrees.json | Delete `.omc/state/team-bridge/{team}/worktrees.json` and retry |
 | `Executor shutdown failed` | Agent did not respond | Use `TeamDelete` with force to clean up |
+
+<Do_Not_Use_When>
+- Tasks require sequential reasoning where later steps depend on earlier results — use ralph instead for a single-agent persistence loop
+- The task is a single-file change or one-liner — spawning a team is massive overhead
+- Tasks share mutable state or the same source files — git worktree isolation prevents cross-executor coordination on the same files, but tasks that need to coordinate file changes in real-time will conflict
+- The codebase is not git-initialized (worktree manager requires git)
+- User has Auggie context window constraints — team mode generates more orchestration overhead than a single agent
+- The task is exploratory or research-only (no concrete implementation to parallelize)
+</Do_Not_Use_When>
+
+<Tool_Usage>
+- **oma-executor**: Each spawned executor works on an assigned subtask in its own git worktree. The orchestrator assigns tasks via TaskCreate/TaskUpdate before spawning.
+- **oma-planner**: Use before team creation to decompose the task into N independent subtasks that can run concurrently without file conflicts
+- **oma-architect**: Consult when task decomposition might introduce architectural inconsistencies across parallel work
+- **oma-qa**: After team execution completes, run a final quality verification pass across all changed files
+- **Direct git worktree tools**: The worktree manager API (`createExecutorWorktree`, `removeExecutorWorktree`, `cleanupTeamWorktrees`) is called by the team orchestrator itself — no executor should call these directly
+</Tool_Usage>
+
+<Why_This_Exists>
+OMA orchestrates Auggie agents on real codebases. Some tasks are large enough that a single agent taking turns is too slow — e.g., "fix all TypeScript errors" across 50 files, or "audit all skills for missing sections." Team mode provides git worktree isolation so multiple oma-executor agents can work simultaneously on different files without git conflicts, while the team orchestrator handles task distribution, monitoring, and cleanup. The isolation model prevents the most common failure mode of naive parallel execution: two agents modifying the same file.
+</Why_This_Exists>
+
+<Examples>
+
+### Good Usage
+
+**Large-scale parallel fix:**
+```
+User: "/oma:team 4 fix all TypeScript errors"
+OMA: [Decomposes: 4 executor worktrees, each assigned ~12 files]
+OMA: [Spawns 4 oma-executor agents, each in its own worktree]
+OMA: [Monitors — executor 3 reports: "Fixed 8/12 files, 4 need manual review"]
+OMA: [Shutdown, cleanup]
+OMA: [Result: 50 TypeScript errors fixed in parallel vs. sequential]
+```
+
+**Parallel skills audit:**
+```
+User: "/oma:team 3 audit all 8 skill directories"
+OMA: [Decomposes: 3 executors, each auditing ~2-3 skills]
+OMA: [Each executor writes findings to its own worktree output file]
+OMA: [Collects: 3 audit reports]
+OMA: [Integrates into single gap analysis]
+```
+
+### Bad Usage
+
+**Sequential dependency hidden as parallel:**
+```
+User: "/oma:team 2 refactor auth service and update all callers"
+OMA: [Executor 1: refactors auth.ts in worktree 1]
+OMA: [Executor 2: tries to update callers in worktree 2 — stale API]
+OMA: [Result: executor 2 either fails or produces broken code]
+```
+→ Should decompose as a sequential chain: refactor first (1 agent), then update callers (1 agent after refactor completes).
+
+**Single-file change:**
+```
+User: "/oma:team 1 fix the typo in README"
+OMA: [Spawns 1 executor in a worktree for a README typo]
+OMA: [Result: massive overhead for a 1-minute task]
+```
+→ Use oma-executor directly.
+</Examples>
+
+<Escalation_And_Stop_Conditions>
+- **Stop and report:** An executor fails to start (worktree creation error) — report the error, do not spawn further executors until resolved
+- **Stop and reassign:** An executor completes its tasks and another executor's task is still pending — reassign the pending task to the free executor rather than waiting
+- **Continue with partial:** One executor fails mid-task — report the failure, continue monitoring remaining executors, note which tasks were not completed
+- **Escalate to user:** All executors fail or all tasks are blocked — present the situation to the user for direction
+- **Hard stop on user cancel:** Call `cleanupTeamWorktrees` immediately, report partial results
+</Escalation_And_Stop_Conditions>
+
+<Final_Checklist>
+- [ ] Task decomposed into N truly independent subtasks (no shared file modifications)
+- [ ] Base branch confirmed to exist and be clean before creating worktrees
+- [ ] All executor worktrees created successfully before spawning agents
+- [ ] Each executor's worktree path passed correctly as `workingDirectory`
+- [ ] Executor worker preamble includes absolute path instruction and team-lead reporting protocol
+- [ ] Task list pre-assigned (owners set via TaskUpdate) before spawning to avoid race conditions
+- [ ] Shutdown signals sent to all executors after TaskList shows all tasks complete
+- [ ] `cleanupTeamWorktrees` called after all executors confirm shutdown
+- [ ] Team state cleared (`.oma/state.json` team mode entry removed)
+- [ ] TeamDelete called to clean up team resources
+- [ ] Partial results preserved and reported if shutdown was early
+</Final_Checklist>

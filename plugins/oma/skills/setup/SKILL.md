@@ -128,3 +128,59 @@ Configure MCP servers.
 - Verify after each step
 - Document what was done
 - Make setup repeatable
+
+<Tool_Usage>
+- **oma-executor**: Primary agent for running the actual setup steps — executor creates files, installs dependencies, runs commands
+- **oma-analyst**: Use when the project type cannot be auto-detected — analyst determines what kind of project this is and what it needs
+- **oma-architect**: Consult when setup involves architectural decisions (e.g., choosing between monorepo vs. polyrepo, choosing a framework)
+- **oma-verifier**: After setup completes, use verifier to confirm the environment is healthy and ready for development
+- **Direct Bash tools**: For reading existing config files, running diagnostics, and executing setup commands directly (not for spawning agents)
+</Tool_Usage>
+
+<Why_This_Exists>
+OMA operates inside Auggie's CLI and needs a reliable way to initialize new projects or configure existing ones for use with OMA's orchestration tools. Setting up `.oma/`, `plugins/oma/`, MCP configurations, and skill directories is a prerequisite for most orchestration modes. Rather than scattering setup logic across agents, setup provides a dedicated entry point so the environment is correctly initialized before ralph, ultraqa, or team modes run — preventing failures from missing state directories or unconfigured MCP servers.
+</Why_This_Exists>
+
+<Examples>
+
+### Good Usage
+
+**First-time OMA setup on a new Auggie project:**
+```
+User: "/oma:setup"
+OMA: [Detects: new project, no .oma directory]
+OMA: [Creates .oma/state.json, .oma/notepad.json, .oma/plans/]
+OMA: [Configures plugins/oma/ if not present]
+OMA: [Runs setup doctor: MCP server reachable, Auggie CLI version check]
+OMA: [Result: environment ready for /oma:ralph, /oma:team, etc.]
+```
+
+**Configure OMA on an existing project:**
+```
+User: "/oma:setup existing"
+OMA: [Detects: existing TypeScript project with tsconfig.json]
+OMA: [Checks for .oma/ — not found]
+OMA: [Creates .oma/ directory structure]
+OMA: [Writes initial .oma/state.json with project type]
+OMA: [Result: OMA now aware of the project]
+```
+
+### Bad Usage
+
+**Re-running setup on an already-configured environment:**
+```
+User: "/oma:setup"
+OMA: [Detects: .oma/ already exists, .oma/state.json valid]
+OMA: [Overwrites existing state, destroying in-progress mode state]
+```
+→ Use `/oma:setup doctor` instead to verify without re-initializing.
+
+**Setup as a substitute for manual environment understanding:**
+```
+User: "/oma:setup" on a highly custom monorepo with non-standard tooling
+OMA: [Auto-detects wrong project type due to non-standard structure]
+OMA: [Misconfigures plugins/oma/ paths]
+OMA: [Modes fail with confusing errors]
+```
+→ Use `/oma:setup doctor` first to see what was detected, then manually configure if needed.
+</Examples>

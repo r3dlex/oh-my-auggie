@@ -192,3 +192,63 @@ After the spec is written, present execution options via `AskUserQuestion`:
 - User says "stop": stop immediately, save state for resume
 - Ambiguity stalls: activate Ontologist mode to reframe
 </Escalation_And_Stop_Conditions>
+
+<Examples>
+
+### Good Usage
+
+**Greenfield idea with no existing codebase:**
+```
+User: "I want a tool that helps me track my learning goals"
+OMA: [Deep Interview activates]
+OMA: "What does 'track' mean to you in this context — a spreadsheet, an app, a CLI?"
+User: "A CLI tool, something I run daily"
+OMA: [Round 2: Focus on constraint clarity — online/offline, cross-platform?]
+OMA: [Ambiguity: 45% → 22% after 6 rounds]
+OMA: [Spec written to .oma/specs/learning-goal-tracker.md]
+OMA: "Spec ready (ambiguity: 22%). How would you like to proceed?"
+```
+
+**Brownfield extension requiring context questions:**
+```
+User: "I want to add a recommendation engine to our existing MCP server"
+OMA: [Deep Interview — brownfield detected]
+OMA: [Explores existing MCP server codebase via oma-explorer]
+OMA: "I found your server structure in plugins/mcp/. Should the recommendation engine be a new plugin or integrated into the existing handler pipeline?"
+User: "New plugin — I want it to be optional"
+OMA: [Context clarity improves — ambiguity drops]
+```
+
+### Bad Usage
+
+**Detailed spec provided — skip to execution:**
+```
+User: "Use the PRD in .oma/specs/auth-overhaul.md to implement the auth refactor"
+OMA: [Deep Interview activates unnecessarily]
+OMA: "What does 'auth refactor' mean to you?"
+User: "Just use the PRD — I already wrote it out"
+```
+→ Use oma-ralph or oma-team with the existing spec directly.
+
+**User wants a quick brainstorm:**
+```
+User: "Give me some ideas for a new CLI tool"
+OMA: [Deep Interview starts scoring dimensions and asking Socratic questions]
+OMA: "Round 1: Goal clarity is 30% — let's start there. What is the core problem..."
+User: "Whoa, I just wanted ideas, not a full spec"
+```
+→ Use oma-planner for exploration/brainstorming, not deep-interview.
+</Examples>
+
+<Final_Checklist>
+- [ ] Interview state written to `.oma/state.json` with mode `deep-interview`
+- [ ] Brownfield vs. greenfield detection confirmed (brownfield: codebase context gathered via oma-explorer)
+- [ ] Ambiguity score calculated and shown to user after each round (formula applied correctly)
+- [ ] Questions target the weakest dimension explicitly (named and justified in output)
+- [ ] Challenge modes activated at correct round thresholds (Contrarian at 4+, Simplifier at 6+, Ontologist at 8+ if needed)
+- [ ] Soft warning shown at round 10, hard cap enforced at round 20
+- [ ] Spec written to `.oma/specs/deep-interview-{slug}.md` with all resolved dimensions captured
+- [ ] Execution bridge presented to user with all 5 options and Skill() invocation for chosen mode
+- [ ] If early exit taken, ambiguity score and remaining gaps are explicitly documented in the spec header
+- [ ] Output format matches the Round progress table (Dimension | Score | Weight | Weighted | Gap)
+</Final_Checklist>
