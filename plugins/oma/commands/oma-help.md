@@ -96,6 +96,33 @@ These words in conversation automatically activate modes:
 
 ---
 
+## Rule Templates
+
+Rule templates are files that Augment Code loads via CLAUDE.md to enforce project conventions — coding style, git workflow, security policies, and architecture patterns.
+
+**Available templates:**
+
+| Template | Description |
+|----------|-------------|
+| `coding-style.md` | Code formatting, naming conventions, comment standards |
+| `git-workflow.md` | Commit style, branch strategy, PR guidelines |
+| `security.md` | Security best practices, secrets management |
+| `rib-specific.md` | RIB architecture patterns (RIB projects only) |
+
+**Installation path:** `.augment/rules/` in your project
+
+**Install via:** `/oma:setup` — Phase 3.5 walks through interactive template selection
+
+**Flags (non-interactive mode):**
+| Flag | Description |
+|------|-------------|
+| `--verify` | Show what would be installed without installing |
+| `--overwrite-existing` | Replace existing rule files |
+| `--rename-existing` | Rename existing files with `.bak-` timestamp |
+| `--skip-existing` | Skip templates that already exist |
+
+---
+
 ## Links
 
 - **Docs:** https://github.com/r3dlex/oh-my-auggie
