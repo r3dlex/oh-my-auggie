@@ -5,6 +5,7 @@
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
+import { createInterface } from 'readline';
 
 const OMA_DIR = process.env.OMA_DIR ?? '.oma';
 const CONFIG_FILE = join(OMA_DIR, 'config.json');
@@ -55,7 +56,7 @@ function adrDirExists() {
   }
 }
 
-function main() {
+async function main() {
   const hookType = process.env.HOOK_TYPE ?? 'PreToolUse';
 
   if (!isEnterprise()) {
@@ -63,9 +64,10 @@ function main() {
   }
 
   // Read stdin hook input
+  const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
   let hookInput = '';
-  for await (const chunk of process.stdin) {
-    hookInput += chunk;
+  for await (const line of rl) {
+    hookInput += line + '\n';
   }
 
   let commitMsg = '';

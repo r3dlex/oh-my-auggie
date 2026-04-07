@@ -1,5 +1,5 @@
 import { readAllStdin } from '../utils.js';
-import { loadConfig, loadJsonFile, isEnterpriseProfile, resolveOmaDir, isApprovalExpired } from '../utils.js';
+import { loadJsonFile, isEnterpriseProfile, resolveOmaDir, isApprovalExpired, getMergedConfig } from '../utils.js';
 import type { HookInput, ApprovalRecord, ApprovalConfig } from '../types.js';
 import { join } from 'path';
 
@@ -60,8 +60,8 @@ export function hasValidApproval(filePath: string, required: ApprovalType, appro
 }
 
 export async function main(): Promise<void> {
+  const config = getMergedConfig();
   const omaDir = resolveOmaDir();
-  const config = loadConfig(omaDir);
 
   // Only enforce in enterprise profile
   if (!isEnterpriseProfile(config)) {

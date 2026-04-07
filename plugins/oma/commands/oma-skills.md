@@ -10,9 +10,9 @@ model: haiku4.5
 
 ## /oma:skills
 
-**Purpose:** Display all available OMA skills with their descriptions.
+**OMA Skills Index** — 37 command files, 34 skill directories.
 
-**Usage:** `/oma:skills`
+This is the primary OMA skills index. Individual skill docs are in `commands/oma-{name}.md` and `skills/{name}/SKILL.md`.
 
 ---
 

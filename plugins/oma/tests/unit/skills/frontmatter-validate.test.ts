@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { readdirSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 
@@ -16,14 +16,14 @@ function parseFrontmatter(content: string): Record<string, unknown> {
   return fm;
 }
 
-describe('frontmatter validation', () => {
-  // Project root = plugins/oma/ (where npm test runs)
-  const projectRoot = resolve(process.cwd());
-  const skillsDir = join(projectRoot, 'skills');
-  const skillDirs = readdirSync(skillsDir).filter(d =>
-    readdirSync(join(skillsDir, d)).includes('SKILL.md')
-  );
+// Project root = plugins/oma/ (where npm test runs)
+const projectRoot = resolve(process.cwd());
+const skillsDir = join(projectRoot, 'skills');
+const skillDirs = readdirSync(skillsDir).filter(d =>
+  readdirSync(join(skillsDir, d)).includes('SKILL.md')
+);
 
+describe('frontmatter validation', () => {
   it('has at least 30 skill directories with SKILL.md', () => {
     expect(skillDirs.length).toBeGreaterThanOrEqual(30);
   });
@@ -32,7 +32,6 @@ describe('frontmatter validation', () => {
     const skillPath = join(skillsDir, skillDir, 'SKILL.md');
     const content = readFileSync(skillPath, 'utf8');
     const fm = parseFrontmatter(content);
-
     expect(typeof fm['name'], `skill ${skillDir} missing 'name'`).toBe('string');
     expect((fm['name'] as string).length, `skill ${skillDir} has empty 'name'`).toBeGreaterThan(0);
     expect(typeof fm['description'], `skill ${skillDir} missing 'description'`).toBe('string');

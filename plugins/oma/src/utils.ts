@@ -1,6 +1,7 @@
-import { readFileSync, writeFileSync, renameSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from 'fs';
 import { execSync } from 'child_process';
-import { resolve, join } from 'path';
+import { resolve, join, dirname } from 'path';
+import { homedir } from 'os';
 import { Readable } from 'stream';
 import type { HookInput, OmaState, ApprovalRecord, OmaOs } from './types.js';
 
@@ -78,7 +79,7 @@ export function loadConfig(omaDir: string): Record<string, unknown> {
 /**
  * Returns true when the active profile is 'enterprise'.
  */
-export function isEnterpriseProfile(config: Record<string, unknown>): boolean {
+export function isEnterpriseProfile(config: Record<string, unknown> | Config): boolean {
   return config.profile === 'enterprise';
 }
 
@@ -215,4 +216,173 @@ export function isApprovalExpired(record: ApprovalRecord): boolean {
   const now = Date.now();
   const expiry = new Date(record.expires).getTime();
   return now > expiry + CLOCK_SKEW_TOLERANCE_MS;
+}
+
+// ─── Two-tiered config utilities ──────────────────────────────────────────────
+
+import type { Config, HudConfig, OrchestrationConfig, PathsConfig } from './types.js';
+
+/**
+ * Expands ~ in a path to the user's home directory.
+ * Works cross-platform: Unix (~) and Windows (~) both resolve via os.homedir().
+ * e.g. "~/.oma" -> "/home/user/.oma" or "C:\Users\username\.oma"
+ */
+export function expandTilde(p: string): string {
+  if (typeof p !== 'string') return p;
+  if (p.startsWith('~/') || p === '~') {
+    return resolve(homedir(), p.slice(2));
+  }
+  return p;
+}
+
+/**
+ * Returns the global OMA config directory path (~/.oma).
+ * Cross-platform: uses os.homedir() for Windows/Unix consistency.
+ */
+export function resolveGlobalOmaDir(): string {
+  return expandTilde('~/.oma');
+}
+
+/**
+ * Returns the local OMA config directory path (project-level .oma/).
+ * Uses process.cwd() as the project root.
+ */
+export function resolveLocalOmaDir(): string {
+  return expandTilde('.oma');
+}
+
+/**
+ * Loads a JSON config file safely, returns null if absent or corrupt.
+ */
+export function loadJsonFileSafe(path: string): Record<string, unknown> | null {
+  try {
+    if (!existsSync(path)) return null;
+    return JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Saves a JSON config file atomically.
+ * Creates parent directories if absent.
+ */
+export function saveJsonFileSafe(path: string, data: unknown): void {
+  const dir = dirname(path);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  const tmp = path + '.tmp.' + Date.now();
+  writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+  try {
+    renameSync(tmp, path);
+  } catch (err: unknown) {
+    // Windows cross-filesystem rename fallback
+    if (typeof err === 'object' && err !== null && 'code' in err && (err as { code: string }).code === 'EXDEV') {
+      writeFileSync(path, JSON.stringify(data, null, 2), 'utf8');
+    } else {
+      throw err;
+    }
+  }
+}
+
+/**
+ * Deep-merges two config objects (shallow-top, deep-nested).
+ * Handles undefined base values via `baseObj = base[key] ?? {}`.
+ */
+export function deepMerge(base: Record<string, unknown>, overlay: Record<string, unknown>): Record<string, unknown> {
+  const result = { ...base };
+  for (const key of Object.keys(overlay ?? {})) {
+    if (
+      typeof overlay[key] === 'object' &&
+      overlay[key] !== null &&
+      !Array.isArray(overlay[key])
+    ) {
+      const baseObj = (base[key] ?? {}) as Record<string, unknown>;
+      result[key] = { ...baseObj, ...(overlay[key] as Record<string, unknown>) };
+    } else {
+      result[key] = overlay[key];
+    }
+  }
+  return result;
+}
+
+export const DEFAULT_CONFIG: Config = {
+  version: '1.0',
+  hud: { enabled: true, style: 'default' },
+  orchestration: { mode: 'ralph', maxIterations: 100 },
+  paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' },
+  profile: 'default',
+};
+
+/**
+ * Returns the fully merged OMA config.
+ * Merge order: DEFAULT_CONFIG <- global config <- local config
+ * `profile` is global-only: local cannot override it.
+ */
+export function getMergedConfig(): Config {
+  const globalPath = resolveGlobalOmaDir();
+  const localPath = resolveLocalOmaDir();
+
+  const globalConfig = loadJsonFileSafe(join(globalPath, 'config.json')) ?? {};
+  const localConfig = loadJsonFileSafe(join(localPath, 'config.json')) ?? {};
+
+  let merged = deepMerge(DEFAULT_CONFIG as unknown as Record<string, unknown>, globalConfig) as unknown as Config;
+  merged = deepMerge(merged as unknown as Record<string, unknown>, localConfig) as unknown as Config;
+
+  // profile is global-only: local cannot override it
+  if (globalConfig.profile !== undefined) {
+    merged.profile = globalConfig.profile as 'default' | 'enterprise';
+  }
+
+  return merged;
+}
+
+/**
+ * Reads a specific key from the merged config.
+ * Supports dot notation: "hud.style" -> config.hud.style
+ */
+export function getConfigKey(key: string): unknown {
+  const config = getMergedConfig();
+  const parts = key.split('.');
+  let value: unknown = config;
+  for (const part of parts) {
+    if (value && typeof value === 'object' && part in (value as Record<string, unknown>)) {
+      value = (value as Record<string, unknown>)[part];
+    } else {
+      return undefined;
+    }
+  }
+  return value;
+}
+
+/**
+ * Sets a specific key in a config file (global by default, local with --local flag).
+ * Supports dot notation for nested keys.
+ */
+export function setConfigKey(key: string, value: unknown, scope: 'global' | 'local' = 'global'): Record<string, unknown> {
+  const basePath = scope === 'global' ? resolveGlobalOmaDir() : resolveLocalOmaDir();
+  const configPath = join(basePath, 'config.json');
+  const config = loadJsonFileSafe(configPath) ?? { ...DEFAULT_CONFIG };
+
+  const parts = key.split('.');
+  let target: Record<string, unknown> = config;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (!(parts[i] in target)) target[parts[i]] = {};
+    target = target[parts[i]] as Record<string, unknown>;
+  }
+  target[parts[parts.length - 1]] = value;
+
+  saveJsonFileSafe(configPath, config);
+  return config;
+}
+
+/**
+ * Resets a config file to defaults (global or local scope).
+ */
+export function resetConfig(scope: 'global' | 'local' = 'global'): void {
+  const basePath = scope === 'global' ? resolveGlobalOmaDir() : resolveLocalOmaDir();
+  const configPath = join(basePath, 'config.json');
+  if (existsSync(configPath)) {
+    const fs = require('fs') as typeof import('fs');
+    fs.unlinkSync(configPath);
+  }
 }
