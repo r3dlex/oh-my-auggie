@@ -48,7 +48,7 @@ describe('keyword-detect hooks', () => {
 
   describe('KEYWORDS constant', () => {
     it('has all expected entries', () => {
-      expect(KEYWORDS).toHaveLength(11);
+      expect(KEYWORDS).toHaveLength(41);
     });
 
     it('maps autopilot to /oma:autopilot', () => {
