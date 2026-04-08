@@ -2,17 +2,58 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { resolveOmaDir } from '../utils.js';
 export const KEYWORDS = [
+    // ── Core execution modes (safe standalone) ─────────────────────────────────
     { keyword: 'autopilot', command: '/oma:autopilot' },
     { keyword: 'ralph', command: '/oma:ralph' },
     { keyword: "don't stop", command: '/oma:ralph' },
     { keyword: 'ulw', command: '/oma:ultrawork' },
     { keyword: 'ultrawork', command: '/oma:ultrawork' },
-    { keyword: 'ccg', command: '/oma:ccg' },
+    { keyword: 'ultraqa', command: '/oma:ultraqa' },
     { keyword: 'ralplan', command: '/oma:ralplan' },
-    { keyword: 'deep interview', command: '/oma:interview' },
+    { keyword: 'canceloma', command: '/oma:cancel' },
     { keyword: 'deslop', command: '/oma:deslop' },
     { keyword: 'anti-slop', command: '/oma:deslop' },
-    { keyword: 'canceloma', command: '/oma:cancel' },
+    { keyword: 'ccg', command: '/oma:ccg' },
+    // ── deep-interview / deepinit ───────────────────────────────────────────────
+    { keyword: 'deep interview', command: '/oma:interview' },
+    { keyword: 'deepinit', command: '/oma:deepinit' },
+    // ── Commands requiring "oma" prefix to avoid generic word conflicts ────────
+    // "ask", "plan", "help", "team", "config", "note", "session", "status", "trace", "wait"
+    // are too generic as standalone keywords; pair with "oma" for specificity
+    { keyword: 'oma ask', command: '/oma:ask' },
+    { keyword: 'oma plan', command: '/oma:plan' },
+    { keyword: 'oma help', command: '/oma:help' },
+    { keyword: 'oma team', command: '/oma:team' },
+    { keyword: 'oma config', command: '/oma:config' },
+    { keyword: 'oma note', command: '/oma:note' },
+    { keyword: 'oma session', command: '/oma:session' },
+    { keyword: 'oma status', command: '/oma:status' },
+    { keyword: 'oma trace', command: '/oma:trace' },
+    { keyword: 'oma wait', command: '/oma:wait' },
+    // ── Specific compound keywords (safe standalone) ────────────────────────────
+    { keyword: 'doctor', command: '/oma:doctor' }, // "oma doctor" natural
+    { keyword: 'teleport', command: '/oma:teleport' },
+    { keyword: 'tdd', command: '/oma:tdd' }, // acronym, unambiguous
+    { keyword: 'skillify', command: '/oma:skillify' },
+    { keyword: 'visual verdict', command: '/oma:visual-verdict' },
+    // ── Setup / doctor / skill ──────────────────────────────────────────────────
+    { keyword: 'oma setup', command: '/oma:setup' },
+    { keyword: 'oma doctor', command: '/oma:doctor' },
+    { keyword: 'oma skill', command: '/oma:skill' },
+    // ── Research / science ─────────────────────────────────────────────────────
+    { keyword: 'oma research', command: '/oma:research' },
+    { keyword: 'data science', command: '/oma:science' },
+    // ── session-search / release / notifications ────────────────────────────────
+    { keyword: 'session search', command: '/oma:session-search' },
+    { keyword: 'oma release', command: '/oma:release' },
+    { keyword: 'oma hud', command: '/oma:hud' },
+    { keyword: 'notifications', command: '/oma:notifications' },
+    // ── Architecture improvement ───────────────────────────────────────────────
+    { keyword: 'improve architecture', command: '/oma:improve-codebase-architecture' },
+    // ── learner / writer-memory / ralphthon ───────────────────────────────────
+    { keyword: 'learner mode', command: '/oma:learner' },
+    { keyword: 'writer memory', command: '/oma:writer-memory' },
+    { keyword: 'ralphthon', command: '/oma:ralphthon' },
 ];
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export async function main() {
