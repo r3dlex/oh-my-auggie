@@ -3,15 +3,34 @@
 // Exit 0 = allow (always), Exit 2 = block (never used)
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join, dirname, resolve } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const OMA_DIR = process.env.OMA_DIR
-  ?? join(__dirname, '..', '.oma');
-const COST_LOG_FILE = join(OMA_DIR, 'cost-log.json');
 const SESSION_ID = process.env.SESSION_ID ?? `${Date.now()}-${process.pid}`;
+
+// ── OMA_DIR resolution (matches cli/utils.mjs) ────────────────────────────────
+
+function resolveOmaDir() {
+  // Allow override for testing
+  if (process.env.OMA_DIR) {
+    const abs = resolve(process.env.OMA_DIR);
+    mkdirSync(abs, { recursive: true });
+    return abs;
+  }
+  // Walk up from cwd looking for .oma/
+  let dir = process.cwd();
+  while (true) {
+    const candidate = join(dir, '.oma');
+    if (existsSync(candidate)) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) break; // reached filesystem root
+    dir = parent;
+  }
+  // Final fallback: $HOME/.oma (or /tmp/.oma if HOME not set)
+  return join(process.env.HOME || '/tmp', '.oma');
+}
+
+const OMA_DIR = resolveOmaDir();
+const COST_LOG_FILE = join(OMA_DIR, 'cost-log.json');
 
 const PRICING = {
   opus: { input: 15, output: 75 },
