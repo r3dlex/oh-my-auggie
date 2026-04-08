@@ -4,7 +4,7 @@
   "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
   "owner": {
     "name": "oh-my-auggie contributors",
-    "email": "andredburgstahler@gmail.com"
+    "email": "r3dtuxedo@gmail.com"
   },
   "plugins": [
     {
