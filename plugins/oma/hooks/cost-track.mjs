@@ -2,10 +2,14 @@
 // cost-track.mjs -- PostToolUse/session-end hook: track model usage and cost per session
 // Exit 0 = allow (always), Exit 2 = block (never used)
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const OMA_DIR = process.env.OMA_DIR ?? '.oma';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const OMA_DIR = process.env.OMA_DIR
+  ?? join(__dirname, '..', '.oma');
 const COST_LOG_FILE = join(OMA_DIR, 'cost-log.json');
 const SESSION_ID = process.env.SESSION_ID ?? `${Date.now()}-${process.pid}`;
 
@@ -18,6 +22,9 @@ const PRICING = {
 };
 
 function ensureCostLog() {
+  if (!existsSync(OMA_DIR)) {
+    mkdirSync(OMA_DIR, { recursive: true });
+  }
   if (!existsSync(COST_LOG_FILE)) {
     writeFileSync(COST_LOG_FILE, JSON.stringify({ sessions: [], version: '0.1' }));
   }
