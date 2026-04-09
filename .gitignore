@@ -3,6 +3,9 @@
 .omc/
 .claude/
 
+# ── Ralph/plan PRD artifacts ──────────────────────────────────────────────────
+prd.json
+
 # ── Verification scripts (local dev artifacts) ─────────────────────────────────
 verify-*.sh
 
