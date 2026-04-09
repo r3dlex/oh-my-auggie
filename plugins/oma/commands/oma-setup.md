@@ -175,19 +175,22 @@ done
 ```
 
 **Step 2 — MCP server configuration:**
-Offer to invoke the mcp-setup skill for context7, exa, and github MCP servers:
+Automatically invoke the mcp-setup skill for available MCP servers:
 ```
 OMA can configure MCP servers for enhanced capabilities:
-  - context7   — codebase context search
-  - exa       — web search
-  - github    — GitHub API integration
+  - context7       — codebase context search
+  - exa           — web search
+  - github        — GitHub API integration
+  - azure-devops  — Azure DevOps Boards/Repos/Pipelines
+  - figma         — Figma design file access
 
 Run /oma:mcp-setup to configure MCP servers.
 ```
 
 ```bash
-# If user accepts, invoke mcp-setup skill
+# Invoke mcp-setup for context7, exa, github
 # oma:mcp-setup handles: context7.json, exa.json, github.json writing to ~/.claude/mcp/
+# azure-devops and figma are offered if user has the MCP packages available
 ```
 
 **Step 3 — EXA API key:**
