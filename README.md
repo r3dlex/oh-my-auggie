@@ -151,7 +151,7 @@ node -e "
 
 ## Sponsor
 
-**Love oh-my-auggie? Consider sponsoring its development.**
+**:heart: Love oh-my-auggie? Consider sponsoring its development.**
 
 Your sponsorship directly funds the time and energy poured into making multi-agent orchestration accessible to every developer on the Augment Code platform. Every contribution — no matter the size — helps keep the project alive, responsive, and improving.
 
