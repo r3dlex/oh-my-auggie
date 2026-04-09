@@ -34,26 +34,26 @@ jobs:
       - name: Determine dist-tag
         id: dist-tag
         run: |
-          if [[ \$GITHUB_REF_NAME == *-alpha.* ]]; then
-            echo "tag=alpha" >> \$GITHUB_OUTPUT
-          elif [[ \$GITHUB_REF_NAME == *-beta.* ]]; then
-            echo "tag=beta" >> \$GITHUB_OUTPUT
+          if [[ $GITHUB_REF_NAME == *-alpha.* ]]; then
+            echo "tag=alpha" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_REF_NAME == *-beta.* ]]; then
+            echo "tag=beta" >> $GITHUB_OUTPUT
           else
-            echo "tag=latest" >> \$GITHUB_OUTPUT
+            echo "tag=latest" >> $GITHUB_OUTPUT
           fi
-          echo "version=\${GITHUB_REF_NAME#v}" >> \$GITHUB_OUTPUT
+          echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
 
       - name: Publish to GitHub Packages
         run: |
           cd plugins/oma
-          npm publish --tag \${{ steps.dist-tag.outputs.tag }}
+          npm publish --tag ${{ steps.dist-tag.outputs.tag }}
         env:
-          NODE_AUTH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: \${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
           generate_release_notes: true
         env:
-          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
