@@ -142,3 +142,15 @@ Skills are discovered and injected via MCP tools:
 - Augment Code: https://www.augmentcode.com
 - auggie CLI docs: https://www.augmentcode.com/docs/cli
 - oh-my-auggie: https://github.com/r3dlex/oh-my-auggie
+
+---
+
+## Sponsor
+
+**Love oh-my-auggie? Consider sponsoring its development.**
+
+Your sponsorship directly funds the time and energy poured into making multi-agent orchestration accessible to every developer on the Augment Code platform. Every contribution — no matter the size — helps keep the project alive, responsive, and improving.
+
+👉 **[Sponsor on GitHub](https://github.com/sponsors/r3dlex)**
+
+One-time and recurring options available. Sponsors get recognized in the project README and release notes.

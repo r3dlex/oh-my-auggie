@@ -254,4 +254,14 @@ npm run build
 - **Quick Start**: See [README.md](../README.md#quick-start)
 - **GitHub Issues**: https://github.com/r3dlex/oh-my-auggie/issues
 
+---
+
+## Sponsor
+
+**Love oh-my-auggie? Consider sponsoring its development.**
+
+Your sponsorship directly funds the time and energy poured into making multi-agent orchestration accessible to every developer on the Augment Code platform. Every contribution — no matter the size — helps keep the project alive, responsive, and improving.
+
+👉 **[Sponsor on GitHub](https://github.com/sponsors/r3dlex)**
+
 Happy contributing!
