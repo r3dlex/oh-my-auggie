@@ -1,12 +1,23 @@
 {
   "name": "@r3dlex/oh-my-auggie",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "TypeScript hooks and tests for oh-my-auggie",
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r3dlex/oh-my-auggie.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "readme": "README.md",
   "scripts": {
     "prepare": "tsc",
     "test": "vitest run",
