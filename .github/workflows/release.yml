@@ -31,7 +31,7 @@ jobs:
       - name: Run tests
         run: cd plugins/oma && npm test
 
-      - name: Determine dist-tag
+      - name: Determine dist-tag and set unique version
         id: dist-tag
         run: |
           if [[ $GITHUB_REF_NAME == *-alpha.* ]]; then
@@ -41,7 +41,25 @@ jobs:
           else
             echo "tag=latest" >> $GITHUB_OUTPUT
           fi
-          echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+          VERSION="${GITHUB_REF_NAME#v}"
+          # Append short git SHA to pre-release versions for idempotent re-runs
+          if [[ $VERSION == *"-"* ]]; then
+            SHA=$(git rev-parse --short=7 HEAD)
+            VERSION="${VERSION}+sha.${SHA}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Patch package.json for unique version
+        run: |
+          cd plugins/oma
+          VERSION="${{ steps.dist-tag.outputs.version }}"
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.version = '$VERSION';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+          echo "Patched version to $VERSION"
 
       - name: Publish to GitHub Packages
         run: |
