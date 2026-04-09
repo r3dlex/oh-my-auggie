@@ -36,7 +36,7 @@ function bumpVersion(current: string, arg: string): string {
     case 'minor': return `${major}.${minor + 1}.0${pre}`;
     case 'major': return `${major + 1}.0.0${pre}`;
     default: {
-      if (/^\d+\.\d+\.\d+$/.test(arg)) return arg + pre;
+      if (/^\d+\.\d+\.\d+$/.test(arg)) return arg;
       console.error(clr(`ERROR: Invalid argument "${arg}". Use patch, minor, major, or X.Y.Z`, c.red));
       process.exit(1);
     }
