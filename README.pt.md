@@ -50,7 +50,7 @@ auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 </p>
 
 <p align="center">
-  <em>OMA — seu co-piloto multi-agente, modo escuro</em>
+  <em>OMA — installed and ready. What do you want to build?</em>
 </p>
 
 ---
@@ -92,7 +92,7 @@ Dispense o prefixo `/oma:` — estes são ativados automaticamente quando detect
 </p>
 
 <p align="center">
-  <em>OMA — tema galáxia, pronto para qualquer fluxo de trabalho</em>
+  <em>OMA — parallel agents, persistent state, zero dependency overhead</em>
 </p>
 
 ---

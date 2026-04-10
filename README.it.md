@@ -46,7 +46,7 @@ auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 </p>
 
 <p align="center">
-  <em>OMA — your multi-agent co-pilot, dark mode edition</em>
+  <em>OMA — installed and ready. What do you want to build?</em>
 </p>
 
 ---
@@ -88,7 +88,7 @@ Ometti il prefisso `/oma:` — questi si attivano automaticamente quando rilevat
 </p>
 
 <p align="center">
-  <em>OMA — galaxy-themed, ready for any workflow</em>
+  <em>OMA — parallel agents, persistent state, zero dependency overhead</em>
 </p>
 
 ---
