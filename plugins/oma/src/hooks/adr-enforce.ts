@@ -47,6 +47,10 @@ export function requiresAdr(files: string[]): boolean {
   // Significant refactoring (>20 files)
   if (fileCount > 20) return true;
 
+  // Agent definition files — require ADR per ADR-0002
+  const agentPattern = /plugins\/oma\/agents\/.*\.md$/i;
+  if (files.some(f => agentPattern.test(f))) return true;
+
   return false;
 }
 

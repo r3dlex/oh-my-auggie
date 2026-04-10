@@ -45,6 +45,11 @@
             "type": "command",
             "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/keyword-detect.mjs",
             "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/audit-log.mjs",
+            "timeout": 5000
           }
         ]
       }
