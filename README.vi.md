@@ -19,18 +19,6 @@
 
 ---
 
-<!-- Story: Meet Buddy -->
-<p align="center">
-  <img src="assets/buddy-dark.png" alt="Buddy - Chủ đề Tối" width="280" style="border-radius:12px;"/>
-  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - Galaxy Dark" width="280" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>Buddy — đồng pilot đa tác tử của bạn, hoạt động trên mọi chủ đề sáng, tối và thiên hà</em>
-</p>
-
----
-
 ## Cài đặt
 
 ### Yêu cầu tiên quyết
@@ -54,6 +42,14 @@ git clone https://github.com/r3dlex/oh-my-auggie.git
 cd oh-my-auggie
 auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 ```
+
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="OMA - Dark Theme" width="300" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>OMA — your multi-agent co-pilot, dark mode edition</em>
+</p>
 
 ---
 
@@ -88,6 +84,14 @@ Bỏ qua tiền tố `/oma:` — các lệnh này sẽ tự động kích hoạt
 | `ralplan` | `/oma:ralplan` |
 | `canceloma` | `/oma:cancel` |
 | `deslop`, "anti-slop" | deslop cleanup pass |
+
+<p align="center">
+  <img src="assets/buddy-galaxy-dark.png" alt="OMA - Galaxy Theme" width="300" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>OMA — galaxy-themed, ready for any workflow</em>
+</p>
 
 ---
 

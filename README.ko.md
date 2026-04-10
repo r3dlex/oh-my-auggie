@@ -15,16 +15,6 @@
 
 </p>
 
-<!-- Story: Meet Buddy -->
-<p align="center">
-  <img src="assets/buddy-dark.png" alt="Buddy - 다크 테마" width="280" style="border-radius:12px;"/>
-  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - 갈랙시 다크" width="280" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>Buddy — 라이트, 다크, 갈랙시 테마에서 작동하는 멀티 에이전트 co-pilot</em>
-</p>
-
 ---
 
 > **[Augment Code의 `auggie` CLI](https://www.augmentcode.com)를 위한 멀티 에이전트 오케스트레이션** — auggie를 위한 "oh-my-*" 경험을 제공합니다.
@@ -54,6 +44,14 @@ git clone https://github.com/r3dlex/oh-my-auggie.git
 cd oh-my-auggie
 auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 ```
+
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="OMA - Dark Theme" width="300" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>OMA — your multi-agent co-pilot, dark mode edition</em>
+</p>
 
 ---
 
@@ -88,6 +86,14 @@ auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 | `ralplan` | `/oma:ralplan` |
 | `canceloma` | `/oma:cancel` |
 | `deslop`, "anti-slop" | deslop 정리 패스 |
+
+<p align="center">
+  <img src="assets/buddy-galaxy-dark.png" alt="OMA - Galaxy Theme" width="300" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>OMA — galaxy-themed, ready for any workflow</em>
+</p>
 
 ---
 

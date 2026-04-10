@@ -15,16 +15,6 @@
 
 </p>
 
-<!-- Story: Meet Buddy -->
-<p align="center">
-  <img src="assets/buddy-dark.png" alt="Buddy - ダークテーマ" width="280" style="border-radius:12px;"/>
-  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - ギャラクシーダーク" width="280" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>Buddy — ライト、ダーク、ギャラクシーthemeで動作するマルチエージェントcopilot</em>
-</p>
-
 ---
 
 > **Augment Codeの`auggie` CLIのためのマルチエージェントオーケストレーション** — auggieのための"oh-my-*"体験。
@@ -54,6 +44,14 @@ git clone https://github.com/r3dlex/oh-my-auggie.git
 cd oh-my-auggie
 auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 ```
+
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="OMA - Dark Theme" width="300" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>OMA — your multi-agent co-pilot, dark mode edition</em>
+</p>
 
 ---
 
@@ -88,6 +86,14 @@ auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 | `ralplan` | `/oma:ralplan` |
 | `canceloma` | `/oma:cancel` |
 | `deslop`, "anti-slop" | deslopクリーンアップパス |
+
+<p align="center">
+  <img src="assets/buddy-galaxy-dark.png" alt="OMA - Galaxy Theme" width="300" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>OMA — galaxy-themed, ready for any workflow</em>
+</p>
 
 ---
 
