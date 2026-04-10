@@ -10,7 +10,7 @@ model: haiku4.5
 
 ## /oma:skills
 
-**OMA Skills Index** — 37 command files, 34 skill directories.
+**OMA Skills Index** — 39 command files, 34 skill directories.
 
 This is the primary OMA skills index. Individual skill docs are in `commands/oma-{name}.md` and `skills/{name}/SKILL.md`.
 
@@ -54,6 +54,23 @@ This is the primary OMA skills index. Individual skill docs are in `commands/oma
 | **verify** | Verification — evidence-based completion checks against acceptance criteria | /oma:verify |
 | **visual-verdict** | Visual verification — side-by-side before/after comparison | /oma:visual-verdict |
 | **writer-memory** | Working memory — append structured entries with auto-prune | /oma:writer-memory |
+
+---
+
+## Utility Commands
+
+These are read-only command wrappers with no skill directory:
+
+| Command | Description |
+|---------|-------------|
+| `/oma:version` | Print current OMA version from package.json |
+| `/oma:whatsnew` | Show changelog entries since last release |
+| `/oma:status` | Show current OMA mode and state |
+| `/oma:help` | Show all available commands |
+| `/oma:cancel` | Cancel active mode and clear state |
+| `/oma:team` | Coordinated team of N agents |
+| `/oma:ralph` | Persistence loop — keep working until done |
+| `/oma:autopilot` | Full autonomous pipeline |
 
 ---
 
