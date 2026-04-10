@@ -3,7 +3,7 @@
   "mcp_servers": {
     "oma-state": {
       "command": "node",
-      "args": ["${AUGMENT_PLUGIN_ROOT}/mcp/state-server.mjs"],
+      "args": ["../../mcp/state-server.mjs"],
       "env": {},
       "protocol": "stdio"
     },
