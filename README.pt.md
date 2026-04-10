@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie banner" width="100%"/>
 </p>
 
-> **Orquestração multi-agente para o CLI `auggie` da [Augment Code](https://www.augmentcode.com)** — a experiência "oh-my-*" para o auggie.
+<!-- Badges -->
+<p align="center">
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Versão](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![Licença](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
+</p>
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - Tema Escuro" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - Galaxy Escuro" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — seu co-piloto multi-agente, trabalhando em temas claro, escuro e galáxia</em>
+</p>
+
+---
+
+> **Orquestração multi-agente para o CLI `auggie` da [Augment Code](https://www.augmentcode.com)** — a experiência "oh-my-*" para o auggie.
 
 ---
 
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## Segurança
+
+Por favor, consulte nossa [Política de Segurança](SECURITY.md) para versões suportadas e diretrizes de relatórios de vulnerabilidades.
+
+---
+
 ## Links
 
 | Recurso | URL |
@@ -145,6 +172,7 @@ node -e "
 | Documentação de Plugins | https://www.augmentcode.com/docs/cli/plugins |
 | Documentação de Hooks | https://www.augmentcode.com/docs/cli/hooks |
 | Documentação do MCP | https://www.augmentcode.com/docs/cli/integrations |
+| Segurança | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---

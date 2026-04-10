@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie banner" width="100%"/>
 </p>
 
-> **Augment Code 的 `auggie` CLI 的多智能体编排工具** — 面向 auggie 的 "oh-my-*" 体验。
+<!-- Badges -->
+<p align="center">
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![版本](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![许可证](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
+</p>
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - 深色主题" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - 星河深色" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — 您的多智能体副驾驶，穿梭于浅色、深色和星河主题之间</em>
+</p>
+
+---
+
+> **Augment Code 的 `auggie` CLI 的多智能体编排工具** — 面向 auggie 的 "oh-my-*" 体验。
 
 ---
 
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## 安全
+
+请查阅我们的[安全政策](SECURITY.md)，了解支持的版本和漏洞报告指南。
+
+---
+
 ## 链接
 
 | 资源 | URL |
@@ -145,6 +172,7 @@ node -e "
 | 插件文档 | https://www.augmentcode.com/docs/cli/plugins |
 | 钩子文档 | https://www.augmentcode.com/docs/cli/hooks |
 | MCP 文档 | https://www.augmentcode.com/docs/cli/integrations |
+| 安全政策 | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---
