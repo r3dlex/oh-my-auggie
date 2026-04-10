@@ -62,7 +62,7 @@ For changes that introduce new patterns or change existing architecture:
 
 **ADR archive:** https://github.com/archgate/cli/blob/main/adr/
 
-> **v0.2 note:** ADR enforcement via hooks is deferred to v0.2. In v0.1, ADRs are generated but not enforced by hooks.
+> **ADR enforcement** via hooks is implemented and active in v0.1. The `adr-enforce` hook blocks commits that don't reference a valid ADR.
 
 ## What Enterprise Does NOT Restrict
 
@@ -78,9 +78,6 @@ Enterprise profile is **additive only**:
 
 The following enterprise features require hooks integration and are deferred to v0.2:
 
-- **Hook-based ADR enforcement** — block commits that don't reference an ADR
-- **Hook-based approval gates** — block execution on sensitive paths without approval
-- **Cost tracking** — track spend per session, alert on threshold
 - **Audit logging** — structured audit trail for compliance
 
 ## Enterprise Links
