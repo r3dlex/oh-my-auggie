@@ -60,6 +60,47 @@ function getSessionId(): string {
   return `${ts}-${process.pid}`;
 }
 
+// ─── Auggie model normalization ────────────────────────────────────────────────
+
+// Auggie model names differ from standard naming; map to pricing tiers
+const MODEL_TIER_MAP: Record<string, string> = {
+  'miniMax-M2.7': 'haiku',
+  'MiniMax-M2.7': 'haiku',
+  'minimax': 'haiku',
+  'sonnet': 'sonnet',
+  'opus': 'opus',
+  'haiku': 'haiku',
+  'gpt-4o': '4o',
+  'gpt-4o-mini': '4o-mini',
+  'claude-sonnet': 'sonnet',
+  'claude-opus': 'opus',
+  'claude-haiku': 'haiku',
+};
+
+function normalizeModel(model: string): string {
+  const lower = model.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  return MODEL_TIER_MAP[lower] ?? MODEL_TIER_MAP[model] ?? 'haiku';
+}
+
+// Estimate input tokens from raw stdin content
+function estimateInputTokens(rawInput: string, toolName: string): number {
+  if (!rawInput) return 0;
+  // Rough estimate: ~4 chars per token for input
+  const chars = rawInput.length;
+  return Math.max(1, Math.round(chars / 4));
+}
+
+// Estimate output tokens based on tool type
+function estimateOutputTokens(rawInput: string, toolName: string): number {
+  // Web search/tools typically have smaller outputs
+  const SMALL_OUTPUT_TOOLS = ['Web Search', 'Bash', 'Read', 'Grep', 'Glob'];
+  if (SMALL_OUTPUT_TOOLS.some(t => toolName.includes(t))) {
+    return 50;
+  }
+  // Default medium estimate
+  return 200;
+}
+
 export function estimateCost(model: string, inputTokens: number, outputTokens: number): number {
   const pricing = PRICING[model.toLowerCase()] ?? DEFAULT_PRICING;
   const inputCost = (inputTokens / 1_000_000) * pricing.inputPerMillion;
@@ -174,13 +215,24 @@ export async function main(): Promise<void> {
     let outputTokens = parseInt(env.OMA_OUTPUT_TOKENS ?? '0', 10);
     let durationMs = parseInt(env.OMA_DURATION_MS ?? '0', 10);
 
+    // Auggie provides ANTHROPIC_MODEL but not OMA_* token env vars.
+    // Use it to derive model and estimate tokens when not provided.
+    const auggieModel = env.ANTHROPIC_MODEL;
+    if (auggieModel) {
+      model = normalizeModel(auggieModel);
+      if (inputTokens === 0 && outputTokens === 0) {
+        inputTokens = estimateInputTokens(rawInput, toolName);
+        outputTokens = estimateOutputTokens(rawInput, toolName);
+      }
+    }
+
     // Fall back to parsing stdin
     if (toolName === 'unknown' && rawInput) {
       const extracted = extractFromInput(rawInput);
       toolName = extracted.toolName ?? 'unknown';
-      model = extracted.model ?? 'unknown';
-      inputTokens = extracted.inputTokens ?? 0;
-      outputTokens = extracted.outputTokens ?? 0;
+      model = extracted.model ?? model; // keep auggie-derived model if set
+      inputTokens = extracted.inputTokens || inputTokens;
+      outputTokens = extracted.outputTokens || outputTokens;
       durationMs = extracted.durationMs ?? 0;
     }
 
