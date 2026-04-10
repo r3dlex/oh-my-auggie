@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie banner" width="100%"/>
 </p>
 
-> **Orchestrazione multi-agente per [CLI `auggie` di Augment Code](https://www.augmentcode.com)** — l'esperienza "oh-my-*" per auggie.
+<!-- Badges -->
+<p align="center">
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Version](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![License](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
+</p>
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - Tema Scuro" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - Galaxy Dark" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — il tuo copilota multi-agente, che lavora tra temi chiari, scuri e galaxy</em>
+</p>
+
+---
+
+> **Orchestrazione multi-agente per [CLI `auggie` di Augment Code](https://www.augmentcode.com)** — l'esperienza "oh-my-*" per auggie.
 
 ---
 
@@ -133,6 +154,12 @@ node -e "
   }
 "
 ```
+
+---
+
+## Sicurezza
+
+Consulta la nostra [Politica di Sicurezza](SECURITY.md) per le versioni supportate e le linee guida per la segnalazione di vulnerabilità.
 
 ---
 

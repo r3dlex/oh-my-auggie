@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logosu" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie afişi" width="100%"/>
+</p>
+
+<!-- Badges -->
+<p align="center">
+
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Sürüm](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![Lisans](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
 </p>
 
 > **Augment Code'un `auggie` CLI'si icin coklu-agent orkestrasyonu** — auggie icin "oh-my-*" deneyimi.
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+---
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - Karanlık Tema" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - Galaxy Dark" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — aydınlık, karanlık ve galaksi temalarında calisan coklu-agent yardımcı pilotunuz</em>
+</p>
 
 ---
 
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## Güvenlik
+
+Lütfen desteklenen sürümler ve güvenlik açığı bildirimi yönergeleri için [Güvenlik Politikamızı](SECURITY.md) inceleyin.
+
+---
+
 ## Linkler
 
 | Kaynak | URL |
@@ -145,6 +172,7 @@ node -e "
 | Plugin dokumanlari | https://www.augmentcode.com/docs/cli/plugins |
 | Hooks dokumanlari | https://www.augmentcode.com/docs/cli/hooks |
 | MCP dokumanlari | https://www.augmentcode.com/docs/cli/integrations |
+| Güvenlik | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---

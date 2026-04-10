@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="biểu ngữ oh-my-auggie" width="100%"/>
+</p>
+
+<!-- Badges -->
+<p align="center">
+
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Phiên bản](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![Giấy phép](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
 </p>
 
 > **Điều phối đa tác tử cho [CLI `auggie` của Augment Code](https://www.augmentcode.com)** — trải nghiệm "oh-my-*" cho auggie.
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+---
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - Chủ đề Tối" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - Galaxy Dark" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — đồng pilot đa tác tử của bạn, hoạt động trên mọi chủ đề sáng, tối và thiên hà</em>
+</p>
 
 ---
 
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## Bảo mật
+
+Vui lòng xem lại [Chính sách Bảo mật](SECURITY.md) của chúng tôi để biết các phiên bản được hỗ trợ và hướng dẫn báo cáo lỗ hổng bảo mật.
+
+---
+
 ## Liên kết
 
 | Tài nguyên | URL |
@@ -145,6 +172,7 @@ node -e "
 | Tài liệu Plugin | https://www.augmentcode.com/docs/cli/plugins |
 | Tài liệu Hooks | https://www.augmentcode.com/docs/cli/hooks |
 | Tài liệu MCP | https://www.augmentcode.com/docs/cli/integrations |
+| Bảo mật | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---

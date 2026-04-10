@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie バナー" width="100%"/>
 </p>
 
-> **Augment Codeの`auggie` CLIのためのマルチエージェントオーケストレーション** — auggieのための"oh-my-*"体験。
+<!-- Badges -->
+<p align="center">
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![バージョン](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![ライセンス](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
+</p>
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - ダークテーマ" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - ギャラクシーダーク" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — ライト、ダーク、ギャラクシーthemeで動作するマルチエージェントcopilot</em>
+</p>
+
+---
+
+> **Augment Codeの`auggie` CLIのためのマルチエージェントオーケストレーション** — auggieのための"oh-my-*"体験。
 
 ---
 
@@ -43,7 +64,7 @@ auggie plugin install --source ./plugins/oma oma@oh-my-auggie
 | コマンド | 説明 |
 |---------|------|
 | `/oma:autopilot` | 完全自律パイプライン — 展開、計画、実装、QA、検証 |
-| `/oma:ralph` | 永続化ループ — すべての受け入れ基準がパスするまで作業を継続 |
+| `/oma:ralph` | 永続化ループ — すべての受け入れ基準がパス 때까지作業を継続 |
 | `/oma:ultrawork` | 並列サブエージェントによる高スループット実行 |
 | `/oma:team` | Nエージェントの調整チーム |
 | `/oma:ultraqa` | QAサイcling: テスト、検証、修正、繰り返し |
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## セキュリティ
+
+サポートされているバージョンと脆弱性報告のガイドラインについては、[セキュリティポリシー](SECURITY.md)をご確認ください。
+
+---
+
 ## リンク
 
 | リソース | URL |
@@ -145,6 +172,7 @@ node -e "
 | プラグインドキュメント | https://www.augmentcode.com/docs/cli/plugins |
 | フックドキュメント | https://www.augmentcode.com/docs/cli/hooks |
 | MCPドキュメント | https://www.augmentcode.com/docs/cli/integrations |
+| セキュリティ | [SECURITY.md](SECURITY.md) |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---

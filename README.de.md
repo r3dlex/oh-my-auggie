@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie Logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie Banner" width="100%"/>
+</p>
+
+<!-- Badges -->
+<p align="center">
+
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Version](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![Lizenz](https://img.shields.io/badge/Lizenz-Apache%202.0-orange)](LICENSE)
+
 </p>
 
 > **Multi-Agent-Orchestrierung fuer [Augment Codes `auggie` CLI](https://www.augmentcode.com)** — das „oh-my-*"-Erlebnis fuer auggie.
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+---
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy - Dark Theme" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy - Galaxy Dark" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — Ihr Multi-Agent-Co-Pilot, der in hellen, dunklen und Galaxy-Themes arbeitet</em>
+</p>
 
 ---
 
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## Sicherheit
+
+Bitte lesen Sie unsere [Sicherheitsrichtlinie](SECURITY.md) fuer unterstuetzte Versionen und Richtlinien zur Meldung von Sicherheitsluecken.
+
+---
+
 ## Links
 
 | Ressource | URL |
@@ -145,19 +172,20 @@ node -e "
 | Plugin-Dokumentation | https://www.augmentcode.com/docs/cli/plugins |
 | Hooks-Dokumentation | https://www.augmentcode.com/docs/cli/hooks |
 | MCP-Dokumentation | https://www.augmentcode.com/docs/cli/integrations |
+| Sicherheit | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---
 
 ## Sponsor
 
-**:heart: Oh-my-auggie gefaellt es Ihnen? Erwägen Sie, seine Entwicklung zu sponsern.**
+**:heart: Oh-my-auggie gefaellt es Ihnen? Erwaegen Sie, seine Entwicklung zu sponsern.**
 
-Ihr Sponsoring finanziert direkt die Zeit und Energie, die in die Zugänglichmachung der Multi-Agent-Orchestrierung fuer jeden Entwickler auf der Augment-Code-Plattform investiert wird. Jeder Beitrag — unabhängig von der Größe — hilft, das Projekt am Leben, reaktionsschnell und in Verbesserung zu halten.
+Ihr Sponsoring finanziert direkt die Zeit und Energie, die in die Zugänglichmachung der Multi-Agent-Orchestrierung fuer jeden Entwickler auf der Augment-Code-Plattform investiert wird. Jeder Beitrag — unabhaengig von der Größe — hilft, das Projekt am Leben, reaktionsschnell und in Verbesserung zu halten.
 
-👉 **[Auf GitHub sponsoren](https://github.com/sponsors/r3dlex)**
+👉 **[Auf GitHub sponsern](https://github.com/sponsors/r3dlex)**
 
-Einmalige und wiederkehrende Optionen verfügbar. Sponsoren werden im Projekt-README und in den Release-Notes anerkannt.
+Einmalige und wiederkehrende Optionen verfuegbar. Sponsoren werden im Projekt-README und in den Release-Notes anerkannt.
 
 ---
 

@@ -1,12 +1,33 @@
 # oh-my-auggie
 
+<!-- Banner -->
 <p align="center">
-  <img src="assets/oh-my-auggie.svg" alt="oh-my-auggie logo" width="300"/>
+  <img src="assets/oma-banner.png" alt="oh-my-auggie banner" width="100%"/>
 </p>
 
-> **Мультиагентная оркестрация для CLI `auggie` от Augment Code** — опыт "oh-my-*" для auggie.
+<!-- Badges -->
+<p align="center">
 
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
+  [![Версия](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
+  [![Лицензия](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+
+</p>
+
+<!-- Story: Meet Buddy -->
+<p align="center">
+  <img src="assets/buddy-dark.png" alt="Buddy — Тёмная тема" width="280" style="border-radius:12px;"/>
+  <img src="assets/buddy-galaxy-dark.png" alt="Buddy — Galaxy Dark" width="280" style="border-radius:12px;"/>
+</p>
+
+<p align="center">
+  <em>Buddy — ваш многозадачный помощник, работающий в светлой, тёмной и галактической темах</em>
+</p>
+
+---
+
+> **Мультиагентная оркестрация для CLI `auggie` от Augment Code** — опыт "oh-my-*" для auggie.
 
 ---
 
@@ -136,6 +157,12 @@ node -e "
 
 ---
 
+## Безопасность
+
+Пожалуйста, ознакомьтесь с нашей [Политикой безопасности](SECURITY.md) для поддерживаемых версий и рекомендаций по сообщениям об уязвимостях.
+
+---
+
 ## Ссылки
 
 | Ресурс | URL |
@@ -145,6 +172,7 @@ node -e "
 | Документация плагинов | https://www.augmentcode.com/docs/cli/plugins |
 | Документация хуков | https://www.augmentcode.com/docs/cli/hooks |
 | Документация MCP | https://www.augmentcode.com/docs/cli/integrations |
+| Безопасность | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
 | oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
 
 ---

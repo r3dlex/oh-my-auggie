@@ -142,6 +142,7 @@ Skills are discovered and injected via MCP tools:
 - Augment Code: https://www.augmentcode.com
 - auggie CLI docs: https://www.augmentcode.com/docs/cli
 - oh-my-auggie: https://github.com/r3dlex/oh-my-auggie
+- [Security Policy](SECURITY.md)
 
 ---
 
