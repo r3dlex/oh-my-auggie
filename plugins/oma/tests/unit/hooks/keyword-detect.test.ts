@@ -85,7 +85,7 @@ afterEach(() => {
 
 describe('KEYWORDS constant', () => {
   it('has all expected entries', () => {
-    expect(KEYWORDS).toHaveLength(43);
+    expect(KEYWORDS).toHaveLength(45);
   });
 
   it('maps autopilot to /oma:autopilot', () => {

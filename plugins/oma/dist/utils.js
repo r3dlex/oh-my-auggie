@@ -286,6 +286,7 @@ export const DEFAULT_CONFIG = {
     orchestration: { mode: 'ralph', maxIterations: 100 },
     paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' },
     profile: 'default',
+    graph: { provider: 'graphwiki' },
 };
 /**
  * Returns the fully merged OMA config.

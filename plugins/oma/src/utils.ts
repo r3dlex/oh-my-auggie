@@ -220,7 +220,7 @@ export function isApprovalExpired(record: ApprovalRecord): boolean {
 
 // ─── Two-tiered config utilities ──────────────────────────────────────────────
 
-import type { Config, HudConfig, OrchestrationConfig, PathsConfig } from './types.js';
+import type { Config, HudConfig, OrchestrationConfig, PathsConfig, GraphConfig } from './types.js';
 
 /**
  * Expands ~ in a path to the user's home directory.
@@ -311,6 +311,7 @@ export const DEFAULT_CONFIG: Config = {
   orchestration: { mode: 'ralph', maxIterations: 100 },
   paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' },
   profile: 'default',
+  graph: { provider: 'graphwiki' },
 };
 
 /**

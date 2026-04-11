@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { resolveOmaDir, loadJsonFile } from '../utils.js';
+import { resolveOmaDir, loadJsonFile, getMergedConfig } from '../utils.js';
 // ─── Remember tag extraction ─────────────────────────────────────────────────
 /**
  * Scans tool_output for <remember key="...">value</remember> tags.
@@ -101,6 +101,15 @@ export async function main() {
         if (taskSummary)
             contextParts.push(taskSummary);
     }
+    // Graph provider status (compact)
+    try {
+        const config = getMergedConfig();
+        const provider = config.graph?.provider ?? 'graphwiki';
+        if (provider !== 'none') {
+            contextParts.push(`[Graph] ${provider}`);
+        }
+    }
+    catch { /* ignore */ }
     // Build compact output
     if (contextParts.length > 0) {
         const context = contextParts.join('\n');

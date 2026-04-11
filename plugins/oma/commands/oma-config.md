@@ -83,6 +83,7 @@ Lists config values.
 | `paths.omaDir` | string | `"~/.oma"` | Global OMA directory |
 | `paths.plansDir` | string | `"~/.oma/plans"` | Plans directory |
 | `profile` | string | `"default"` | OMA profile: `default` or `enterprise` (global-only) |
+| `graph.provider` | string | `"graphwiki"` | Knowledge graph tool: `graphwiki`, `graphify`, or `none` |
 
 ## Profile Behavior
 
