@@ -44,15 +44,3 @@
     }
   ]
 }
-      "story": "List all skills command (/skills or similar)",
-      "priority": 2,
-      "acceptance_criteria": [
-        "New command file skills.md exists at plugins/oma/commands/oma-skills.md",
-        "Command is accessible as /oma:skills",
-        "Lists all available OMA skills from the skills/ directory",
-        "TypeScript compiles with no errors"
-      ],
-      "passes": false
-    }
-  ]
-}
