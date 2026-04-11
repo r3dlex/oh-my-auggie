@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // process.exit is stubbed in hooks-setup.ts
 
 vi.mock('fs', () => ({
-  readFileSync: vi.fn(() => '{"sessions":[],"version":"0.1"}'),
+  readFileSync: vi.fn(() => '{"sessions":[],"version":"0.2"}'),
   writeFileSync: vi.fn(),
 }));
 
@@ -14,8 +14,9 @@ vi.mock('../../../src/utils.js', () => ({
 }));
 
 import {
-  PRICING,
-  estimateCost,
+  CREDIT_COST,
+  estimateCredits,
+  creditsToUsd,
   getCurrentTimestamp,
   upsertSession,
   recordToolUsage,
@@ -33,13 +34,12 @@ interface CostSession {
   tools: Array<{
     name: string;
     model: string;
-    input_tokens: number;
-    output_tokens: number;
+    estimated_credits: number;
     duration_ms: number;
     timestamp: string;
   }>;
-  total_tokens: number;
-  estimated_cost_usd: number;
+  total_estimated_credits: number;
+  credit_cost_usd: number;
 }
 
 interface CostLog {
@@ -49,84 +49,96 @@ interface CostLog {
 
 describe('cost-track hooks', () => {
 
-  // ── estimateCost ──────────────────────────────────────────────────────────
+  // ── CREDIT_COST table ──────────────────────────────────────────────────────
 
-  describe('estimateCost', () => {
-    it('calculates cost for opus model', () => {
-      // opus: $15/M input, $75/M output
-      const cost = estimateCost('opus', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(90, 5); // $15 + $75
+  describe('CREDIT_COST table', () => {
+    it('has all required model entries', () => {
+      expect(CREDIT_COST).toHaveProperty('haiku45');
+      expect(CREDIT_COST).toHaveProperty('sonnet46');
+      expect(CREDIT_COST).toHaveProperty('opus46');
+      expect(CREDIT_COST).toHaveProperty('gpt51');
+      expect(CREDIT_COST).toHaveProperty('gpt52');
+      expect(CREDIT_COST).toHaveProperty('gpt54');
+      expect(CREDIT_COST).toHaveProperty('gemini31pro');
     });
 
-    it('calculates cost for sonnet model', () => {
-      // sonnet: $3/M input, $15/M output
-      const cost = estimateCost('sonnet', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(18, 5); // $3 + $15
+    it('has positive credit costs for all models', () => {
+      for (const [model, credits] of Object.entries(CREDIT_COST)) {
+        expect(credits, `Model ${model} should be positive`).toBeGreaterThan(0);
+      }
     });
 
-    it('calculates cost for haiku model', () => {
-      // haiku: $0.25/M input, $1.25/M output
-      const cost = estimateCost('haiku', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(1.5, 5); // $0.25 + $1.25
+    it('sonnet46 is the default tier', () => {
+      expect(CREDIT_COST['sonnet46']).toBe(293);
+    });
+  });
+
+  // ── estimateCredits ───────────────────────────────────────────────────────
+
+  describe('estimateCredits', () => {
+    it('returns base credits for standard tools', () => {
+      const credits = estimateCredits('sonnet', 'Write');
+      expect(credits).toBe(293);
     });
 
-    it('calculates cost for 4o model', () => {
-      // 4o: $2.5/M input, $10/M output
-      const cost = estimateCost('4o', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(12.5, 5); // $2.5 + $10
+    it('applies 0.6x multiplier for read tools', () => {
+      const readTools = ['Read', 'Glob', 'Grep', 'view', 'codebase-retrieval', 'lsp_goto_definition', 'lsp_find_references', 'lsp_workspace_symbols'];
+      for (const tool of readTools) {
+        const credits = estimateCredits('sonnet', tool);
+        expect(credits).toBe(Math.round(293 * 0.6));
+      }
     });
 
-    it('calculates cost for gpt-4o model', () => {
-      const cost = estimateCost('gpt-4o', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(12.5, 5);
+    it('applies 1.2x multiplier for heavy tools', () => {
+      const heavyTools = ['Bash', 'launch-process', 'web-search', 'web-fetch'];
+      for (const tool of heavyTools) {
+        const credits = estimateCredits('sonnet', tool);
+        expect(credits).toBe(Math.round(293 * 1.2));
+      }
     });
 
-    it('calculates cost for 4o-mini model', () => {
-      const cost = estimateCost('4o-mini', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(12.5, 5);
+    it('handles unknown models with default credit cost', () => {
+      // normalizeModel maps unknown to 'haiku45' (haiku4.5 tier)
+      const credits = estimateCredits('unknown-model', 'Write');
+      expect(credits).toBe(88); // DEFAULT_CREDIT_COST falls back to haiku45 tier
     });
 
-    it('calculates cost for gpt-4o-mini model', () => {
-      const cost = estimateCost('gpt-4o-mini', 1_000_000, 1_000_000);
-      expect(cost).toBeCloseTo(12.5, 5);
+    it('normalizes Auggie model strings to tiers', () => {
+      expect(estimateCredits('claude-sonnet-4-6', 'Write')).toBe(293); // claudesonnet46 → sonnet46
+      expect(estimateCredits('claude-opus-4-6', 'Write')).toBe(488);   // claudeopus46 → opus46
+      expect(estimateCredits('claude-haiku-4-5', 'Write')).toBe(88);   // claudehaiu45 → haiku45
+      expect(estimateCredits('opus', 'Write')).toBe(488);
+      expect(estimateCredits('sonnet', 'Write')).toBe(293);
+      expect(estimateCredits('haiku', 'Write')).toBe(88);
+      expect(estimateCredits('minimax', 'Write')).toBe(88);
+      expect(estimateCredits('gpt-5.4', 'Write')).toBe(420);  // gpt54
+      expect(estimateCredits('gpt-5.2', 'Write')).toBe(390);  // gpt52
+      expect(estimateCredits('gpt-5.1', 'Write')).toBe(219);  // gpt51
+      expect(estimateCredits('gemini-3.1-pro', 'Write')).toBe(270); // gemini31pro
     });
 
-    it('uses default pricing for unknown model', () => {
-      const cost = estimateCost('unknown-model', 1_000_000, 1_000_000);
-      // default: $3/M input, $15/M output = $18
-      expect(cost).toBeCloseTo(18, 5);
+    it('normalizes dotted model names like sonnet4.6', () => {
+      // 'sonnet4.6' → 'sonnet46' → 'sonnet46' → 293
+      expect(estimateCredits('sonnet4.6', 'Write')).toBe(293);
+      expect(estimateCredits('opus4.6', 'Write')).toBe(488);
+      expect(estimateCredits('haiku4.5', 'Write')).toBe(88);
+    });
+  });
+
+  // ── creditsToUsd ───────────────────────────────────────────────────────────
+
+  describe('creditsToUsd', () => {
+    it('converts credits to USD at $0.000625 per credit', () => {
+      expect(creditsToUsd(293)).toBeCloseTo(293 * 0.000625, 6);
     });
 
-    it('handles zero tokens', () => {
-      const cost = estimateCost('sonnet', 0, 0);
-      expect(cost).toBe(0);
+    it('handles zero credits', () => {
+      expect(creditsToUsd(0)).toBe(0);
     });
 
-    it('handles fractional tokens', () => {
-      const cost = estimateCost('sonnet', 500_000, 500_000);
-      // 0.5M * $3 + 0.5M * $15 = $1.5 + $7.5 = $9
-      expect(cost).toBeCloseTo(9, 5);
-    });
-
-    it('handles very large token counts', () => {
-      const cost = estimateCost('sonnet', 10_000_000, 10_000_000);
-      // 10M * $3 + 10M * $15 = $30M + $150M in dollars = $30 + $150 = $180
-      expect(cost).toBeCloseTo(180, 5);
-    });
-
-    it('model lookup is case-insensitive', () => {
-      const cost1 = estimateCost('SONNET', 1_000_000, 1_000_000);
-      const cost2 = estimateCost('Sonnet', 1_000_000, 1_000_000);
-      const cost3 = estimateCost('sonnet', 1_000_000, 1_000_000);
-      expect(cost1).toBeCloseTo(cost2);
-      expect(cost2).toBeCloseTo(cost3);
-    });
-
-    it('calculates correct cost for partial million tokens', () => {
-      // 100K tokens = 0.1M
-      const cost = estimateCost('sonnet', 100_000, 200_000);
-      // 0.1M * $3 + 0.2M * $15 = $0.3 + $3 = $3.3
-      expect(cost).toBeCloseTo(3.3, 5);
+    it('handles large credit counts', () => {
+      const usd = creditsToUsd(24000);
+      expect(usd).toBeCloseTo(15, 2); // 24000 * 0.000625 = 15
     });
   });
 
@@ -135,7 +147,6 @@ describe('cost-track hooks', () => {
   describe('getCurrentTimestamp', () => {
     it('returns a timestamp in expected format', () => {
       const ts = getCurrentTimestamp();
-      // Format: "2026-04-04 12:34:56Z"
       expect(ts).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}Z$/);
     });
 
@@ -155,24 +166,24 @@ describe('cost-track hooks', () => {
 
   describe('upsertSession', () => {
     it('creates a new session when none exists', () => {
-      const log: CostLog = { sessions: [], version: '0.1' };
+      const log: CostLog = { sessions: [], version: '0.2' };
       const session = upsertSession(log, 'session-1');
       expect(log.sessions).toHaveLength(1);
       expect(session.id).toBe('session-1');
       expect(session.tools).toEqual([]);
-      expect(session.total_tokens).toBe(0);
-      expect(session.estimated_cost_usd).toBe(0);
+      expect(session.total_estimated_credits).toBe(0);
+      expect(session.credit_cost_usd).toBe(0);
     });
 
     it('returns existing session when it already exists', () => {
       const existing: CostSession = {
         id: 'session-1',
         start_time: '2026-01-01T00:00:00Z',
-        tools: [{ name: 'Bash', model: 'sonnet', input_tokens: 100, output_tokens: 50, duration_ms: 500, timestamp: '2026-01-01T00:00:00Z' }],
-        total_tokens: 150,
-        estimated_cost_usd: 0.0027,
+        tools: [{ name: 'Bash', model: 'sonnet46', estimated_credits: 352, duration_ms: 500, timestamp: '2026-01-01T00:00:00Z' }],
+        total_estimated_credits: 352,
+        credit_cost_usd: 352 * 0.000625,
       };
-      const log: CostLog = { sessions: [existing], version: '0.1' };
+      const log: CostLog = { sessions: [existing], version: '0.2' };
       const session = upsertSession(log, 'session-1');
       expect(log.sessions).toHaveLength(1);
       expect(session).toBe(existing);
@@ -180,7 +191,7 @@ describe('cost-track hooks', () => {
     });
 
     it('creates second session when id differs', () => {
-      const log: CostLog = { sessions: [], version: '0.1' };
+      const log: CostLog = { sessions: [], version: '0.2' };
       upsertSession(log, 'session-1');
       upsertSession(log, 'session-2');
       expect(log.sessions).toHaveLength(2);
@@ -190,42 +201,41 @@ describe('cost-track hooks', () => {
   // ── recordToolUsage ──────────────────────────────────────────────────────
 
   describe('recordToolUsage', () => {
-    it('records tool usage and updates session totals', () => {
+    it('records tool usage and updates session totals with credits', () => {
       const session: CostSession = {
         id: 'session-1',
         start_time: getCurrentTimestamp(),
         tools: [],
-        total_tokens: 0,
-        estimated_cost_usd: 0,
+        total_estimated_credits: 0,
+        credit_cost_usd: 0,
       };
 
-      recordToolUsage(session, 'Bash', 'sonnet', 1000, 500, 300);
+      recordToolUsage(session, 'Write', 'sonnet46', 293, 300);
 
       expect(session.tools).toHaveLength(1);
-      expect(session.tools[0].name).toBe('Bash');
-      expect(session.tools[0].model).toBe('sonnet');
-      expect(session.tools[0].input_tokens).toBe(1000);
-      expect(session.tools[0].output_tokens).toBe(500);
+      expect(session.tools[0].name).toBe('Write');
+      expect(session.tools[0].model).toBe('sonnet46');
+      expect(session.tools[0].estimated_credits).toBe(293);
       expect(session.tools[0].duration_ms).toBe(300);
-      expect(session.total_tokens).toBe(1500);
-      // sonnet: (1000/1M)*$3 + (500/1M)*$15 = $0.003 + $0.0075 = $0.0105
-      expect(session.estimated_cost_usd).toBeCloseTo(0.0105, 4);
+      expect(session.total_estimated_credits).toBe(293);
+      expect(session.credit_cost_usd).toBeCloseTo(293 * 0.000625, 6);
     });
 
-    it('accumulates tokens and cost across multiple tools', () => {
+    it('accumulates credits across multiple tools', () => {
       const session: CostSession = {
         id: 'session-1',
         start_time: getCurrentTimestamp(),
         tools: [],
-        total_tokens: 0,
-        estimated_cost_usd: 0,
+        total_estimated_credits: 0,
+        credit_cost_usd: 0,
       };
 
-      recordToolUsage(session, 'Bash', 'sonnet', 1000, 500, 300);
-      recordToolUsage(session, 'Read', 'sonnet', 2000, 1000, 200);
+      recordToolUsage(session, 'Bash', 'sonnet46', 352, 300);   // 293 * 1.2 = 352
+      recordToolUsage(session, 'Read', 'sonnet46', 176, 200);   // 293 * 0.6 = 176
 
-      expect(session.total_tokens).toBe(4500); // 1500 + 3000
+      expect(session.total_estimated_credits).toBe(528);
       expect(session.tools).toHaveLength(2);
+      expect(session.credit_cost_usd).toBeCloseTo(528 * 0.000625, 6);
     });
 
     it('records timestamp for each tool call', () => {
@@ -233,11 +243,11 @@ describe('cost-track hooks', () => {
         id: 'session-1',
         start_time: getCurrentTimestamp(),
         tools: [],
-        total_tokens: 0,
-        estimated_cost_usd: 0,
+        total_estimated_credits: 0,
+        credit_cost_usd: 0,
       };
 
-      recordToolUsage(session, 'Grep', 'haiku', 100, 50, 100);
+      recordToolUsage(session, 'Grep', 'haiku45', 53, 100);
       expect(session.tools[0].timestamp).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}Z$/);
     });
   });
@@ -248,16 +258,14 @@ describe('cost-track hooks', () => {
     it('extracts all fields from valid JSON input', () => {
       const raw = JSON.stringify({
         tool_name: 'Bash',
-        model: 'sonnet',
-        input_tokens: 1000,
-        output_tokens: 500,
+        model: 'sonnet46',
+        estimated_credits: 352,
         duration_ms: 300,
       });
       const result = extractFromInput(raw);
       expect(result.toolName).toBe('Bash');
-      expect(result.model).toBe('sonnet');
-      expect(result.inputTokens).toBe(1000);
-      expect(result.outputTokens).toBe(500);
+      expect(result.model).toBe('sonnet46');
+      expect(result.estimatedCredits).toBe(352);
       expect(result.durationMs).toBe(300);
     });
 
@@ -276,48 +284,38 @@ describe('cost-track hooks', () => {
       const result = extractFromInput(raw);
       expect(result.toolName).toBe('Read');
       expect(result.model).toBeUndefined();
-      expect(result.inputTokens).toBe(0);
-      expect(result.outputTokens).toBe(0);
+      expect(result.estimatedCredits).toBe(0);
       expect(result.durationMs).toBe(0);
     });
 
     it('handles numeric strings by converting with Number()', () => {
       const raw = JSON.stringify({
         tool_name: 'Bash',
-        input_tokens: '1000',
-        output_tokens: '500',
+        estimated_credits: '352',
         duration_ms: '300',
       });
       const result = extractFromInput(raw);
-      expect(result.inputTokens).toBe(1000);
-      expect(result.outputTokens).toBe(500);
+      expect(result.estimatedCredits).toBe(352);
       expect(result.durationMs).toBe(300);
     });
 
     it('handles null values as zero', () => {
       const raw = JSON.stringify({
         tool_name: 'Bash',
-        input_tokens: null,
-        output_tokens: null,
+        estimated_credits: null,
         duration_ms: null,
       });
       const result = extractFromInput(raw);
-      expect(result.inputTokens).toBe(0);
-      expect(result.outputTokens).toBe(0);
+      expect(result.estimatedCredits).toBe(0);
       expect(result.durationMs).toBe(0);
     });
 
-    it('handles undefined fields (returns object with all undefined values)', () => {
+    it('handles empty object (all undefined fields)', () => {
       const raw = JSON.stringify({});
       const result = extractFromInput(raw);
-      // extractFromInput returns {} on JSON parse failure (caught by catch),
-      // but when JSON parses successfully with no fields it returns an object
-      // with undefined values (not empty). With JSON.stringify({}), the object
-      // parses fine and every field is absent → undefined.
       expect(result.toolName).toBeUndefined();
       expect(result.model).toBeUndefined();
-      expect(result.inputTokens).toBe(0);
-      expect(result.outputTokens).toBe(0);
+      expect(result.estimatedCredits).toBe(0);
       expect(result.durationMs).toBe(0);
     });
   });
@@ -352,34 +350,12 @@ describe('cost-track hooks', () => {
     });
   });
 
-  // ── PRICING table ──────────────────────────────────────────────────────
-
-  describe('PRICING table', () => {
-    it('has all required model entries', () => {
-      expect(PRICING).toHaveProperty('opus');
-      expect(PRICING).toHaveProperty('sonnet');
-      expect(PRICING).toHaveProperty('haiku');
-      expect(PRICING).toHaveProperty('4o');
-      expect(PRICING).toHaveProperty('4o-mini');
-      expect(PRICING).toHaveProperty('gpt-4o');
-      expect(PRICING).toHaveProperty('gpt-4o-mini');
-    });
-
-    it('has positive pricing for all models', () => {
-      for (const [model, pricing] of Object.entries(PRICING)) {
-        expect(pricing.inputPerMillion).toBeGreaterThan(0);
-        expect(pricing.outputPerMillion).toBeGreaterThan(0);
-      }
-    });
-  });
-
-  // ── getSessionId ────────────────────────────────────────────────────────
+  // ── getSessionId ───────────────────────────────────────────────────────
 
   describe('getSessionId fallback', () => {
     it('returns SESSION_ID env var when set', () => {
       const original = process.env.SESSION_ID;
       process.env.SESSION_ID = 'my-session-123';
-      // Inline the logic
       const result = process.env.SESSION_ID
         ? process.env.SESSION_ID
         : `${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}-${process.pid}`;
@@ -392,7 +368,7 @@ describe('cost-track hooks', () => {
     });
   });
 
-  // ── main() integration tests ───────────────────────────────────────────────
+  // ── main() integration tests ─────────────────────────────────────────────
 
   describe('main() integration', () => {
     const originalHookType = process.env.HOOK_TYPE;
@@ -418,10 +394,8 @@ describe('cost-track hooks', () => {
 
     it('exits 0 for PostToolUse with env var tool info', async () => {
       process.env.HOOK_TYPE = 'PostToolUse';
-      process.env.OMA_TOOL_NAME = 'Bash';
-      process.env.OMA_MODEL = 'sonnet';
-      process.env.OMA_INPUT_TOKENS = '1000';
-      process.env.OMA_OUTPUT_TOKENS = '500';
+      process.env.OMA_TOOL_NAME = 'Write';
+      process.env.OMA_MODEL = 'sonnet46';
       process.env.OMA_DURATION_MS = '300';
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
@@ -459,18 +433,17 @@ describe('cost-track hooks', () => {
         id: 'test-session-1',
         start_time: '2026-01-01T00:00:00Z',
         tools: [
-          { name: 'Bash', model: 'sonnet', input_tokens: 1000, output_tokens: 500, duration_ms: 300, timestamp: '2026-01-01T00:01:00Z' },
+          { name: 'Write', model: 'sonnet46', estimated_credits: 293, duration_ms: 300, timestamp: '2026-01-01T00:01:00Z' },
         ],
-        total_tokens: 1500,
-        estimated_cost_usd: 0.027,
+        total_estimated_credits: 293,
+        credit_cost_usd: 293 * 0.000625,
       };
-      vi.mocked(readFileSync).mockReturnValue(JSON.stringify({ sessions: [sessionData], version: '0.1' }));
+      vi.mocked(readFileSync).mockReturnValue(JSON.stringify({ sessions: [sessionData], version: '0.2' }));
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
     });
 
     it('does not write cost log when rawInput has no tool_name (extracted.toolName falsy)', async () => {
-      // Hook type is not PostToolUse or SessionEnd, rawInput is non-empty but has no tool_name
       process.env.HOOK_TYPE = 'SomeOtherHook';
       vi.mocked(readAllStdin).mockResolvedValue(JSON.stringify({ some_field: 'value' }));
       await main();
@@ -482,19 +455,16 @@ describe('cost-track hooks', () => {
       delete process.env.OMA_TOOL_NAME;
       delete process.env.OMA_MODEL;
       vi.mocked(readAllStdin).mockResolvedValue(
-        JSON.stringify({ tool_name: 'Read', model: 'sonnet', input_tokens: 100, output_tokens: 50, duration_ms: 200 })
+        JSON.stringify({ tool_name: 'Read', model: 'sonnet46', estimated_credits: 176, duration_ms: 200 })
       );
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
     });
 
     it('creates cost log file when ensureCostLog catches ENOENT', async () => {
-      // readFileSync throws → ensureCostLog catch creates the file
       process.env.HOOK_TYPE = 'PostToolUse';
-      process.env.OMA_TOOL_NAME = 'Bash';
-      process.env.OMA_MODEL = 'sonnet';
-      process.env.OMA_INPUT_TOKENS = '100';
-      process.env.OMA_OUTPUT_TOKENS = '50';
+      process.env.OMA_TOOL_NAME = 'Write';
+      process.env.OMA_MODEL = 'sonnet46';
       process.env.OMA_DURATION_MS = '200';
       vi.mocked(readFileSync).mockImplementation(() => {
         throw new Error('ENOENT');
@@ -505,7 +475,6 @@ describe('cost-track hooks', () => {
 
     it('returns empty session list when cost log has empty content', async () => {
       process.env.HOOK_TYPE = 'SessionEnd';
-      // readFileSync returns empty string → readCostLog catches and returns default
       vi.mocked(readFileSync).mockReturnValue('');
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
@@ -519,12 +488,10 @@ describe('cost-track hooks', () => {
     });
 
     it('triggers main().catch when process.exit throws', async () => {
-      // Use spyOn so vitest tracks the call before we replace the implementation
       const exitSpy = vi.spyOn(process, 'exit').mockImplementation((code: number) => {
         throw Object.assign(new Error('exit'), { code });
       });
-      // Return valid JSON so readCostLog parses successfully; process.exit(0) then throws and triggers .catch
-      vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.1"}');
+      vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.2"}');
       try {
         await main();
       } catch {
@@ -535,14 +502,22 @@ describe('cost-track hooks', () => {
     });
 
     it('records tool from rawInput via else-if branch when hook is non-standard', async () => {
-      // Hook type is not PostToolUse/SessionEnd but stdin has tool_name → else-if branch
       process.env.HOOK_TYPE = 'PreToolUse';
       delete process.env.OMA_TOOL_NAME;
       vi.mocked(readAllStdin).mockResolvedValue(
-        JSON.stringify({ tool_name: 'Bash', model: 'sonnet', input_tokens: 100, output_tokens: 50, duration_ms: 200 })
+        JSON.stringify({ tool_name: 'Write', model: 'sonnet46', estimated_credits: 293, duration_ms: 200 })
       );
-      // Return valid JSON so readCostLog parses successfully and doesn't crash upsertSession
-      vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.1"}');
+      vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.2"}');
+      await main();
+      expect(process.exit).toHaveBeenCalledWith(0);
+    });
+
+    it('normalizes ANTHROPIC_MODEL env var to tier on PostToolUse', async () => {
+      process.env.HOOK_TYPE = 'PostToolUse';
+      process.env.OMA_TOOL_NAME = 'Write';
+      process.env.ANTHROPIC_MODEL = 'claude-opus-4-6';
+      process.env.OMA_DURATION_MS = '300';
+      vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.2"}');
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
     });

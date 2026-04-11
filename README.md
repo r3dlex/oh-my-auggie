@@ -83,9 +83,13 @@ Drop the `/oma:` prefix — these activate automatically when detected in conver
 | `autopilot` | `/oma:autopilot` |
 | `ralph`, "don't stop" | `/oma:ralph` |
 | `ulw`, `ultrawork` | `/oma:ultrawork` |
+| `ultraqa` | `/oma:ultraqa` |
 | `ralplan` | `/oma:ralplan` |
+| `team N:agent` | `/oma:team` |
 | `canceloma` | `/oma:cancel` |
-| `deslop`, "anti-slop" | deslop cleanup pass |
+| `deslop`, "anti-slop" | `/oma:deslop` |
+| `ccg` | `/oma:ccg` |
+| `deep interview` | `/oma:interview` |
 
 ---
 
@@ -104,16 +108,14 @@ Drop the `/oma:` prefix — these activate automatically when detected in conver
 ```
 oh-my-auggie/
 ├── plugins/oma/
-│   ├── agents/          # 4 subagents (v0.1): explorer, planner, executor, architect
-│   ├── commands/        # 5 commands (v0.1): autopilot, ralph, status, cancel, help
-│   ├── hooks/           # 3 hooks: session-start, delegation-enforce, stop-gate
-│   ├── rules/           # orchestration.md, enterprise.md (additive)
+│   ├── agents/          # 19 agents: architect, executor, explorer, planner, verifier, etc.
+│   ├── commands/        # 43 commands: autopilot, ralph, ultrawork, team, ultraqa, etc.
+│   ├── hooks/           # 9 hooks: session-start, delegation-enforce, stop-gate, cost-track, keyword-detect, etc.
+│   ├── skills/          # 34 skills: ralph, ultrawork, ultraqa, ralplan, ccg, etc.
 │   └── mcp/
-│       └── state-server.mjs   # Zero-dependency MCP state server
-├── .augment-plugin/
-│   └── marketplace.json  # Auggie marketplace manifest
-└── e2e/
-    └── oma-core-loop.bats   # 34 integration tests
+│       └── state-server.mjs   # MCP state server (12 tools: state, notepad, skill, intent)
+└── .augment-plugin/
+    └── plugin.json      # Auggie plugin manifest
 ```
 
 **State files** (stored in `.oma/` — git-ignored):

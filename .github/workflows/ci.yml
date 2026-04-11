@@ -110,7 +110,7 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const hooks = ['session-start', 'delegation-enforce', 'stop-gate', 'approval-gate', 'adr-enforce', 'cost-track', 'keyword-detect'];
+            const hooks = ['session-start', 'delegation-enforce', 'stop-gate', 'approval-gate', 'adr-enforce', 'cost-track', 'keyword-detect', 'post-tool-status'];
             for (const h of hooks) {
               const p = 'plugins/oma/dist/hooks/' + h + '.js';
               if (!fs.existsSync(p)) {

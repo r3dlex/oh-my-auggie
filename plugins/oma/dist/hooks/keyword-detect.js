@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { resolveOmaDir } from '../utils.js';
+import { readFileSync, existsSync } from 'fs';
+import { join, resolve } from 'path';
+import { resolveOmaDir, writeJsonFile } from '../utils.js';
 export const KEYWORDS = [
     // ── Core execution modes (safe standalone) ─────────────────────────────────
     { keyword: 'autopilot', command: '/oma:autopilot' },
@@ -13,6 +13,8 @@ export const KEYWORDS = [
     { keyword: 'canceloma', command: '/oma:cancel' },
     { keyword: 'deslop', command: '/oma:deslop' },
     { keyword: 'anti-slop', command: '/oma:deslop' },
+    { keyword: 'team', command: '/oma:team' },
+    { keyword: 'ralphthon', command: '/oma:ralphthon' },
     { keyword: 'ccg', command: '/oma:ccg' },
     // ── deep-interview / deepinit ───────────────────────────────────────────────
     { keyword: 'deep interview', command: '/oma:interview' },
@@ -55,6 +57,94 @@ export const KEYWORDS = [
     { keyword: 'writer memory', command: '/oma:writer-memory' },
     { keyword: 'ralphthon', command: '/oma:ralphthon' },
 ];
+// ─── Skill name mapping ────────────────────────────────────────────────────────
+// Maps keyword to the skill directory name for SKILL.md loading.
+export const SKILL_NAME_MAP = {
+    'autopilot': 'autopilot',
+    'ralph': 'ralph',
+    "don't stop": 'ralph',
+    'ulw': 'ultrawork',
+    'ultrawork': 'ultrawork',
+    'ultraqa': 'ultraqa',
+    'ralplan': 'ralplan',
+    'canceloma': 'cancel',
+    'deslop': 'deslop',
+    'anti-slop': 'deslop',
+    'ccg': 'ccg',
+    'deep interview': 'deep-interview',
+    'deepinit': 'deepinit',
+    'oma ask': 'ask',
+    'oma plan': 'plan',
+    'oma help': 'help',
+    'oma team': 'team',
+    'oma config': 'config',
+    'oma note': 'note',
+    'oma session': 'session',
+    'oma status': 'status',
+    'oma trace': 'trace',
+    'oma wait': 'wait',
+    'doctor': 'doctor',
+    'teleport': 'teleport',
+    'tdd': 'tdd',
+    'skillify': 'skillify',
+    'visual verdict': 'visual-verdict',
+    'oma setup': 'setup',
+    'oma doctor': 'doctor',
+    'oma skill': 'skill',
+    'oma research': 'research',
+    'data science': 'science',
+    'session search': 'session-search',
+    'oma release': 'release',
+    'oma hud': 'hud',
+    'notifications': 'notifications',
+    'improve architecture': 'improve-codebase-architecture',
+    'learner mode': 'learner',
+    'writer memory': 'writer-memory',
+    'ralphthon': 'ralphthon',
+};
+// ─── Mode-activating keywords (write initial state) ───────────────────────────
+const MODE_KEYWORDS = new Set([
+    'autopilot',
+    'ralph',
+    "don't stop",
+    'ulw',
+    'ultrawork',
+    'ultraqa',
+    'ralplan',
+    'team',
+    'ralphthon',
+]);
+// ─── SKILL.md loading ─────────────────────────────────────────────────────────
+const SKILL_MAX_CHARS = 4000;
+function getSkillPath(skillName) {
+    const root = process.env.AUGMENT_PLUGIN_ROOT ?? '';
+    const base = root
+        ? resolve(root, 'plugins', 'oma')
+        : resolve(join(__dirname, '..', '..'));
+    return join(base, 'skills', skillName, 'SKILL.md');
+}
+function loadSkillMd(skillName) {
+    const skillPath = getSkillPath(skillName);
+    if (!existsSync(skillPath))
+        return '';
+    try {
+        const content = readFileSync(skillPath, 'utf8');
+        return content.length > SKILL_MAX_CHARS ? content.slice(0, SKILL_MAX_CHARS) : content;
+    }
+    catch {
+        return '';
+    }
+}
+function writeInitialState(mode) {
+    const omaDir = resolveOmaDir();
+    const state = { active: true, mode, iteration: 1, status: 'starting' };
+    writeJsonFile(join(omaDir, 'state.json'), state);
+}
+function clearState() {
+    const omaDir = resolveOmaDir();
+    const state = { active: false, mode: 'none' };
+    writeJsonFile(join(omaDir, 'state.json'), state);
+}
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export async function main() {
     const omaDir = resolveOmaDir();
@@ -102,12 +192,31 @@ export async function main() {
     const lowerInput = lastInput.toLowerCase();
     for (const entry of KEYWORDS) {
         if (lowerInput.includes(entry.keyword)) {
+            const skillName = SKILL_NAME_MAP[entry.keyword] ?? '';
+            const skillMd = skillName ? loadSkillMd(skillName) : '';
+            // State management
+            if (entry.keyword === 'canceloma') {
+                clearState();
+            }
+            else if (MODE_KEYWORDS.has(entry.keyword)) {
+                const mode = skillName; // e.g. 'ralph', 'ultrawork'
+                writeInitialState(mode);
+            }
+            // Build additionalContext
+            let additionalContext = `Keyword detected: '${entry.keyword}'. Activating ${entry.command}.`;
+            if (skillMd) {
+                additionalContext += `\n\n${skillMd}`;
+            }
             const result = {
-                keywordDetected: entry.keyword,
-                suggestedCommand: entry.command,
-                systemMessage: `Keyword detected: '${entry.keyword}'. Suggesting ${entry.command}`,
+                hookSpecificOutput: {
+                    hookEventName: 'PostToolUse',
+                    additionalContext,
+                },
             };
-            console.log(JSON.stringify(result, null, 2));
+            // Primary JSON output to stdout for auggie CLI
+            console.log(JSON.stringify(result));
+            // Backward-compatible console.log for auggie CLI stdout display
+            console.log(`Keyword detected: '${entry.keyword}'. Activating ${entry.command}.`);
             process.exit(0);
             return;
         }

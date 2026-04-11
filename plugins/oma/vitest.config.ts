@@ -19,6 +19,14 @@ export default defineConfig({
         perFile: false,
         // Override per-file: each file must meet its own current coverage
         // (some hooks have unreachable code: catch blocks, ESM top-level calls, etc.)
+        'src/hooks/post-tool-status.ts': {
+          // Status injection hook — contextParts.length conditional (PostToolUse runtime)
+          // and main().catch() error handler are design-level gaps, not bugs
+          branches: 29,
+          functions: 71,
+          lines: 66,
+          statements: 66,
+        },
       },
       // Explicitly include source TypeScript files so v8 instruments them
       include: ['src/hooks/**/*.ts'],

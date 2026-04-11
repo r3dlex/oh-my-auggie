@@ -38,6 +38,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/post-tool-status.mjs",
+            "timeout": 3000
+          },
+          {
+            "type": "command",
             "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/cost-track.mjs",
             "timeout": 5000
           },
