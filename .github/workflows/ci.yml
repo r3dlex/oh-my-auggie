@@ -32,32 +32,25 @@ jobs:
           fi
           echo "hooks.json entry points are correct (all .js)"
 
-  typecheck:
-    name: TypeScript type check
-    runs-on: ubuntu-latest
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm64]
     steps:
       - uses: actions/checkout@v4
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: plugins/oma/package-lock.json
       - name: Install dependencies
-        run: cd plugins/oma && npm install
+        run: cd plugins/oma && npm ci
       - name: TypeScript type check
         run: cd plugins/oma && npx tsc --noEmit
-
-  vitest-unit:
-    name: Vitest unit + integration tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install dependencies
-        run: cd plugins/oma && npm install
-      - name: Run unit + integration tests with coverage
+      - name: Unit + integration tests with coverage
         run: cd plugins/oma && npx vitest run --coverage
 
   cli:
@@ -65,20 +58,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
       - name: Install bats
-        run: |
-          git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
-          cd /tmp/bats-core && ./install.sh ~/.local/
-          export PATH="$HOME/.local/bin:$PATH"
-          bats --version
+        run: sudo apt-get update && sudo apt-get install -y bats
       - name: Run CLI e2e tests
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          bats e2e/oma-cli.bats
+        run: bats e2e/oma-cli.bats
 
   validate-manifests:
     name: Validate manifests
