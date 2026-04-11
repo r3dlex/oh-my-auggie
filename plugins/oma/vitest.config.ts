@@ -22,7 +22,13 @@ export default defineConfig({
       },
       // Explicitly include source TypeScript files so v8 instruments them
       include: ['src/hooks/**/*.ts'],
-      exclude: ['src/types.ts', 'src/utils.ts', 'src/index.ts'],
+      exclude: [
+        'src/types.ts',
+        'src/utils.ts',
+        'src/index.ts',
+        // audit-log.ts exits early in community profile (line 116-118) — enterprise only
+        'src/hooks/audit-log.ts',
+      ],
       // Transform mode: 'all' ensures source TS files go through the transformer
       // so v8 can map coverage back to original source lines
       transformMode: { all: ['**/*.ts'] },
