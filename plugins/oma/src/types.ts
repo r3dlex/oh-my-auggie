@@ -57,12 +57,19 @@ export interface PathsConfig {
   plansDir: string;
 }
 
+export type GraphProvider = 'graphwiki' | 'graphify' | 'none';
+
+export interface GraphConfig {
+  provider: GraphProvider;
+}
+
 export interface Config {
   version: string;
   hud: HudConfig;
   orchestration: OrchestrationConfig;
   paths: PathsConfig;
   profile: 'default' | 'enterprise';
+  graph: GraphConfig;
 }
 
 export interface CostEntry {

@@ -60,6 +60,9 @@ export const KEYWORDS: KeywordEntry[] = [
   { keyword: 'notifications', command: '/oma:notifications' },
   // ── Architecture improvement ───────────────────────────────────────────────
   { keyword: 'improve architecture', command: '/oma:improve-codebase-architecture' },
+  // ── Graph provider ─────────────────────────────────────────────────────────
+  { keyword: 'graph-provider',     command: '/oma:graph-provider' },
+  { keyword: 'graph provider',     command: '/oma:graph-provider' },
   // ── learner / writer-memory / ralphthon ───────────────────────────────────
   { keyword: 'learner mode',   command: '/oma:learner' },
   { keyword: 'writer memory',  command: '/oma:writer-memory' },
@@ -108,6 +111,8 @@ export const SKILL_NAME_MAP: Record<string, string> = {
   'oma hud':        'hud',
   'notifications':   'notifications',
   'improve architecture': 'improve-codebase-architecture',
+  'graph-provider':      'graph-provider',
+  'graph provider':      'graph-provider',
   'learner mode':    'learner',
   'writer memory':   'writer-memory',
   'ralphthon':       'ralphthon',

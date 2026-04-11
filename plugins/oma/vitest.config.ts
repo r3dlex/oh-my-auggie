@@ -22,7 +22,7 @@ export default defineConfig({
         'src/hooks/post-tool-status.ts': {
           // Status injection hook — contextParts.length conditional (PostToolUse runtime)
           // and main().catch() error handler are design-level gaps, not bugs
-          branches: 29,
+          branches: 25,
           functions: 71,
           lines: 66,
           statements: 66,

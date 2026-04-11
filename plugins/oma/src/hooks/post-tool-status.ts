@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { resolveOmaDir, loadJsonFile } from '../utils.js';
+import { resolveOmaDir, loadJsonFile, getMergedConfig } from '../utils.js';
 import type { OmaState } from '../types.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -136,6 +136,15 @@ export async function main(): Promise<void> {
     const taskSummary = formatTaskSummary(taskLog.tasks);
     if (taskSummary) contextParts.push(taskSummary);
   }
+
+  // Graph provider status (compact)
+  try {
+    const config = getMergedConfig();
+    const provider = (config.graph?.provider as string) ?? 'graphwiki';
+    if (provider !== 'none') {
+      contextParts.push(`[Graph] ${provider}`);
+    }
+  } catch { /* ignore */ }
 
   // Build compact output
   if (contextParts.length > 0) {

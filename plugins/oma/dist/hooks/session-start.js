@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { loadOmaState, resolveOmaDir } from '../utils.js';
+import { getMergedConfig, loadOmaState, resolveOmaDir } from '../utils.js';
 // ─── Background update check ──────────────────────────────────────────────────
 const UPDATE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 function getUpdateCachePath() {
@@ -112,6 +112,43 @@ export function main() {
         if (sessionContext)
             sessionContext += '\n';
         sessionContext += `[OMA] Running on Auggie ${auggieVersion}.`;
+    }
+    // ── Graph Provider Injection ───────────────────────────────────────────────
+    try {
+        const config = getMergedConfig();
+        const provider = config.graph?.provider ?? 'graphwiki';
+        if (provider !== 'none') {
+            const projectDir = process.env.AUGMENT_PROJECT_DIR || process.cwd();
+            if (provider === 'graphwiki') {
+                const reportPath = join(projectDir, 'graphwiki-out', 'GRAPH_REPORT.md');
+                if (existsSync(reportPath)) {
+                    if (sessionContext)
+                        sessionContext += '\n';
+                    sessionContext += '[OMA Graph] graphwiki active. Read graphwiki-out/GRAPH_REPORT.md for context. Use graphwiki query/path commands. Avoid reading raw source files.';
+                }
+                else {
+                    if (sessionContext)
+                        sessionContext += '\n';
+                    sessionContext += '[OMA Graph] graphwiki configured but no output found. Run: graphwiki build .';
+                }
+            }
+            else if (provider === 'graphify') {
+                const reportPath = join(projectDir, 'graphify-out', 'GRAPH_REPORT.md');
+                if (existsSync(reportPath)) {
+                    if (sessionContext)
+                        sessionContext += '\n';
+                    sessionContext += '[OMA Graph] graphify active. Read graphify-out/GRAPH_REPORT.md for context. Use /graphify query commands. Avoid reading raw source files.';
+                }
+                else {
+                    if (sessionContext)
+                        sessionContext += '\n';
+                    sessionContext += '[OMA Graph] graphify configured but no output found. Run: /graphify .';
+                }
+            }
+        }
+    }
+    catch {
+        // Config not available or invalid -- skip graph injection
     }
     // ── Output ─────────────────────────────────────────────────────────────────
     if (sessionContext) {
