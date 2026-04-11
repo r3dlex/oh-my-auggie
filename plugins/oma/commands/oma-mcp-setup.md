@@ -101,3 +101,89 @@ Servers are configured in `.oma/mcp-servers.json`:
 - Servers require compatible MCP SDK
 - Auth tokens stored in env vars, not config
 - Test servers before adding to active set
+
+## JIRA
+
+Add JIRA MCP for issue tracking and project management.
+
+### Package
+```bash
+npm install -g jira-mcp
+```
+Or use npx: `npx jira-mcp-server`
+
+### Single Instance (.mcp.json)
+
+```json
+"jira": {
+  "command": "npx",
+  "args": ["-y", "jira-mcp-server"],
+  "env": {
+    "JIRA_URL": "${JIRA_URL}",
+    "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+    "JIRA_EMAIL": "${JIRA_EMAIL}"
+  },
+  "protocol": "stdio"
+}
+```
+
+### Multiple Instances
+
+For teams needing multiple JIRA contexts (e.g. cloud + on-prem, or different projects):
+
+```json
+"jira-cloud": {
+  "command": "npx",
+  "args": ["-y", "jira-mcp-server"],
+  "env": {
+    "JIRA_URL": "${JIRA_CLOUD_URL}",
+    "JIRA_API_TOKEN": "${JIRA_CLOUD_TOKEN}",
+    "JIRA_EMAIL": "${JIRA_CLOUD_EMAIL}"
+  },
+  "protocol": "stdio"
+},
+"jira-onprem": {
+  "command": "npx",
+  "args": ["-y", "jira-mcp-server"],
+  "env": {
+    "JIRA_URL": "${JIRA_ONPREM_URL}",
+    "JIRA_API_TOKEN": "${JIRA_ONPREM_TOKEN}",
+    "JIRA_EMAIL": "${JIRA_ONPREM_EMAIL}"
+  },
+  "protocol": "stdio"
+}
+```
+
+### Credentials
+
+Store credentials in `.oma/config.json` (git-ignored):
+
+```json
+{
+  "mcp": {
+    "jira": {
+      "instances": {
+        "cloud": {
+          "url": "http://your-company.atlassian.net",
+          "email": "you@example.com",
+          "token": "your-api-token"
+        }
+      }
+    }
+  }
+}
+```
+
+Environment variables are substituted via `${VAR_NAME}` in `.mcp.json`.
+
+### Restart Required
+
+After adding or modifying JIRA entries, restart auggie:
+```bash
+# Exit auggie and restart
+auggie
+```
+
+### Verifying
+
+Run `/oma:doctor mcp` after setup to confirm JIRA connection.

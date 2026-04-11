@@ -60,6 +60,17 @@ model: sonnet4.6
 - [ ] CLI companion (`oma`) accessible
 - [ ] Environment variables set
 
+### Updates
+- [ ] Check .oma/update-check.json cache
+- [ ] If cache missing or stale (>1h), call GitHub API for latest release
+- [ ] Compare current version (from package.json) vs latest
+- [ ] Report update availability in final summary
+
+**Update check logic:**
+- Reads `.oma/update-check.json` if fresh (<1h TTL)
+- If stale or missing, calls GitHub API
+- Prints: "OMA is up to date (vX.Y.Z)" or "New version available: vX.Y.Z — run /oma:update to upgrade"
+
 ---
 
 ## Output Format
@@ -90,3 +101,4 @@ OMA DOCTOR — Diagnostic Report
 - 0: All checks pass
 - 1: Warnings only
 - 2: Failures found
+- 3: Update available (informational only)
