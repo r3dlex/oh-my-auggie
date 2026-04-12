@@ -123,4 +123,71 @@ describe('graph-provider-bridge', () => {
     consoleSpy.mockRestore();
   });
 
+  it('stdin provides invalid JSON → catch branch exits silently (lines 46-48)', async () => {
+    vi.mocked(readAllStdin).mockResolvedValue('not valid json {{{');
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    const consoleSpy = vi.spyOn(console, 'log').mockReturnValue();
+    await main();
+    expect(consoleSpy.mock.calls).toHaveLength(0);
+    expect(process.exit).toHaveBeenCalledWith(0);
+    Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    consoleSpy.mockRestore();
+  });
+
+  it('tool_input has no file_path/path/pattern → filePath is "" → exits silently (line 44)', async () => {
+    vi.mocked(readAllStdin).mockResolvedValue(
+      JSON.stringify({ tool_name: 'Read', tool_input: { content: 'no path here' } })
+    );
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    const consoleSpy = vi.spyOn(console, 'log').mockReturnValue();
+    await main();
+    expect(consoleSpy.mock.calls).toHaveLength(0);
+    expect(process.exit).toHaveBeenCalledWith(0);
+    Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    consoleSpy.mockRestore();
+  });
+
+  it('spawnSync throws → catch block exits silently (lines 73-74)', async () => {
+    vi.mocked(readAllStdin).mockResolvedValue(
+      JSON.stringify({ tool_name: 'Read', tool_input: { file_path: '/project/src/utils.ts' } })
+    );
+    spawnSyncMock.mockImplementation(() => { throw new Error('spawn failed'); });
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    const consoleSpy = vi.spyOn(console, 'log').mockReturnValue();
+    await main();
+    expect(consoleSpy.mock.calls).toHaveLength(0);
+    expect(process.exit).toHaveBeenCalledWith(0);
+    Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    consoleSpy.mockRestore();
+  });
+
+  it('spawnSync output > 500 chars → context is sliced to 500 chars', async () => {
+    vi.mocked(readAllStdin).mockResolvedValue(
+      JSON.stringify({ tool_name: 'Read', tool_input: { file_path: '/project/src/utils.ts' } })
+    );
+    const longOutput = 'x'.repeat(600);
+    spawnSyncMock.mockReturnValue({ stdout: longOutput, stderr: '', status: 0 });
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    const consoleSpy = vi.spyOn(console, 'log').mockReturnValue();
+    await main();
+    const jsonCall = consoleSpy.mock.calls.find(
+      (call) => typeof call[0] === 'string' && (call[0] as string).startsWith('{')
+    );
+    expect(jsonCall).toBeDefined();
+    const parsed = JSON.parse(jsonCall![0] as string);
+    expect(parsed.hookSpecificOutput.additionalContext).toContain('x'.repeat(500));
+    expect(parsed.hookSpecificOutput.additionalContext).not.toContain('x'.repeat(501));
+    Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    consoleSpy.mockRestore();
+  });
+
+  it('stdin is TTY → rawInput stays empty → exits silently', async () => {
+    Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    const consoleSpy = vi.spyOn(console, 'log').mockReturnValue();
+    await main();
+    expect(consoleSpy.mock.calls).toHaveLength(0);
+    expect(process.exit).toHaveBeenCalledWith(0);
+    consoleSpy.mockRestore();
+  });
+
 });
