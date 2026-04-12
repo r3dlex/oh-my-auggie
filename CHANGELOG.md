@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.1.7...v0.2.0) (2026-04-12)
+
+
+### Features
+
+* **graph:** graphwiki auto-build, auto-rebuild, resolveProjectDir, and optional dep ([0b2417d](https://github.com/r3dlex/oh-my-auggie/commit/0b2417da79c6127b3378f5ab32b05b28a3b1ee07))
+
 ## [0.1.7](https://github.com/r3dlex/oh-my-auggie/compare/v0.1.6...v0.1.7) (2026-04-12)
 
 # Changelog
