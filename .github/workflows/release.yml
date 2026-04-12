@@ -6,11 +6,11 @@ on:
       - 'v*'
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
+    outputs:
+      dist-tag: ${{ steps.dist-tag.outputs.tag }}
+      version: ${{ steps.dist-tag.outputs.version }}
 
     steps:
       - uses: actions/checkout@v4
@@ -19,11 +19,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@r3dlex'
 
       - name: Install dependencies
-        run: cd plugins/oma && npm install
+        run: cd plugins/oma && npm ci
 
       - name: Build
         run: cd plugins/oma && npm run prepare
@@ -61,13 +59,81 @@ jobs:
           "
           echo "Patched version to $VERSION"
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: oma-dist
+          path: plugins/oma
+          retention-days: 1
+
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: oma-dist
+          path: plugins/oma
+
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@r3dlex'
+
       - name: Publish to GitHub Packages
-        run: |
-          cd plugins/oma
-          npm publish --tag ${{ steps.dist-tag.outputs.tag }} --force
+        run: cd plugins/oma && npm publish --tag ${{ needs.build.outputs.dist-tag }} --force
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: oma-dist
+          path: plugins/oma
+
+      - name: Setup Node.js for npmjs.com
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@r3dlex'
+
+      - name: Strip publishConfig registry override
+        run: |
+          cd plugins/oma
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            delete pkg.publishConfig;
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Publish to npmjs.com (OIDC trusted publishing)
+        continue-on-error: true
+        run: cd plugins/oma && npm publish --tag ${{ needs.build.outputs.dist-tag }} --provenance --access public
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
