@@ -1,5 +1,5 @@
 ---
-name: oma-release
+name: release
 description: Automated release workflow — versioning, changelog, tagging, and publication
 argument-hint: "<version-or-scope>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:release — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:release
 

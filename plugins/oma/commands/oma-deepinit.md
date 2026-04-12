@@ -1,5 +1,5 @@
 ---
-name: oma-deepinit
+name: deepinit
 description: Generate hierarchical AGENTS.md — comprehensive multi-agent architecture document
 argument-hint: "[project-root]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: opus
 ---
+
+[EXECUTING /oma:deepinit — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:deepinit
 

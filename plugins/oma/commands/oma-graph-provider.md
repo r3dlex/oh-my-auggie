@@ -4,6 +4,8 @@ description: Configure which knowledge graph tool to use (graphwiki, graphify, o
 triggers: graph-provider, graph provider, oma graph
 ---
 
+[EXECUTING /oma:graph-provider — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
+
 # /oma:graph-provider
 
 Sets which knowledge graph tool OMA uses for token-optimized codebase context.

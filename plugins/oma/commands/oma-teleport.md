@@ -1,5 +1,5 @@
 ---
-name: oma-teleport
+name: teleport
 description: Create git worktrees instantly — for issues, PRs, and features in isolation
 argument-hint: "<ref>"
 allowed-tools:
@@ -9,6 +9,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:teleport — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:teleport
 

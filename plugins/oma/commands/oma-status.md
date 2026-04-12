@@ -1,11 +1,13 @@
 ---
-name: oma-status
+name: status
 description: Show the current OMA mode, active task, and iteration count
 argument-hint: ""
 allowed-tools:
   - Read
 model: haiku4.5
 ---
+
+[EXECUTING /oma:status — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:status
 

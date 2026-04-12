@@ -1,5 +1,5 @@
 ---
-name: oma-whatsnew
+name: whatsnew
 description: Show changelog entries since the last release
 argument-hint: "[count]"
 allowed-tools:
@@ -8,6 +8,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:whatsnew — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:whatsnew
 

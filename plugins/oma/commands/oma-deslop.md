@@ -1,5 +1,5 @@
 ---
-name: oma-deslop
+name: deslop
 description: Regression-safe anti-slop cleanup — identify and fix low-quality AI artifacts, verbose patterns, and over-engineered code
 argument-hint: "<target>"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:deslop — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:deslop
 

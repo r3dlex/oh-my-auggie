@@ -1,5 +1,5 @@
 ---
-name: oma-team
+name: team
 description: Coordinated team of N agents working in parallel (requires external oma CLI companion)
 argument-hint: "<N> <task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: opus
 ---
+
+[EXECUTING /oma:team — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:team
 

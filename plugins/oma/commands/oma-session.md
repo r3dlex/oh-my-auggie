@@ -1,5 +1,5 @@
 ---
-name: oma-session
+name: session
 description: Worktree-first dev environment manager — create, manage, and switch development worktrees
 argument-hint: "<action> [worktree-name]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:session — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:session
 

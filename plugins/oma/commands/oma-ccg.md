@@ -1,5 +1,5 @@
 ---
-name: oma-ccg
+name: ccg
 description: Tri-model orchestration — synthesize opus + gemini + gpt-5.4 perspectives, finalize in sonnet
 argument-hint: "<task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: opus
 ---
+
+[EXECUTING /oma:ccg — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ccg
 

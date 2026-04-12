@@ -1,5 +1,5 @@
 ---
-name: oma-plan
+name: plan
 description: Strategic planning with analyst/architect review — structured approach for complex tasks
 argument-hint: "<task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: opus
 ---
+
+[EXECUTING /oma:plan — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:plan
 

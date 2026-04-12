@@ -1,5 +1,5 @@
 ---
-name: oma-research
+name: research
 description: Parallel research via document-specialist agents — gather comprehensive information quickly
 argument-hint: "<query>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - WebSearch
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:research — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:research
 

@@ -1,5 +1,5 @@
 ---
-name: oma-session-search
+name: session-search
 description: Search across all session history — find past decisions, code, and context quickly
 argument-hint: "<query>"
 allowed-tools:
@@ -9,6 +9,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:session-search — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:session-search
 

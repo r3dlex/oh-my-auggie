@@ -1,5 +1,5 @@
 ---
-name: oma-learner
+name: learner
 description: Extract learned skill from conversation — create reusable skill from demonstrated expertise
 argument-hint: "<skill-name>"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:learner — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:learner
 

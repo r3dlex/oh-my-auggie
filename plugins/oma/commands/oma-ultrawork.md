@@ -1,5 +1,5 @@
 ---
-name: oma-ultrawork
+name: ultrawork
 description: High-throughput parallel subagent execution — spawn multiple agents simultaneously for maximum speed
 argument-hint: "<task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:ultrawork — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ultrawork
 

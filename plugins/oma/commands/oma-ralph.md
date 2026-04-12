@@ -1,5 +1,5 @@
 ---
-name: oma-ralph
+name: ralph
 description: Persistence loop — keeps working until task is complete and verified by architect
 argument-hint: "<task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:ralph — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ralph
 

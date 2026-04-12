@@ -1,10 +1,12 @@
 ---
-name: oma-improve-codebase-architecture
+name: improve-codebase-architecture
 description: Deep exploration and architectural improvement via organic friction detection
 triggers:
   - /oma:improve-architecture
   - /oma:architect-deep
 ---
+
+[EXECUTING /oma:improve-codebase-architecture — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 # /oma:improve-codebase-architecture
 

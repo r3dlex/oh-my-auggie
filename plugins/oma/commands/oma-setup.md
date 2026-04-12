@@ -1,5 +1,5 @@
 ---
-name: oma-setup
+name: setup
 description: Install or refresh OMA — set up plugin, hooks, agents, and skills
 argument-hint: "[options]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:setup — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:setup
 

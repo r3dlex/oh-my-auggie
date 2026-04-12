@@ -1,5 +1,5 @@
 ---
-name: oma-notifications
+name: notifications
 description: Configure notifications — Telegram, Discord, and Slack alerts for OMA events
 argument-hint: "<action> [channel]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:notifications — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:notifications
 

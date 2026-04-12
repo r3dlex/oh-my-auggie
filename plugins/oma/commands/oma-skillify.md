@@ -1,10 +1,12 @@
 ---
-name: oma-skillify
+name: skillify
 description: Create a new OMA skill from a repeated task pattern
 triggers:
   - /oma:skillify
   - /skillify
 ---
+
+[EXECUTING /oma:skillify — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 # /oma:skillify
 

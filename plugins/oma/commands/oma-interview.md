@@ -1,5 +1,5 @@
 ---
-name: oma-interview
+name: interview
 description: Socratic requirements gathering — ask probing questions to extract complete requirements
 argument-hint: "<topic>"
 allowed-tools:
@@ -9,6 +9,8 @@ allowed-tools:
   - Bash
 model: opus
 ---
+
+[EXECUTING /oma:interview — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:interview
 

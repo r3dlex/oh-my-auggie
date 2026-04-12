@@ -1,5 +1,5 @@
 ---
-name: oma-update
+name: update
 description: Check for and install OMA updates from GitHub Packages
 argument-hint: "[--check] [--force]"
 allowed-tools:
@@ -8,6 +8,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:update — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 You are executing `/oma:update`. Follow these steps now.
 

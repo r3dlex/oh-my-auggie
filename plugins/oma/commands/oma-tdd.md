@@ -1,9 +1,11 @@
 ---
-name: oma-tdd
+name: tdd
 description: Test-Driven Development with red-green-refactor and vertical slices
 triggers:
   - /oma:tdd
 ---
+
+[EXECUTING /oma:tdd — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 # /oma:tdd
 

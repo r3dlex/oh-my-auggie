@@ -1,11 +1,13 @@
 ---
-name: oma-help
+name: help
 description: Show all available OMA commands or detailed help for a specific command
 argument-hint: "[command]"
 allowed-tools:
   - Read
 model: haiku4.5
 ---
+
+[EXECUTING /oma:help — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:help
 

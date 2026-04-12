@@ -1,5 +1,5 @@
 ---
-name: oma-version
+name: version
 description: Show the current installed version of OMA
 argument-hint: ""
 allowed-tools:
@@ -7,6 +7,8 @@ allowed-tools:
   - Glob
 model: haiku4.5
 ---
+
+[EXECUTING /oma:version — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:version
 

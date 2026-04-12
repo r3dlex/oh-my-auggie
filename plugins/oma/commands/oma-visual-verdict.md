@@ -1,5 +1,5 @@
 ---
-name: oma-visual-verdict
+name: visual-verdict
 description: Structured visual QA — compare screenshots, validate UI changes, and report regressions
 argument-hint: "<baseline> <candidate>"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:visual-verdict — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:visual-verdict
 

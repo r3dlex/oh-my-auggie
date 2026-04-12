@@ -1,5 +1,5 @@
 ---
-name: oma-cancel
+name: cancel
 description: Cancel active OMA mode and clear all state
 argument-hint: "[--force|--all]"
 allowed-tools:
@@ -7,6 +7,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:cancel — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:cancel
 

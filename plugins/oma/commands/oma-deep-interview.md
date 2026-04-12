@@ -1,5 +1,5 @@
 ---
-name: oma-deep-interview
+name: deep-interview
 description: Socratic deep interview with mathematical ambiguity gating — thorough requirements gathering before execution
 argument-hint: "[--quick|--standard|--deep] [--autoresearch] <idea or vague description>"
 allowed-tools:
@@ -9,6 +9,8 @@ allowed-tools:
   - Bash
 model: opus
 ---
+
+[EXECUTING /oma:deep-interview — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:deep-interview
 

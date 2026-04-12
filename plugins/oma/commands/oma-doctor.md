@@ -1,5 +1,5 @@
 ---
-name: oma-doctor
+name: doctor
 description: Diagnose OMA installation issues — check plugin health, dependencies, and configuration
 argument-hint: "[component]"
 allowed-tools:
@@ -9,6 +9,8 @@ allowed-tools:
   - Bash
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:doctor — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:doctor
 

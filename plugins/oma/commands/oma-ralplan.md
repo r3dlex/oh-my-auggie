@@ -1,5 +1,5 @@
 ---
-name: oma-ralplan
+name: ralplan
 description: Consensus planning — Planner/Architect/Critic multi-agent loop until consensus is reached
 argument-hint: "<task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: opus
 ---
+
+[EXECUTING /oma:ralplan — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ralplan
 

@@ -1,5 +1,5 @@
 ---
-name: oma-skills
+name: skills
 description: List all available OMA skills and their descriptions
 argument-hint: ""
 allowed-tools:
@@ -7,6 +7,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:skills — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:skills
 

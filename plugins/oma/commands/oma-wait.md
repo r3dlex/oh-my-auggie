@@ -1,5 +1,5 @@
 ---
-name: oma-wait
+name: wait
 description: Rate limit monitoring and auto-resume — wait for Claude API limits to clear
 argument-hint: "[subcommand]"
 allowed-tools:
@@ -7,6 +7,8 @@ allowed-tools:
   - Bash
 model: haiku4.5
 ---
+
+[EXECUTING /oma:wait — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:wait
 

@@ -1,5 +1,5 @@
 ---
-name: oma-note
+name: note
 description: Write to notepad — priority, working memory, or manual notes
 argument-hint: "<section> <text>"
 allowed-tools:
@@ -8,6 +8,8 @@ allowed-tools:
   - Write
 model: haiku4.5
 ---
+
+[EXECUTING /oma:note — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:note
 

@@ -1,5 +1,5 @@
 ---
-name: oma-writer-memory
+name: writer-memory
 description: Agentic memory for writers — persistent context across writing sessions
 argument-hint: "<action> [content]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: haiku4.5
 ---
+
+[EXECUTING /oma:writer-memory — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:writer-memory
 

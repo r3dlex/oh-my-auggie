@@ -4,6 +4,8 @@ description: View, set, or reset OMA configuration (global or local)
 triggers: config, oma config, cfg
 ---
 
+[EXECUTING /oma:config — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
+
 # /oma:config
 
 Manages OMA's two-tiered configuration system.

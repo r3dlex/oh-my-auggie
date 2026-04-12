@@ -1,5 +1,5 @@
 ---
-name: oma-ultraqa
+name: ultraqa
 description: QA cycling — test, verify, fix, repeat until quality passes
 argument-hint: "<target>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:ultraqa — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ultraqa
 

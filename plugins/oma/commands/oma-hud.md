@@ -1,5 +1,5 @@
 ---
-name: oma-hud
+name: hud
 description: Configure HUD display — customize heads-up display for real-time execution metrics
 argument-hint: "[element] [value]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:hud — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:hud
 

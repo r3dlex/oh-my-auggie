@@ -1,5 +1,5 @@
 ---
-name: oma-science
+name: science
 description: Science/research workflow — hypothesis → experiment → analysis → conclusion
 argument-hint: "<topic>"
 allowed-tools:
@@ -13,6 +13,8 @@ allowed-tools:
   - WebSearch
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:science — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:science
 

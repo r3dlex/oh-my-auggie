@@ -1,5 +1,5 @@
 ---
-name: oma-ask
+name: ask
 description: Query with a specific model — get a targeted answer from a named model
 argument-hint: "<model> <query>"
 allowed-tools:
@@ -8,6 +8,8 @@ allowed-tools:
   - Grep
 model: haiku4.5
 ---
+
+[EXECUTING /oma:ask — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ask
 

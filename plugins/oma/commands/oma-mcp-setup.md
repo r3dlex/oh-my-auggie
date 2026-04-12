@@ -1,5 +1,5 @@
 ---
-name: oma-mcp-setup
+name: mcp-setup
 description: Configure MCP servers — add, remove, and manage Model Context Protocol server connections
 argument-hint: "<action> [server-name]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:mcp-setup — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:mcp-setup
 

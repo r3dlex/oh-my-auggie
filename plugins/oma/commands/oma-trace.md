@@ -1,5 +1,5 @@
 ---
-name: oma-trace
+name: trace
 description: Evidence-driven causal tracing — trace decision paths to understand outcomes
 argument-hint: "<event-id>"
 allowed-tools:
@@ -10,6 +10,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:trace — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:trace
 

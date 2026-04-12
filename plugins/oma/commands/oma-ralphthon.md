@@ -1,5 +1,5 @@
 ---
-name: oma-ralphthon
+name: ralphthon
 description: Autonomous hackathon lifecycle — PRD via deep-interview, ralph loop execution, auto-hardening
 argument-hint: "<task>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:ralphthon — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:ralphthon
 

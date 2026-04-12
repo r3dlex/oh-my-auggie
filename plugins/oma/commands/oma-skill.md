@@ -1,5 +1,5 @@
 ---
-name: oma-skill
+name: skill
 description: Manage OMA skills — list, add, remove, search, and edit skills
 argument-hint: "<action> [skill-name]"
 allowed-tools:
@@ -11,6 +11,8 @@ allowed-tools:
   - Write
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:skill — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:skill
 

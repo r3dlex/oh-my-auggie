@@ -1,5 +1,5 @@
 ---
-name: oma-autopilot
+name: autopilot
 description: Full autonomous execution — expand requirements, plan, implement in parallel, QA, multi-perspective validation
 argument-hint: "<goal>"
 allowed-tools:
@@ -12,6 +12,8 @@ allowed-tools:
   - Task
 model: sonnet4.6
 ---
+
+[EXECUTING /oma:autopilot — DO NOT SUMMARIZE. EXECUTE THE STEPS BELOW IMMEDIATELY.]
 
 ## /oma:autopilot
 
