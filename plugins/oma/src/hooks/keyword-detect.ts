@@ -61,8 +61,8 @@ export const KEYWORDS: KeywordEntry[] = [
   // ── Architecture improvement ───────────────────────────────────────────────
   { keyword: 'improve architecture', command: '/oma:improve-codebase-architecture' },
   // ── Graph provider ─────────────────────────────────────────────────────────
-  { keyword: 'graph-provider',     command: '/oma:graph-provider' },
-  { keyword: 'graph provider',     command: '/oma:graph-provider' },
+  { keyword: 'graph-provider',     command: '/oma:graph-context' },
+  { keyword: 'graph provider',     command: '/oma:graph-context' },
   // ── learner / writer-memory / ralphthon ───────────────────────────────────
   { keyword: 'learner mode',   command: '/oma:learner' },
   { keyword: 'writer memory',  command: '/oma:writer-memory' },
@@ -111,8 +111,8 @@ export const SKILL_NAME_MAP: Record<string, string> = {
   'oma hud':        'hud',
   'notifications':   'notifications',
   'improve architecture': 'improve-codebase-architecture',
-  'graph-provider':      'graph-provider',
-  'graph provider':      'graph-provider',
+  'graph-provider':      'graph-context',
+  'graph provider':      'graph-context',
   'learner mode':    'learner',
   'writer memory':   'writer-memory',
   'ralphthon':       'ralphthon',
@@ -253,8 +253,6 @@ export async function main(): Promise<void> {
 
       // Primary JSON output to stdout for auggie CLI
       console.log(JSON.stringify(result));
-      // Backward-compatible console.log for auggie CLI stdout display
-      console.log(`Keyword detected: '${entry.keyword}'. Activating ${entry.command}.`);
       process.exit(0);
       return;
     }
