@@ -53,8 +53,8 @@ export const KEYWORDS = [
     // ── Architecture improvement ───────────────────────────────────────────────
     { keyword: 'improve architecture', command: '/oma:improve-codebase-architecture' },
     // ── Graph provider ─────────────────────────────────────────────────────────
-    { keyword: 'graph-provider', command: '/oma:graph-context' },
-    { keyword: 'graph provider', command: '/oma:graph-context' },
+    { keyword: 'graph-provider', command: '/oma:graph-provider' },
+    { keyword: 'graph provider', command: '/oma:graph-provider' },
     // ── learner / writer-memory / ralphthon ───────────────────────────────────
     { keyword: 'learner mode', command: '/oma:learner' },
     { keyword: 'writer memory', command: '/oma:writer-memory' },
