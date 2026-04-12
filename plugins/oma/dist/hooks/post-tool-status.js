@@ -115,7 +115,12 @@ export async function main() {
         const context = contextParts.join('\n');
         // Truncate to 500 chars for additionalContext limit
         const truncated = context.length > 500 ? context.slice(0, 497) + '...' : context;
-        console.log(truncated);
+        console.log(JSON.stringify({
+            hookSpecificOutput: {
+                hookEventName: 'PostToolUse',
+                additionalContext: truncated,
+            },
+        }));
     }
     process.exit(0);
 }
