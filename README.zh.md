@@ -34,6 +34,17 @@
 auggie plugin marketplace add r3dlex/oh-my-auggie
 auggie plugin install oma@oh-my-auggie
 ```
+Then initialize OMA in your project:
+
+```
+/oma:setup
+```
+
+Optionally configure MCP servers (adds state persistence and advanced tooling):
+
+```
+/oma:mcp-setup
+```
 
 就这样。插件会自动注册所有命令、智能体、钩子和 MCP 状态服务器。
 
@@ -43,6 +54,17 @@ auggie plugin install oma@oh-my-auggie
 git clone https://github.com/r3dlex/oh-my-auggie.git
 cd oh-my-auggie
 auggie plugin install --source ./plugins/oma oma@oh-my-auggie
+```
+Then initialize OMA in your project:
+
+```
+/oma:setup
+```
+
+Optionally configure MCP servers (adds state persistence and advanced tooling):
+
+```
+/oma:mcp-setup
 ```
 
 <p align="center">

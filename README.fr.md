@@ -32,6 +32,17 @@
 auggie plugin marketplace add r3dlex/oh-my-auggie
 auggie plugin install oma@oh-my-auggie
 ```
+Then initialize OMA in your project:
+
+```
+/oma:setup
+```
+
+Optionally configure MCP servers (adds state persistence and advanced tooling):
+
+```
+/oma:mcp-setup
+```
 
 C'est tout. Le plugin enregistre automatiquement toutes les commandes, agents, hooks et le serveur d'état MCP.
 
@@ -41,6 +52,17 @@ C'est tout. Le plugin enregistre automatiquement toutes les commandes, agents, h
 git clone https://github.com/r3dlex/oh-my-auggie.git
 cd oh-my-auggie
 auggie plugin install --source ./plugins/oma oma@oh-my-auggie
+```
+Then initialize OMA in your project:
+
+```
+/oma:setup
+```
+
+Optionally configure MCP servers (adds state persistence and advanced tooling):
+
+```
+/oma:mcp-setup
 ```
 
 <p align="center">
