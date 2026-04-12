@@ -108,7 +108,20 @@ auggie --plugin-dir /path/to/oh-my-auggie/plugins/oma
 
 ---
 
-## 5. Rebuilding After Changes
+## 5. Keeping AGENTS.md Up to Date
+
+Every directory under `plugins/oma/` has an `AGENTS.md` file that documents its contents for AI agents. When you add or remove files from a directory, update that directory's `AGENTS.md` to reflect the change:
+
+- **Adding a file** — add a row to the Key Files table with a brief description.
+- **Removing a file** — remove its row from the Key Files table.
+- **Adding a subdirectory** — add a row to the Subdirectories table (if one exists) or add the section.
+- **Changing a file's purpose** — update its description in the Key Files table.
+
+The `<!-- MANUAL: ... -->` line at the bottom of each `AGENTS.md` marks the boundary for hand-written notes that are preserved on regeneration.
+
+---
+
+## 6. Rebuilding After Changes
 
 After editing TypeScript files in `src/`, hooks, agents, skills, or commands:
 
@@ -132,7 +145,7 @@ npm test
 
 ---
 
-## 6. Running Tests
+## 7. Running Tests
 
 ```bash
 # Run tests once and exit
@@ -149,7 +162,7 @@ All tests should pass before you submit a PR.
 
 ---
 
-## 7. Rebasing onto Upstream
+## 8. Rebasing onto Upstream
 
 When you are ready to sync with the latest upstream changes:
 
@@ -174,7 +187,7 @@ npm test
 
 ---
 
-## 8. Submitting a PR
+## 9. Submitting a PR
 
 1. **Push your branch** to your fork:
    ```bash
@@ -200,7 +213,7 @@ npm test
 
 ---
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 ### Skills/agents not showing up after rebuild
 

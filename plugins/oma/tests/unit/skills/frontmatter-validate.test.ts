@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { readdirSync, readFileSync } from 'fs';
+import { readdirSync, readFileSync, statSync } from 'fs';
 import { join, resolve } from 'path';
 
 function parseFrontmatter(content: string): Record<string, unknown> {
@@ -20,6 +20,7 @@ function parseFrontmatter(content: string): Record<string, unknown> {
 const projectRoot = resolve(process.cwd());
 const skillsDir = join(projectRoot, 'skills');
 const skillDirs = readdirSync(skillsDir).filter(d =>
+  statSync(join(skillsDir, d)).isDirectory() &&
   readdirSync(join(skillsDir, d)).includes('SKILL.md')
 );
 

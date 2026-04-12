@@ -109,9 +109,9 @@ Drop the `/oma:` prefix — these activate automatically when detected in conver
 oh-my-auggie/
 ├── plugins/oma/
 │   ├── agents/          # 19 agents: architect, executor, explorer, planner, verifier, etc.
-│   ├── commands/        # 43 commands: autopilot, ralph, ultrawork, team, ultraqa, etc.
-│   ├── hooks/           # 9 hooks: session-start, delegation-enforce, stop-gate, cost-track, keyword-detect, etc.
-│   ├── skills/          # 34 skills: ralph, ultrawork, ultraqa, ralplan, ccg, etc.
+│   ├── commands/        # 44 commands: autopilot, ralph, ultrawork, team, ultraqa, etc.
+│   ├── hooks/           # 10 hooks: session-start, delegation-enforce, stop-gate, cost-track, keyword-detect, etc.
+│   ├── skills/          # 36 skills: ralph, ultrawork, ultraqa, ralplan, ccg, etc.
 │   └── mcp/
 │       └── state-server.mjs   # MCP state server (12 tools: state, notepad, skill, intent)
 └── .augment-plugin/

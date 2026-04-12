@@ -25,7 +25,7 @@ oh-my-auggie/
 │       │   ├── oma-executor.md
 │       │   ├── oma-architect.md
 │       │   └── [15 more in v0.2]
-│       ├── commands/              # 28 slash command markdown files
+│       ├── commands/              # 44 slash command markdown files
 │       │   ├── oma-autopilot.md
 │       │   ├── oma-ralph.md
 │       │   ├── oma-status.md
@@ -119,7 +119,7 @@ Enterprise profile activates when `.oma/config.json` contains `"profile": "enter
 | Feature | v0.1 | v0.2 |
 |---------|------|------|
 | Core agents | 4 | 19 |
-| Core commands | 5 | 28 |
+| Core commands | 5 | 44 |
 | Hook-based ADR enforcement | No | Yes (adr-enforce.sh) |
 | Hook-based approval gates | No | Yes (approval-gate.sh) |
 | Cost tracking | No | Yes (cost-track.sh) |
