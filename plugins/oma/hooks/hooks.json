@@ -17,6 +17,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/graph-provider-bridge.js",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
             "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/delegation-enforce.js",
             "timeout": 5000
           },

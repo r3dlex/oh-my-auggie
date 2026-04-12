@@ -80,7 +80,7 @@ export function main() {
                 if (existsSync(reportPath)) {
                     if (sessionContext)
                         sessionContext += '\n';
-                    sessionContext += '[OMA Graph] graphwiki active. Read graphwiki-out/GRAPH_REPORT.md for context. Use graphwiki query/path commands. Avoid reading raw source files.';
+                    sessionContext += '[OMA Graph] graphwiki active.\n1. Read graphwiki-out/GRAPH_REPORT.md for project overview\n2. Read graphwiki-out/wiki/index.md for page directory\n3. Use `graphwiki query "<question>"` for targeted lookups\n4. Use `graphwiki path <nodeA> <nodeB>` for structural queries\n5. Max 3 wiki pages per query. Avoid reading raw source files.';
                 }
                 else {
                     if (sessionContext)
@@ -93,7 +93,7 @@ export function main() {
                 if (existsSync(reportPath)) {
                     if (sessionContext)
                         sessionContext += '\n';
-                    sessionContext += '[OMA Graph] graphify active. Read graphify-out/GRAPH_REPORT.md for context. Use /graphify query commands. Avoid reading raw source files.';
+                    sessionContext += '[OMA Graph] graphify active.\n1. Read graphify-out/GRAPH_REPORT.md for project overview\n2. Use `/graphify query "<question>"` for targeted lookups (BFS)\n3. Use `/graphify query "<question>" --dfs` to trace specific paths\n4. Use `/graphify path "<nodeA>" "<nodeB>"` for shortest-path queries\n5. Avoid reading raw source files unless graph data is insufficient.';
                 }
                 else {
                     if (sessionContext)

@@ -182,6 +182,11 @@ describe('SKILL_NAME_MAP', () => {
   it('maps improve architecture to improve-codebase-architecture', () => {
     expect(SKILL_NAME_MAP['improve architecture']).toBe('improve-codebase-architecture');
   });
+
+  it('maps graph-provider to graph-context in SKILL_NAME_MAP', () => {
+    expect(SKILL_NAME_MAP['graph-provider']).toBe('graph-context');
+    expect(SKILL_NAME_MAP['graph provider']).toBe('graph-context');
+  });
 });
 
 // ─── findKeywordMatch ──────────────────────────────────────────────────────────
