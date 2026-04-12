@@ -9,63 +9,122 @@ allowed-tools:
 model: haiku4.5
 ---
 
-## /oma:update
+You are executing `/oma:update`. Follow these steps now.
 
-**Purpose:** Check for newer OMA versions and install upgrades from GitHub Packages.
-
-**Usage:**
-- `/oma:update` — Check version, upgrade if newer available
-- `/oma:update --check` — Fast check only (current vs latest)
-- `/oma:update --force` — Reinstall even on same version
-
-**Examples:**
-- `/oma:update`
-- `/oma:update --check`
-- `/oma:update --force`
+Parse the arguments passed to this command:
+- `--check` → version check only, no install
+- `--force` → reinstall even if already on latest
 
 ---
 
-## How It Works
+## Step 1 — Read current version
 
-### Version Check
-1. Reads current version from `plugins/oma/package.json`
-2. Calls GitHub API for latest release:
-   ```
-   GET https://api.github.com/repos/r3dlex/oh-my-auggie/releases/latest
-   ```
-3. Compares current vs latest using semver
-4. If `--check` flag: prints current and latest version to stderr, exits 0
+```bash
+node -e "const p = require('./plugins/oma/package.json'); console.log(p.version)" 2>/dev/null \
+  || node -e "const p = require('${AUGMENT_PLUGIN_ROOT}/package.json'); console.log(p.version)" 2>/dev/null \
+  || cat plugins/oma/package.json | grep '"version"' | head -1
+```
 
-### Upgrade
-- If newer version found (or `--force`): runs:
-  ```bash
-  npm install @r3dlex/oh-my-auggie --upgrade
-  ```
-- Installs from GitHub Packages npm registry (set in `publishConfig.registry`)
-- Prints result to stderr
+Store the result as CURRENT_VERSION (e.g. `0.1.4`).
 
-### Output Format
+---
+
+## Step 2 — Check cache (skip API if fresh)
+
+```bash
+CACHE_FILE=".oma/update-check.json"
+if [ -f "$CACHE_FILE" ]; then
+  LAST_CHECKED=$(node -e "const c=require('./$CACHE_FILE'); console.log(c.lastChecked||'')" 2>/dev/null)
+  CACHED_LATEST=$(node -e "const c=require('./$CACHE_FILE'); console.log(c.latestVersion||'')" 2>/dev/null)
+  NOW_TS=$(date +%s)
+  CACHE_TS=$(node -e "console.log(Math.floor(new Date('$LAST_CHECKED').getTime()/1000)||0)" 2>/dev/null)
+  AGE=$(( NOW_TS - CACHE_TS ))
+  # Cache is valid for 1 hour (3600 seconds)
+  if [ "$AGE" -lt 3600 ] && [ -n "$CACHED_LATEST" ]; then
+    LATEST_VERSION="$CACHED_LATEST"
+    echo "Using cached version info (age: ${AGE}s)"
+  fi
+fi
+```
+
+If LATEST_VERSION is set from cache, skip Step 3.
+
+---
+
+## Step 3 — Fetch latest version from GitHub API
+
+```bash
+LATEST_VERSION=$(curl -fsSL \
+  "https://api.github.com/repos/r3dlex/oh-my-auggie/releases/latest" \
+  2>/dev/null | node -e "
+    let d='';
+    process.stdin.on('data',c=>d+=c);
+    process.stdin.on('end',()=>{
+      try { const j=JSON.parse(d); console.log(j.tag_name.replace(/^v/,'')); }
+      catch { process.exit(1); }
+    });
+  " 2>/dev/null)
+
+if [ -z "$LATEST_VERSION" ]; then
+  echo "--- OMA Update Check ---"
+  echo "Could not reach GitHub API. Check your internet connection."
+  exit 0
+fi
+```
+
+---
+
+## Step 4 — Write cache
+
+```bash
+mkdir -p .oma
+node -e "
+  const fs = require('fs');
+  const cache = {
+    currentVersion: '$CURRENT_VERSION',
+    latestVersion: '$LATEST_VERSION',
+    lastChecked: new Date().toISOString(),
+    updateAvailable: '$LATEST_VERSION' !== '$CURRENT_VERSION'
+  };
+  fs.writeFileSync('.oma/update-check.json', JSON.stringify(cache, null, 2));
+" 2>/dev/null || true
+```
+
+---
+
+## Step 5 — Print version comparison
+
 ```
 --- OMA Update Check ---
-Current:  oma@0.1.4
-Latest:   oma@0.1.5
-Status:   Update available — run /oma:update to upgrade
+Current:  oma@CURRENT_VERSION
+Latest:   oma@LATEST_VERSION
+Status:   [see below]
 ```
 
-### Caching
-- After checking, writes cache to `.oma/update-check.json`:
-  ```json
-  {
-    "currentVersion": "0.1.4",
-    "latestVersion": "0.1.5",
-    "lastChecked": "2026-04-11T08:00:00Z",
-    "updateAvailable": true
-  }
-  ```
-- Cache TTL: 1 hour — subsequent checks within TTL skip API call
+- If CURRENT_VERSION == LATEST_VERSION and no `--force`: print `Already on latest.` and exit 0.
+- If CURRENT_VERSION != LATEST_VERSION: print `Update available — installing...` and continue to Step 6.
+- If `--force`: print `Force reinstall requested — installing oma@LATEST_VERSION...` and continue to Step 6.
+- If `--check` flag: print status above and **exit 0 without installing**.
 
-### Constraints
-- Always exits 0 (hook-safe — never breaks auggie)
-- Upgrade requires internet connection
-- GitHub rate limit: if API fails, exits 0 silently
-- Cache is written to `.oma/update-check.json` (git-ignored)
+---
+
+## Step 6 — Install update
+
+Run the following to upgrade:
+
+```bash
+npm install -g @r3dlex/oh-my-auggie@latest 2>&1 \
+  || npm install @r3dlex/oh-my-auggie@latest 2>&1
+```
+
+If the install fails with a registry error, suggest the user check that GitHub Packages access is configured.
+
+Print result to the user. Always exit 0 — this is a hook-safe command that must never break auggie.
+
+---
+
+## Constraints
+
+- Always exit 0, even on failure
+- Never write to files outside `.oma/`
+- If any step fails silently, continue to the next step

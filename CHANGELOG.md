@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-04-12
+
+### Features
+
+- OMA v0.2: XML agent format, ADR system, audit-log, ultrawork, ralplan (#23)
+- graph provider configuration system with multi-provider bridge (#25)
+- full JS-to-TS hooks migration: session-start, setup-rules, hooks.json cutover (#27)
+- Phase 2 hooks parity + post-tool-status injection hook
+- add `/oma:version` and `/oma:whatsnew` commands
+- add `/oma:update` command with session-start background upgrade check
+- add buddy assets, banner, and SECURITY.md
+
+### Bug Fixes
+
+- wrap post-tool-status output in hookSpecificOutput JSON (#30)
+- fix graph-provider keyword command target (#30)
+- cost-track: parse stdin before estimating credits to fix always-88 bug (#31)
+- cost-track: estimate tokens from stdin when Auggie provides no token counts
+- MCP: use relative path instead of AUGMENT_PLUGIN_ROOT env var
+
+### Docs
+
+- add hierarchical AGENTS.md documentation with 19 agents and 44 commands (#29)
+- add `/oma:setup` and `/oma:mcp-setup` post-install steps to all 12 README variants
+- rewrite `/oma:update` command as imperative instructions
+
+### Refactors
+
+- CI: zero-install with npm ci cache + ARM64 matrix + apt bats (#24)
+
 ## [0.1.0-alpha.1] - 2026-04-09
 
 ### Features
