@@ -287,6 +287,7 @@ export const DEFAULT_CONFIG = {
     paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' },
     profile: 'default',
     graph: { provider: 'graphwiki' },
+    hooks: { costTracking: false, statusMessages: false },
 };
 /**
  * Returns the fully merged OMA config.

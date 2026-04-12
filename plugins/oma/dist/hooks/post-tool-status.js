@@ -54,6 +54,14 @@ function formatRememberSummary(tags) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export async function main() {
     const omaDir = resolveOmaDir();
+    try {
+        const config = getMergedConfig();
+        if (!config.hooks.statusMessages) {
+            process.exit(0);
+            return;
+        }
+    }
+    catch { /* ignore config errors, proceed with output */ }
     const contextParts = [];
     // Read stdin for tool output
     let rawInput = '';

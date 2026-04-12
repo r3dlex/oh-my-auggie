@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { resolveOmaDir } from '../utils.js';
+import { resolveOmaDir, getMergedConfig } from '../utils.js';
 // ─── Credit cost constants ────────────────────────────────────────────────────
 // Credits per 1M tokens; $0.000625 per credit ($15 / 24,000)
 // Keys use dot-free identifiers (dots/hyphens stripped from Auggie model names)
@@ -140,6 +140,11 @@ export function extractFromInput(rawInput) {
 export async function main() {
     const hookType = process.env.HOOK_TYPE ?? 'PostToolUse';
     const omaDir = resolveOmaDir();
+    const config = getMergedConfig();
+    if (!config.hooks.costTracking) {
+        process.exit(0);
+        return;
+    }
     // Read stdin if available
     let rawInput = '';
     if (!process.stdin.isTTY) {
