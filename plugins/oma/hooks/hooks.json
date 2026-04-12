@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/session-start.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/session-start.js",
             "timeout": 5000
           }
         ]
@@ -17,17 +17,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/delegation-enforce.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/delegation-enforce.js",
             "timeout": 5000
           },
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/approval-gate.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/approval-gate.js",
             "timeout": 5000
           },
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/adr-enforce.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/adr-enforce.js",
             "timeout": 5000
           }
         ]
@@ -38,22 +38,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/post-tool-status.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/post-tool-status.js",
             "timeout": 3000
           },
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/cost-track.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/cost-track.js",
             "timeout": 5000
           },
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/keyword-detect.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/keyword-detect.js",
             "timeout": 5000
           },
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/audit-log.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/audit-log.js",
             "timeout": 5000
           }
         ]
@@ -64,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${AUGMENT_PLUGIN_ROOT}/hooks/stop-gate.mjs",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/stop-gate.js",
             "timeout": 5000
           }
         ]
