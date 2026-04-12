@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Bug Fixes
-
-- CI: add `--ignore-scripts` to npm publish steps to avoid re-running `tsc` without `node_modules`
-
 ---
 
 ## [0.1.6] - 2026-04-12
@@ -15,6 +11,10 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - `hooks.costTracking` and `hooks.statusMessages` config flags (both default `false`) — opt-in hook context injection
+
+### Bug Fixes
+
+- CI: add `--ignore-scripts` to npm publish steps to avoid re-running `tsc` without `node_modules`
 
 ### CI
 
