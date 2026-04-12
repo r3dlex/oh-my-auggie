@@ -1,3 +1,5 @@
+## [0.1.7](https://github.com/r3dlex/oh-my-auggie/compare/v0.1.6...v0.1.7) (2026-04-12)
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
