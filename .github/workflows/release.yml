@@ -59,6 +59,16 @@ jobs:
           "
           echo "Patched version to $VERSION"
 
+      - name: Strip prepare script from package.json (already compiled)
+        run: |
+          cd plugins/oma
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            if (pkg.scripts) delete pkg.scripts.prepare;
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
