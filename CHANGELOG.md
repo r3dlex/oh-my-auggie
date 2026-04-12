@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.2.0...v0.2.1) (2026-04-12)
+
+
+### Bug Fixes
+
+* **commands:** strip oma- prefix from name: frontmatter and add execution preamble ([4b935e9](https://github.com/r3dlex/oh-my-auggie/commit/4b935e9f88561b69a69a38b65fac7152979d8eb7))
+
 # [0.2.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.1.7...v0.2.0) (2026-04-12)
 
 
