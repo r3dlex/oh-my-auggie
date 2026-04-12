@@ -1,6 +1,6 @@
 {
   "name": "@r3dlex/oh-my-auggie",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "TypeScript hooks and tests for oh-my-auggie",
   "type": "module",
   "main": "./dist/index.js",

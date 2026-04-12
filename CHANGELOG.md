@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-04-12
+
 ### Features
 
 - `hooks.costTracking` and `hooks.statusMessages` config flags (both default `false`) — opt-in hook context injection
+
+### Docs
+
+- Document `hooks.*` config flags in `oma-config.md`, `README.md`, and `CHANGELOG.md`
+- Enable Option B (npm OIDC trusted publishing) in release workflow alongside GitHub Packages
+
+### CI
+
+- Split release workflow into parallel `build` / `publish-gpr` / `publish-npm` / `github-release` jobs
 
 ## [0.1.5] - 2026-04-12
 
