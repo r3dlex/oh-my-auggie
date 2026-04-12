@@ -13,68 +13,18 @@ interface UpdateCache {
   updateAvailable: boolean;
 }
 
-function getUpdateCachePath(): string {
-  // Get the directory of the compiled mjs (same dir as the hook itself)
-  const hookDir = dirname(fileURLToPath(import.meta.url));
-  const omaDir = join(hookDir, '..', '..', '..', '.oma');
-  return join(omaDir, 'update-check.json');
-}
-
-function shouldCheckUpdate(): boolean {
+function shouldCheckUpdate(cacheDir: string): boolean {
   try {
-    const cachePath = getUpdateCachePath();
-    if (!existsSync(cachePath)) return true;
-    const cache = JSON.parse(readFileSync(cachePath, 'utf8')) as UpdateCache;
-    const elapsed = Date.now() - new Date(cache.lastChecked).getTime();
-    return elapsed > UPDATE_CACHE_TTL_MS;
-  } catch {
-    return true;
-  }
+    const cacheFile = join(cacheDir, 'update-check.json');
+    if (!existsSync(cacheFile)) return true;
+    const cache = JSON.parse(readFileSync(cacheFile, 'utf8'));
+    const lastChecked = new Date(cache.lastChecked);
+    const hoursSince = (Date.now() - lastChecked.getTime()) / (1000 * 60 * 60);
+    return hoursSince >= 1;
+  } catch { return true; }
 }
 
-function spawnBackgroundUpdateCheck(): void {
-  if (!shouldCheckUpdate()) return;
-  // Fork this script with --update-check flag using node --eval approach
-  const hookPath = fileURLToPath(import.meta.url);
-  const checkScript = `
-    const { readFileSync, writeFileSync, existsSync, mkdirSync } = require('fs');
-    const { join, dirname } = require('path');
-    const https = require('https');
-
-    const pkg = JSON.parse(readFileSync('${hookPath.replace(/'/g, "'\"'\"'")}'.replace('/src/hooks/session-start.mjs', '/package.json'), 'utf8'));
-    const currentVersion = pkg.version;
-
-    function fetchLatestVersion() {
-      return new Promise((resolve) => {
-        https.get('https://api.github.com/repos/r3dlex/oh-my-auggie/releases/latest', {
-          headers: { 'User-Agent': 'oma-update-check' }
-        }, (res) => {
-          let data = '';
-          res.on('data', chunk => data += chunk);
-          res.on('end', () => {
-            try {
-              const release = JSON.parse(data);
-              resolve(release.tag_name?.replace(/^v/, '') || currentVersion);
-            } catch { resolve(currentVersion); }
-          });
-        }).on('error', () => resolve(currentVersion));
-      });
-    }
-
-    async function main() {
-      const latestVersion = await fetchLatestVersion();
-      const cache = {
-        currentVersion,
-        latestVersion,
-        lastChecked: new Date().toISOString(),
-        updateAvailable: latestVersion !== currentVersion
-      };
-      const omaDir = join('${hookPath.replace(/'/g, "'\"'\"'")}'.replace('/src/hooks/session-start.mjs', '/.oma'));
-      try { mkdirSync(omaDir, { recursive: true }); } catch {}
-      writeFileSync(join(omaDir, 'update-check.json'), JSON.stringify(cache, null, 2));
-    }
-    main().catch(() => {});
-  `;
+function spawnBackgroundUpdateCheck(checkScript: string): void {
   const { spawn } = require('child_process');
   const child = spawn('node', ['-e', checkScript], {
     cwd: process.cwd(),
@@ -87,22 +37,27 @@ function spawnBackgroundUpdateCheck(): void {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export function main(): void {
-  const omaDir = resolveOmaDir();
-  const stateFile = join(omaDir, 'state.json');
+  const cacheDir = resolveOmaDir();
+  const pluginRoot = process.env.AUGMENT_PLUGIN_ROOT ?? join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+  const pkgJsonPath = join(pluginRoot, 'package.json');
+
+  const omaDir = cacheDir;
   const notepadFile = join(omaDir, 'notepad.json');
 
   let sessionContext = '';
 
   // ── Mode Injection ──────────────────────────────────────────────────────────
 
+  let state: ReturnType<typeof loadOmaState>;
   try {
-    const state = loadOmaState(omaDir);
+    state = loadOmaState(omaDir);
     if (state.mode !== 'none' && state.active === true) {
       const task = typeof state.task === 'string' ? state.task : '';
       sessionContext += `[OMA MODE RESTORED] Active mode: ${state.mode}. Task: ${task}. Use /oma:status to check details. Use /oma:cancel to clear mode.`;
     }
   } catch {
     // State file doesn't exist or is invalid — no mode to restore
+    state = { mode: 'none', active: false };
   }
 
   // ── Notepad Injection (Priority) ───────────────────────────────────────────
@@ -158,6 +113,26 @@ export function main(): void {
     // Config not available or invalid -- skip graph injection
   }
 
+  // ── HUD auto-display ───────────────────────────────────────────────────────
+  try {
+    if (state['hud-active'] === true) {
+      const hud = {
+        type: 'hud',
+        display: true,
+        mode: state.mode ?? 'none',
+        active: state.active ?? false,
+        task: state.task ?? '',
+        position: state['hud-position'] ?? 'top-right',
+        opacity: state['hud-opacity'] ?? 0.8,
+        elements: state['hud-elements'] ?? {
+          mode: true, iteration: true, tokens: false,
+          time: true, agents: true, progress: true,
+        },
+      };
+      console.log('\n[OMA HUD]' + JSON.stringify(hud));
+    }
+  } catch { /* ignore */ }
+
   // ── Output ─────────────────────────────────────────────────────────────────
 
   if (sessionContext) {
@@ -165,7 +140,48 @@ export function main(): void {
   }
 
   // Non-blocking background update check
-  try { spawnBackgroundUpdateCheck(); } catch { /* ignore */ }
+  try {
+    if (!shouldCheckUpdate(cacheDir)) return;
+    const checkScript = `
+      const { readFileSync, writeFileSync, existsSync, mkdirSync } = require('fs');
+      const { join } = require('path');
+      const https = require('https');
+      const pkg = JSON.parse(readFileSync(${JSON.stringify(pkgJsonPath)}, 'utf8'));
+      const currentVersion = pkg.version;
+      const cacheDir = ${JSON.stringify(cacheDir)};
+
+      function fetchLatestVersion() {
+        return new Promise((resolve) => {
+          https.get('https://api.github.com/repos/r3dlex/oh-my-auggie/releases/latest', {
+            headers: { 'User-Agent': 'oma-update-check' }
+          }, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+              try {
+                const release = JSON.parse(data);
+                resolve(release.tag_name?.replace(/^v/, '') || currentVersion);
+              } catch { resolve(currentVersion); }
+            });
+          }).on('error', () => resolve(currentVersion));
+        });
+      }
+
+      async function main() {
+        const latestVersion = await fetchLatestVersion();
+        const cache = {
+          currentVersion,
+          latestVersion,
+          lastChecked: new Date().toISOString(),
+          updateAvailable: latestVersion !== currentVersion
+        };
+        try { mkdirSync(cacheDir, { recursive: true }); } catch {}
+        writeFileSync(join(cacheDir, 'update-check.json'), JSON.stringify(cache, null, 2));
+      }
+      main().catch(() => {});
+    `;
+    spawnBackgroundUpdateCheck(checkScript);
+  } catch { /* ignore */ }
 
   process.exit(0);
 }

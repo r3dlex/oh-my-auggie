@@ -9,7 +9,7 @@ import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import { mkdtempSync, rmSync, writeFileSync, mkdirSync, readFileSync, readdirSync } from 'fs';
 
-const SCRIPT_PATH = join(process.cwd(), 'src', 'setup-rules.mjs');
+const SCRIPT_PATH = join(process.cwd(), 'dist', 'setup-rules.js');
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
