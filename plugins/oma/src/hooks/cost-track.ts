@@ -185,6 +185,12 @@ export async function main(): Promise<void> {
   const hookType = process.env.HOOK_TYPE ?? 'PostToolUse';
   const omaDir = resolveOmaDir();
 
+  const config = getMergedConfig();
+  if (!config.hooks.costTracking) {
+    process.exit(0);
+    return;
+  }
+
   // Read stdin if available
   let rawInput = '';
   if (!process.stdin.isTTY) {

@@ -9,7 +9,7 @@ vi.mock('fs', () => ({
 
 vi.mock('../../../src/utils.js', () => ({
   resolveOmaDir: vi.fn(() => '/mock/oma'),
-  getMergedConfig: vi.fn(() => ({ profile: 'default' })),
+  getMergedConfig: vi.fn(() => ({ profile: 'default', hooks: { costTracking: true, statusMessages: false } })),
   readAllStdin: vi.fn(() => Promise.resolve('')),
 }));
 
@@ -23,8 +23,8 @@ import {
   extractFromInput,
   main,
 } from '../../../src/hooks/cost-track.js';
-import { readAllStdin } from '../../../src/utils.js';
-import { readFileSync } from 'fs';
+import { readAllStdin, getMergedConfig } from '../../../src/utils.js';
+import { readFileSync, writeFileSync } from 'fs';
 
 // ─── Local types matching source (not exported from source) ─────────────────────
 
@@ -520,6 +520,18 @@ describe('cost-track hooks', () => {
       vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.2"}');
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
+    });
+
+    it('exits 0 immediately when hooks.costTracking is false', async () => {
+      vi.mocked(getMergedConfig).mockReturnValue({
+        profile: 'default',
+        hooks: { costTracking: false, statusMessages: false },
+      });
+      process.env.HOOK_TYPE = 'PostToolUse';
+      await main();
+      expect(process.exit).toHaveBeenCalledWith(0);
+      // cost log should NOT have been written
+      expect(writeFileSync).not.toHaveBeenCalled();
     });
   });
 });

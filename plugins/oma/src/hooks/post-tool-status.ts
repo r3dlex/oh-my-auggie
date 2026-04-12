@@ -87,6 +87,15 @@ function formatRememberSummary(tags: RememberTag[]): string {
 
 export async function main(): Promise<void> {
   const omaDir = resolveOmaDir();
+
+  try {
+    const config = getMergedConfig();
+    if (!config.hooks.statusMessages) {
+      process.exit(0);
+      return;
+    }
+  } catch { /* ignore config errors, proceed with output */ }
+
   const contextParts: string[] = [];
 
   // Read stdin for tool output

@@ -67,6 +67,11 @@ export interface GraphConfig {
   provider: GraphProvider;
 }
 
+export interface HooksConfig {
+  costTracking: boolean;
+  statusMessages: boolean;
+}
+
 export interface Config {
   version: string;
   hud: HudConfig;
@@ -74,6 +79,7 @@ export interface Config {
   paths: PathsConfig;
   profile: 'default' | 'enterprise';
   graph: GraphConfig;
+  hooks: HooksConfig;
 }
 
 export interface CostEntry {

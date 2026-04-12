@@ -6,11 +6,13 @@ vi.mock('fs', () => ({
 }));
 
 vi.mock('../../../src/utils.js', () => ({
-  getMergedConfig: vi.fn(() => ({ graph: undefined })),
+  getMergedConfig: vi.fn(() => ({ graph: undefined, hooks: { costTracking: false, statusMessages: true } })),
   resolveOmaDir: vi.fn(() => '/mock/oma'),
   loadJsonFile: vi.fn(() => null),
   readAllStdin: vi.fn(() => Promise.resolve('')),
 }));
+
+const defaultMockConfig = { graph: undefined, hooks: { costTracking: false, statusMessages: true } };
 
 import { extractRememberTags } from '../../../src/hooks/post-tool-status.js';
 import { loadJsonFile } from '../../../src/utils.js';
@@ -94,7 +96,7 @@ note content.
   describe('graph provider status line', () => {
     beforeEach(() => {
       vi.mocked(getMergedConfig).mockReset();
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: undefined } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: undefined } as any);
     });
 
     async function runMainAndCapture(): Promise<string> {
@@ -106,31 +108,31 @@ note content.
     }
 
     it('emits [Graph] graphwiki when config.graph is undefined (fallback)', async () => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: undefined } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: undefined } as any);
       const output = await runMainAndCapture();
       expect(output).toContain('[Graph] graphwiki');
     });
 
     it('omits graph line when provider is none', async () => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: { provider: 'none' } } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: { provider: 'none' } } as any);
       const output = await runMainAndCapture();
       expect(output).not.toContain('[Graph]');
     });
 
     it('emits [Graph] graphwiki when provider is graphwiki', async () => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: { provider: 'graphwiki' } } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: { provider: 'graphwiki' } } as any);
       const output = await runMainAndCapture();
       expect(output).toContain('[Graph] graphwiki');
     });
 
     it('emits [Graph] graphify when provider is graphify', async () => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: { provider: 'graphify' } } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: { provider: 'graphify' } } as any);
       const output = await runMainAndCapture();
       expect(output).toContain('[Graph] graphify');
     });
 
     it('defaults to [Graph] graphwiki when graph key present but provider absent', async () => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: {} } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: {} } as any);
       const output = await runMainAndCapture();
       expect(output).toContain('[Graph] graphwiki');
     });
@@ -141,9 +143,21 @@ note content.
     });
 
     it('config.graph = null falls back to graphwiki', async () => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: null } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig, graph: null } as any);
       const output = await runMainAndCapture();
       expect(output).toContain('[Graph] graphwiki');
+    });
+
+    it('exits 0 immediately when hooks.statusMessages is false', async () => {
+      vi.mocked(getMergedConfig).mockReturnValue({
+        ...defaultMockConfig,
+        hooks: { costTracking: false, statusMessages: false },
+      } as any);
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await main();
+      consoleSpy.mockRestore();
+      expect(process.exit).toHaveBeenCalledWith(0);
+      expect(consoleSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -151,7 +165,7 @@ note content.
 
   describe('task log summary', () => {
     beforeEach(() => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: undefined } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig } as any);
     });
 
     it('emits task summary when taskLog has in_progress tasks', async () => {
@@ -253,7 +267,7 @@ note content.
 
   describe('notepad priority in main()', () => {
     beforeEach(() => {
-      vi.mocked(getMergedConfig).mockReturnValue({ graph: undefined } as any);
+      vi.mocked(getMergedConfig).mockReturnValue({ ...defaultMockConfig } as any);
     });
 
     it('emits [OMA Note] when notepad has a non-empty priority', async () => {
