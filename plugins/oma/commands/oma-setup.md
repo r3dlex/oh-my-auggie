@@ -293,7 +293,8 @@ done
 
 # Invoke setup-rules.mjs for post-install processing
 if [ -f "$RULES_SOURCE/setup-rules.mjs" ] && [ ${#SELECTED_TEMPLATES[@]} -gt 0 ]; then
-  node "$RULES_SOURCE/setup-rules.mjs" --templates "${SELECTED_TEMPLATES[*]}" --target "$RULES_TARGET"
+  TEMPLATES_CSV=$(IFS=','; echo "${SELECTED_TEMPLATES[*]}")
+  node "$RULES_SOURCE/setup-rules.mjs" --templates "$TEMPLATES_CSV" --project-dir "$PROJECT_DIR"
 fi
 ```
 

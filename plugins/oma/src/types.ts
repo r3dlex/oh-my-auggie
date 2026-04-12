@@ -21,6 +21,10 @@ export interface OmaState {
   active: boolean;
   iteration?: number;
   task?: string;
+  'hud-active'?: boolean;
+  'hud-position'?: string;
+  'hud-opacity'?: number;
+  'hud-elements'?: Record<string, boolean>;
   [key: string]: unknown;
 }
 
