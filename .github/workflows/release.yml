@@ -88,7 +88,7 @@ jobs:
           scope: '@r3dlex'
 
       - name: Publish to GitHub Packages
-        run: cd plugins/oma && npm publish --tag ${{ needs.build.outputs.dist-tag }} --force
+        run: cd plugins/oma && npm publish --tag ${{ needs.build.outputs.dist-tag }} --force --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -125,7 +125,7 @@ jobs:
 
       - name: Publish to npmjs.com (OIDC trusted publishing)
         continue-on-error: true
-        run: cd plugins/oma && npm publish --tag ${{ needs.build.outputs.dist-tag }} --provenance --access public
+        run: cd plugins/oma && npm publish --tag ${{ needs.build.outputs.dist-tag }} --provenance --access public --ignore-scripts
 
   github-release:
     needs: build
