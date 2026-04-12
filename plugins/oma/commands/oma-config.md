@@ -84,6 +84,35 @@ Lists config values.
 | `paths.plansDir` | string | `"~/.oma/plans"` | Plans directory |
 | `profile` | string | `"default"` | OMA profile: `default` or `enterprise` (global-only) |
 | `graph.provider` | string | `"graphwiki"` | Knowledge graph tool: `graphwiki`, `graphify`, or `none` |
+| `hooks.costTracking` | boolean | `false` | Emit per-tool credit/cost estimates to agent context |
+| `hooks.statusMessages` | boolean | `false` | Inject OMA status (mode, tasks, notepad) into agent context after each tool |
+
+## Hooks Configuration
+
+Two hooks inject context into the agent after each tool call. Both are **disabled by default** to keep the agent context clean.
+
+| Hook | Config key | What it does |
+|------|-----------|--------------|
+| `cost-track` | `hooks.costTracking` | Estimates credit/USD cost per tool call and writes to `.oma/cost-log.json` |
+| `post-tool-status` | `hooks.statusMessages` | Injects OMA mode, task progress, notepad priority, and graph provider into agent context |
+
+Enable either globally:
+
+```bash
+/oma:config set hooks.costTracking true
+/oma:config set hooks.statusMessages true
+```
+
+Or per-project (`.oma/config.json`):
+
+```json
+{
+  "hooks": {
+    "costTracking": true,
+    "statusMessages": true
+  }
+}
+```
 
 ## Profile Behavior
 

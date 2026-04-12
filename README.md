@@ -159,6 +159,21 @@ oh-my-auggie/
 
 Enterprise is activated by creating `.oma/config.json` with `{ "profile": "enterprise" }`. Enterprise only *adds* rules — it never removes community features.
 
+### Hook Context Injection
+
+Two hooks can inject context into the agent after each tool call. Both are **disabled by default**:
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `hooks.costTracking` | `false` | Per-tool credit/cost estimates logged to `.oma/cost-log.json` |
+| `hooks.statusMessages` | `false` | OMA mode, task progress, and notepad injected into agent context |
+
+Enable via `/oma:config set hooks.costTracking true` or in `.oma/config.json`:
+
+```json
+{ "hooks": { "costTracking": true, "statusMessages": true } }
+```
+
 ---
 
 ## Development
