@@ -15,6 +15,7 @@ vi.mock('child_process', () => ({
 vi.mock('../../../src/utils.js', () => ({
   getMergedConfig: vi.fn(() => ({ graph: { provider: 'graphwiki' } })),
   readAllStdin: vi.fn(() => Promise.resolve('')),
+  resolveProjectDir: vi.fn(() => process.env.AUGMENT_PROJECT_DIR ?? process.cwd()),
 }));
 
 import { getMergedConfig, readAllStdin } from '../../../src/utils.js';

@@ -78,3 +78,8 @@ If the output directory exists, the session-start hook injects a context-loading
 If the output directory does not exist, session-start prints a suggestion to run the initial build:
 - graphwiki: `graphwiki build .`
 - graphify: `/graphify .`
+
+## Dependency Notes
+
+graphwiki is included as an optional dependency of OMA.
+If not available, install manually: npm install -g graphwiki

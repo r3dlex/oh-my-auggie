@@ -48,6 +48,11 @@
           },
           {
             "type": "command",
+            "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/graph-auto-rebuild.js",
+            "timeout": 3000
+          },
+          {
+            "type": "command",
             "command": "node ${AUGMENT_PLUGIN_ROOT}/dist/hooks/cost-track.js",
             "timeout": 5000
           },

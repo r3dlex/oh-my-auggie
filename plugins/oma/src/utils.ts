@@ -103,10 +103,23 @@ export function normalizePath(p: string): string {
 }
 
 /**
- * Returns OMA_DIR from the environment, defaulting to '.oma'.
+ * Returns the project workspace directory.
+ * Priority: AUGMENT_PROJECT_DIR > WORKSPACE_ROOT > cwd
+ * Auggie sets AUGMENT_PROJECT_DIR. Some hooks receive WORKSPACE_ROOT.
+ * Falls back to cwd which may be wrong if the hook runs from plugin dir.
+ */
+export function resolveProjectDir(): string {
+  return process.env.AUGMENT_PROJECT_DIR
+    ?? process.env.WORKSPACE_ROOT
+    ?? process.cwd();
+}
+
+/**
+ * Returns the OMA state directory for the current project.
+ * Uses resolveProjectDir() so it always points into the workspace, not the plugin dir.
  */
 export function resolveOmaDir(): string {
-  return resolve(process.env.OMA_DIR ?? '.oma');
+  return join(resolveProjectDir(), '.oma');
 }
 
 // ─── OS detection ─────────────────────────────────────────────────────────

@@ -70,3 +70,8 @@ If graphify-out/ exists:
 The entire point of using a graph provider is to avoid re-reading raw source files every session. A 50-file codebase costs ~100K+ tokens to read raw. The graph reduces this to ~2-5K tokens per query.
 
 Do NOT fall back to reading raw files unless the graph explicitly lacks the information needed.
+
+## Dependency Notes
+
+graphwiki is included as an optional dependency of OMA.
+If not available, install manually: npm install -g graphwiki

@@ -18,6 +18,7 @@ vi.mock('../../../src/utils.js', () => ({
   getMergedConfig: vi.fn(() => ({ hud: { enabled: true, style: 'default' }, orchestration: { mode: 'ralph', maxIterations: 100 }, paths: { omaDir: '~/.oma', plansDir: '~/.oma/plans' }, profile: 'default', graph: undefined })),
   loadOmaState: vi.fn(() => ({ mode: 'none', active: false })),
   resolveOmaDir: vi.fn(() => '/mock/oma'),
+  resolveProjectDir: vi.fn(() => process.env.AUGMENT_PROJECT_DIR ?? process.env.WORKSPACE_ROOT ?? process.cwd()),
   loadJsonFile: vi.fn(() => null),
 }));
 
@@ -319,7 +320,7 @@ describe('session-start hooks', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       main();
       const output = consoleSpy.mock.calls.map(c => c.join(' ')).join('\n');
-      expect(output).toContain('[OMA Graph] graphwiki configured but no output found. Run: graphwiki build .');
+      expect(output).toContain('[OMA Graph] graphwiki: building knowledge graph for first time. This runs in the background.');
       consoleSpy.mockRestore();
     });
 

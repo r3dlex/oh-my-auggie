@@ -1,7 +1,8 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { getMergedConfig, loadOmaState, resolveOmaDir } from '../utils.js';
+import { spawn } from 'child_process';
+import { getMergedConfig, loadOmaState, resolveOmaDir, resolveProjectDir } from '../utils.js';
 
 // ─── Background update check ──────────────────────────────────────────────────
 
@@ -88,7 +89,7 @@ export function main(): void {
     const config = getMergedConfig();
     const provider = (config.graph?.provider as string) ?? 'graphwiki';
     if (provider !== 'none') {
-      const projectDir = process.env.AUGMENT_PROJECT_DIR || process.cwd();
+      const projectDir = resolveProjectDir();
       if (provider === 'graphwiki') {
         const reportPath = join(projectDir, 'graphwiki-out', 'GRAPH_REPORT.md');
         if (existsSync(reportPath)) {
@@ -96,7 +97,17 @@ export function main(): void {
           sessionContext += '[OMA Graph] graphwiki active.\n1. Read graphwiki-out/GRAPH_REPORT.md for project overview\n2. Read graphwiki-out/wiki/index.md for page directory\n3. Use `graphwiki query "<question>"` for targeted lookups\n4. Use `graphwiki path <nodeA> <nodeB>` for structural queries\n5. Max 3 wiki pages per query. Avoid reading raw source files.';
         } else {
           if (sessionContext) sessionContext += '\n';
-          sessionContext += '[OMA Graph] graphwiki configured but no output found. Run: graphwiki build .';
+          sessionContext += '[OMA Graph] graphwiki: building knowledge graph for first time. This runs in the background.';
+          try {
+            const child = spawn('graphwiki', ['build', '.'], {
+              cwd: projectDir,
+              detached: true,
+              stdio: 'ignore',
+            });
+            child.unref();
+          } catch {
+            sessionContext += '\ngraphwiki not found. Install: npm install -g graphwiki';
+          }
         }
       } else if (provider === 'graphify') {
         const reportPath = join(projectDir, 'graphify-out', 'GRAPH_REPORT.md');

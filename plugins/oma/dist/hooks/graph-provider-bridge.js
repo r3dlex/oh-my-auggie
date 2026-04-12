@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { join, basename, extname } from 'path';
 import { spawnSync } from 'child_process';
-import { getMergedConfig, readAllStdin } from '../utils.js';
+import { getMergedConfig, readAllStdin, resolveProjectDir } from '../utils.js';
 const CONTEXT_TOOLS = new Set(['Read', 'Glob', 'Grep', 'view', 'codebase-retrieval']);
 export async function main() {
     try {
@@ -15,7 +15,7 @@ export async function main() {
         process.exit(0);
         return;
     }
-    const projectDir = process.env.AUGMENT_PROJECT_DIR || process.cwd();
+    const projectDir = resolveProjectDir();
     const reportPath = join(projectDir, 'graphwiki-out', 'GRAPH_REPORT.md');
     if (!existsSync(reportPath)) {
         process.exit(0);

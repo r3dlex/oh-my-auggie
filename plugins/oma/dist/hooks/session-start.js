@@ -1,7 +1,8 @@
 import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { getMergedConfig, loadOmaState, resolveOmaDir } from '../utils.js';
+import { spawn } from 'child_process';
+import { getMergedConfig, loadOmaState, resolveOmaDir, resolveProjectDir } from '../utils.js';
 // ─── Background update check ──────────────────────────────────────────────────
 const UPDATE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 function shouldCheckUpdate(cacheDir) {
@@ -74,7 +75,7 @@ export function main() {
         const config = getMergedConfig();
         const provider = config.graph?.provider ?? 'graphwiki';
         if (provider !== 'none') {
-            const projectDir = process.env.AUGMENT_PROJECT_DIR || process.cwd();
+            const projectDir = resolveProjectDir();
             if (provider === 'graphwiki') {
                 const reportPath = join(projectDir, 'graphwiki-out', 'GRAPH_REPORT.md');
                 if (existsSync(reportPath)) {
@@ -85,7 +86,18 @@ export function main() {
                 else {
                     if (sessionContext)
                         sessionContext += '\n';
-                    sessionContext += '[OMA Graph] graphwiki configured but no output found. Run: graphwiki build .';
+                    sessionContext += '[OMA Graph] graphwiki: building knowledge graph for first time. This runs in the background.';
+                    try {
+                        const child = spawn('graphwiki', ['build', '.'], {
+                            cwd: projectDir,
+                            detached: true,
+                            stdio: 'ignore',
+                        });
+                        child.unref();
+                    }
+                    catch {
+                        sessionContext += '\ngraphwiki not found. Install: npm install -g graphwiki';
+                    }
                 }
             }
             else if (provider === 'graphify') {
