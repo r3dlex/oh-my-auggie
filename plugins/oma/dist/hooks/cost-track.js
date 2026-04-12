@@ -157,15 +157,15 @@ export async function main() {
         if (auggieModel) {
             model = normalizeModel(auggieModel);
         }
-        // Estimate credits based on model + tool class
-        const estimatedCredits = estimateCredits(model, toolName);
-        // Fall back to parsing stdin
+        // Fall back to parsing stdin FIRST so toolName/model are correct before estimating
         if (toolName === 'unknown' && rawInput) {
             const extracted = extractFromInput(rawInput);
             toolName = extracted.toolName ?? 'unknown';
             model = extracted.model ?? model;
             durationMs = extracted.durationMs ?? 0;
         }
+        // Estimate credits based on best available model + tool class
+        const estimatedCredits = estimateCredits(model, toolName);
         const log = readCostLog(omaDir);
         const session = upsertSession(log, sessionId);
         recordToolUsage(session, toolName, model, estimatedCredits, durationMs);
