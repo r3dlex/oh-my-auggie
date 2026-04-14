@@ -12,7 +12,7 @@ export default defineConfig({
       thresholds: {
         // Per-file thresholds are set below via 100: false to use global
         // Global minimums (some files have legitimate gaps due to ESM/try-catch coverage limits)
-        branches: 70,
+        branches: 80,
         functions: 80,
         lines: 94,
         statements: 94,

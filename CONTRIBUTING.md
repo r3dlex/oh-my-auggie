@@ -208,16 +208,18 @@ Before cutting the next release, keep the publish metadata aligned:
 # Root/package metadata
 node -e "console.log(require('./package.json').version)"
 node -e "console.log(require('./plugins/oma/package.json').version)"
+node -e "console.log(require('./plugins/oma/.augment-plugin/plugin.json').version)"
+node -e "const p=require('./.augment-plugin/marketplace.json'); console.log(p.version, p.plugins[0].version)"
 node -e "console.log(require('./.claude-plugin/plugin.json').version)"
 node -e "const p=require('./.claude-plugin/marketplace.json'); console.log(p.version, p.plugins[0].version)"
 ```
 
 Release prep checklist:
 
-- Sync `package.json`, `plugins/oma/package.json`, `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json`
+- Sync `package.json`, `plugins/oma/package.json`, `plugins/oma/.augment-plugin/plugin.json`, `.augment-plugin/marketplace.json`, `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json`
 - Update `CHANGELOG.md`
 - Update the README version badge and any release-preview docs
-- Run `npm run typecheck`, `npm run build`, and `npm test`
+- Run `npm run typecheck`, `npm run build`, `npm run test:coverage`, and `bats e2e/oma-cli.bats e2e/super-oma-cli.bats`
 
 ---
 

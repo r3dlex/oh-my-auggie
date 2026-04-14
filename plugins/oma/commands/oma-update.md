@@ -27,7 +27,7 @@ node -e "const p = require('./plugins/oma/package.json'); console.log(p.version)
   || cat plugins/oma/package.json | grep '"version"' | head -1
 ```
 
-Store the result as CURRENT_VERSION (e.g. `0.1.4`).
+Store the result as CURRENT_VERSION (e.g. `0.3.1`).
 
 ---
 

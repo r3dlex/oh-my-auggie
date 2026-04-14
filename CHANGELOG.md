@@ -4,14 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Docs
+---
 
-- Document the upcoming `super-oma` wrapper-first release direction in `README.md`
-- Add a release-readiness checklist for keeping repo, plugin, and marketplace metadata in sync
+## [0.3.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.2.1...v0.3.1) (2026-04-14)
+
+### CI
+
+- Verify local and GitHub CI lanes for typecheck, build, vitest coverage, manifest validation, and CLI e2e
+- Enforce 80%+ minimum branch coverage in `plugins/oma/vitest.config.ts` (statements/functions/branches all remain above 80%)
 
 ### Chores
 
-- Align plugin and Claude marketplace metadata on version `0.3.0` for the next release cut
+- Align release metadata on `0.3.1` across package manifests, plugin manifests, and marketplace metadata
+- Make root npm scripts delegate to `plugins/oma` scripts so local and CI execution paths stay consistent
+
+### Docs
+
+- Update README version badges and refresh release-readiness notes for the current release line
+- Replace stale version examples in `/oma:version` and `/oma:update` command docs
 
 ---
 

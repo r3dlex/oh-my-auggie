@@ -9,7 +9,7 @@
 <p align="center">
 
   [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
-  [![Version](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![Version](https://img.shields.io/badge/version-0.3.1-blue)](https://github.com/r3dlex/oh-my-auggie)
   [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
   [![Licence](https://img.shields.io/badge/licence-Apache%202.0-orange)](LICENSE)
 

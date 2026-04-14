@@ -1,6 +1,6 @@
 {
   "name": "@r3dlex/oh-my-auggie",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "TypeScript hooks and tests for oh-my-auggie",
   "type": "module",
   "main": "./dist/index.js",
@@ -20,6 +20,7 @@
   "readme": "README.md",
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "pretest": "npm run build",
     "prepare": "tsc",
     "test": "vitest run",

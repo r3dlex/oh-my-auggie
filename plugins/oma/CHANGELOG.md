@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-04-14
+
+### CI
+
+- verify vitest coverage remains above 80% for statements/functions/branches and keep branch threshold at 80%
+
+### Chores
+
+- align plugin package and marketplace-facing metadata with the 0.3.1 release cut
+
+### Docs
+
+- refresh command examples that referenced stale pre-0.2 versions
+
 ## [0.1.0-alpha.1] - 2026-04-09
 
 ### Features

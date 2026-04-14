@@ -7,8 +7,10 @@ import { execSync } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
-const PKG_PATH = join(ROOT, 'plugins/oma/package.json');
+const ROOT_PKG_PATH = join(ROOT, 'package.json');
+const PLUGIN_PKG_PATH = join(ROOT, 'plugins/oma/package.json');
 const OMA_PLUGIN_PATH = join(ROOT, 'plugins/oma/.augment-plugin/plugin.json');
+const AUGMENT_MARKETPLACE_PATH = join(ROOT, '.augment-plugin/marketplace.json');
 const MARKETPLACE_PATH = join(ROOT, '.claude-plugin/marketplace.json');
 const PLUGIN_PATH = join(ROOT, '.claude-plugin/plugin.json');
 
@@ -16,7 +18,7 @@ const c = { reset: '\x1b[0m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[
 const clr = (text: string, code: string) => `${code}${text}${c.reset}`;
 
 function getCurrentVersion(): string {
-  const pkg = JSON.parse(readFileSync(PKG_PATH, 'utf8'));
+  const pkg = JSON.parse(readFileSync(PLUGIN_PKG_PATH, 'utf8'));
   const v = pkg.version as string;
   if (!v) { console.error(clr('ERROR: No version field in package.json', c.red)); process.exit(1); }
   return v;
@@ -50,8 +52,10 @@ function replaceVersion(content: string, newVersion: string): string {
 interface VersionFile { path: string; exists: boolean }
 function getFilesToUpdate(): VersionFile[] {
   return [
-    { path: PKG_PATH, exists: existsSync(PKG_PATH) },
+    { path: ROOT_PKG_PATH, exists: existsSync(ROOT_PKG_PATH) },
+    { path: PLUGIN_PKG_PATH, exists: existsSync(PLUGIN_PKG_PATH) },
     { path: OMA_PLUGIN_PATH, exists: existsSync(OMA_PLUGIN_PATH) },
+    { path: AUGMENT_MARKETPLACE_PATH, exists: existsSync(AUGMENT_MARKETPLACE_PATH) },
     { path: MARKETPLACE_PATH, exists: existsSync(MARKETPLACE_PATH) },
     { path: PLUGIN_PATH, exists: existsSync(PLUGIN_PATH) },
   ];
@@ -79,9 +83,12 @@ function updateVersions(newVersion: string, dryRun: boolean): void {
     }
   }
   if (dryRun) {
+    console.log(clr('[DRY-RUN] Would regenerate: package-lock.json', c.yellow));
     console.log(clr('[DRY-RUN] Would regenerate: plugins/oma/package-lock.json', c.yellow));
   } else {
     try {
+      execSync('npm install --package-lock-only', { cwd: ROOT, stdio: 'pipe' });
+      console.log(clr('[OK] Regenerated: package-lock.json', c.green));
       execSync('npm install --package-lock-only', { cwd: join(ROOT, 'plugins/oma'), stdio: 'pipe' });
       console.log(clr('[OK] Regenerated: plugins/oma/package-lock.json', c.green));
     } catch {

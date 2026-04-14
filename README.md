@@ -9,13 +9,13 @@
 <p align="center">
 
   [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
-  [![Version](https://img.shields.io/badge/version-0.3.0-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![Version](https://img.shields.io/badge/version-0.3.1-blue)](https://github.com/r3dlex/oh-my-auggie)
   [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
   [![License](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
 
 </p>
 
-> **Multi-agent orchestration for [Augment Code's `auggie` CLI](https://www.augmentcode.com)** — the "oh-my-*" experience for auggie. OMA remains the plugin/workflow layer, and the upcoming `super-oma` release adds an optional tmux/HUD supervisor shell on top without rewriting existing OMA semantics.
+> **Multi-agent orchestration for [Augment Code's `auggie` CLI](https://www.augmentcode.com)** — the "oh-my-*" experience for auggie. OMA remains the plugin/workflow layer, and `super-oma` is being shipped as an optional tmux/HUD supervisor shell on top without rewriting existing OMA semantics.
 
 ---
 
@@ -45,15 +45,15 @@ Optionally configure MCP servers (adds state persistence and advanced tooling):
 /oma:mcp-setup
 ```
 
-## super-oma release preview
+## super-oma roadmap snapshot
 
-The next release line prepares `super-oma` as an additive wrapper around Auggie + OMA:
+`super-oma` is being delivered as an additive wrapper around Auggie + OMA:
 
 - **Wrapper, not rewrite** — existing `/oma:*` workflows stay intact.
 - **Optional tmux supervisor UX** — HUD, activity panes, attach/reconcile ergonomics.
 - **Graceful degraded mode** — status/doctor flows continue to work from `.oma` state even when tmux is unavailable.
 
-Until that release lands, OMA remains the stable entrypoint and compatibility layer.
+OMA remains the stable entrypoint and compatibility layer while `super-oma` rollout continues.
 
 ### Manual Install
 
@@ -189,11 +189,11 @@ Enable via `/oma:config set hooks.costTracking true` or in `.oma/config.json`:
 ## Development
 
 ```bash
-# Run the test suite
-bats e2e/oma-core-loop.bats
-
-# Lint hook scripts
-shellcheck plugins/oma/hooks/*.sh
+# Run typecheck, build, unit+coverage, and CLI e2e
+npm run typecheck
+npm run build
+npm run test:coverage
+bats e2e/oma-cli.bats e2e/super-oma-cli.bats
 
 # Validate all manifests
 node -e "
