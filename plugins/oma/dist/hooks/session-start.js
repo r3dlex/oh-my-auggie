@@ -3,6 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import { getMergedConfig, loadOmaState, resolveOmaDir, resolveProjectDir } from '../utils.js';
+import { emitHookEvent } from '../super-oma-events.js';
 // ─── Background update check ──────────────────────────────────────────────────
 const UPDATE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 function shouldCheckUpdate(cacheDir) {
@@ -142,6 +143,12 @@ export function main() {
     if (sessionContext) {
         console.log(sessionContext);
     }
+    emitHookEvent({
+        kind: 'session_started',
+        mode: state.mode,
+        status: state.active ? 'active' : 'idle',
+        message: 'SessionStart hook initialized',
+    });
     // Non-blocking background update check
     try {
         if (!shouldCheckUpdate(cacheDir))

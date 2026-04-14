@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { resolveOmaDir, isEnterpriseProfile, getMergedConfig } from '../utils.js';
+import { emitHookEvent } from '../super-oma-events.js';
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function ensureAuditLog(omaDir) {
     const logPath = join(omaDir, 'audit-log.json');
@@ -125,12 +126,25 @@ export async function main() {
             duration_ms: durationMs,
         });
         writeAuditLog(omaDir, log);
+        emitHookEvent({
+            kind: 'tool_finished',
+            mode: typeof process.env.OMA_MODE === 'string' ? process.env.OMA_MODE : undefined,
+            tool_name: toolName,
+            status: outcome,
+            message: filePaths.length ? `files=${filePaths.length}` : `duration_ms=${durationMs}`,
+        });
         console.error(`[audit-log] session=${sessionId} tool=${toolName} outcome=${outcome} files=${filePaths.length}`);
     }
     else if (hookType === 'SessionEnd' || hookType === 'session-end') {
         ensureAuditLog(omaDir);
         const log = readAuditLog(omaDir);
         const session = log.sessions.find(s => s.id === sessionId);
+        emitHookEvent({
+            kind: 'session_stopped',
+            mode: typeof process.env.OMA_MODE === 'string' ? process.env.OMA_MODE : undefined,
+            status: session ? 'completed' : 'unknown',
+            message: session ? `events=${session.events.length}` : 'session summary unavailable',
+        });
         if (session) {
             console.error(`[audit-log] Session summary for ${sessionId}:`);
             console.error(`[audit-log]   Events: ${session.events.length}`);

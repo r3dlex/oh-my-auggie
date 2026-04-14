@@ -1,6 +1,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { resolveOmaDir, writeJsonFile } from '../utils.js';
+import { emitHookEvent } from '../super-oma-events.js';
 
 // ─── Keyword definitions ───────────────────────────────────────────────────────
 
@@ -243,6 +244,14 @@ export async function main(): Promise<void> {
       if (skillMd) {
         additionalContext += `\n\n${skillMd}`;
       }
+
+      emitHookEvent({
+        kind: 'command_detected',
+        mode: MODE_KEYWORDS.has(entry.keyword) ? skillName : undefined,
+        command: entry.command,
+        status: 'detected',
+        message: `keyword=${entry.keyword}`,
+      });
 
       const result = {
         hookSpecificOutput: {

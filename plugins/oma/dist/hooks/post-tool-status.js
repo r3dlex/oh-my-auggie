@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { resolveOmaDir, loadJsonFile, getMergedConfig } from '../utils.js';
+import { emitHookEvent } from '../super-oma-events.js';
 // ─── Remember tag extraction ─────────────────────────────────────────────────
 /**
  * Scans tool_output for <remember key="...">value</remember> tags.
@@ -123,6 +124,12 @@ export async function main() {
         const context = contextParts.join('\n');
         // Truncate to 500 chars for additionalContext limit
         const truncated = context.length > 500 ? context.slice(0, 497) + '...' : context;
+        emitHookEvent({
+            kind: 'worker_status',
+            mode: state?.mode,
+            status: state?.active ? 'active' : 'idle',
+            message: truncated,
+        });
         console.log(JSON.stringify({
             hookSpecificOutput: {
                 hookEventName: 'PostToolUse',

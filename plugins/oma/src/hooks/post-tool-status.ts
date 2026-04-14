@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { resolveOmaDir, loadJsonFile, getMergedConfig } from '../utils.js';
 import type { OmaState } from '../types.js';
+import { emitHookEvent } from '../super-oma-events.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -160,6 +161,12 @@ export async function main(): Promise<void> {
     const context = contextParts.join('\n');
     // Truncate to 500 chars for additionalContext limit
     const truncated = context.length > 500 ? context.slice(0, 497) + '...' : context;
+    emitHookEvent({
+      kind: 'worker_status',
+      mode: state?.mode,
+      status: state?.active ? 'active' : 'idle',
+      message: truncated,
+    });
     console.log(JSON.stringify({
       hookSpecificOutput: {
         hookEventName: 'PostToolUse',
