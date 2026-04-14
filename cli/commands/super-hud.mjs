@@ -112,8 +112,10 @@ export async function superHudWatch(opts = {}) {
   const cleanup = () => process.exit(0);
   process.on('SIGINT', cleanup);
   process.on('SIGTERM', cleanup);
+  process.stdout.write('\x1b[2J\x1b[H');
   await superHudSnapshot(opts);
   setInterval(() => {
+    process.stdout.write('\x1b[2J\x1b[H');
     superHudSnapshot(opts).catch(err => {
       process.stderr.write(`super-oma hud: render error: ${err.message}\n`);
     });

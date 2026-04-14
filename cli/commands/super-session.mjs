@@ -25,6 +25,12 @@ import {
   writeSessionArtifacts,
 } from '../super-utils.mjs';
 
+function detectNewPaneId(sessionName, beforePanes) {
+  const afterPanes = listTmuxPanes(sessionName);
+  const beforeIds = new Set(beforePanes.map(pane => pane.pane_id));
+  return afterPanes.find(pane => !beforeIds.has(pane.pane_id))?.pane_id || null;
+}
+
 function sessionTemplate({ sessionId, tmuxSessionName, cwd, leaderCommand, degraded = false }) {
   return {
     schema_version: SUPER_OMA_SCHEMA_VERSION,
@@ -167,21 +173,23 @@ export async function superUp(opts = {}) {
   }
 
   const leaderPaneId = displayPaneId(`${tmuxSessionName}:0.0`);
+  const beforeHudSplit = listTmuxPanes(tmuxSessionName);
   const hudCommand = `OMA_DIR=${shellQuote(omaDir)} ${shellQuote(process.execPath)} ${shellQuote(superOmaCliPath())} hud --watch --session ${shellQuote(sessionId)}`;
   const hudSplit = runTmux(['split-window', '-v', '-t', leaderPaneId || `${tmuxSessionName}:0.0`, '-c', cwd, hudCommand]);
   if (hudSplit.status !== 0) {
     process.stderr.write(hudSplit.stderr || 'super-oma up: failed to create HUD pane\n');
     return 1;
   }
-  const hudPaneId = displayPaneId(`${tmuxSessionName}:0.1`);
+  const hudPaneId = detectNewPaneId(tmuxSessionName, beforeHudSplit) || displayPaneId(`${tmuxSessionName}:0.1`);
   runTmux(['resize-pane', '-t', hudPaneId || `${tmuxSessionName}:0.1`, '-y', String(opts.hudHeight || 12)]);
 
   let inspectorPaneId = null;
   if (inspectEnabled) {
+    const beforeInspectSplit = listTmuxPanes(tmuxSessionName);
     const inspectCommand = `OMA_DIR=${shellQuote(omaDir)} ${shellQuote(process.execPath)} ${shellQuote(superOmaCliPath())} sessions inspect ${shellQuote(sessionId)} --watch`;
     const inspectSplit = runTmux(['split-window', '-h', '-t', leaderPaneId || `${tmuxSessionName}:0.0`, '-c', cwd, inspectCommand]);
     if (inspectSplit.status === 0) {
-      inspectorPaneId = displayPaneId(`${tmuxSessionName}:0.2`) || displayPaneId(leaderPaneId || `${tmuxSessionName}:0.0`);
+      inspectorPaneId = detectNewPaneId(tmuxSessionName, beforeInspectSplit) || displayPaneId(`${tmuxSessionName}:0.2`);
     }
   }
 
@@ -285,20 +293,30 @@ export async function superReconcile(opts = {}) {
 
   let hudPane = paneRecords.find(p => p.role === 'hud' && livePanes.some(l => l.pane_id === p.pane_id && !l.dead));
   if (!hudPane) {
+    const beforeHudSplit = listTmuxPanes(session.tmux_session_name);
     const hudCommand = `OMA_DIR=${shellQuote(omaDir)} ${shellQuote(process.execPath)} ${shellQuote(superOmaCliPath())} hud --watch --session ${shellQuote(sessionId)}`;
     const result = runTmux(['split-window', '-v', '-t', leaderPane.pane_id, '-c', session.cwd || process.cwd(), hudCommand]);
     if (result.status === 0) {
-      hudPane = { role: 'hud', pane_id: displayPaneId(`${session.tmux_session_name}:0.99`) || displayPaneId(leaderPane.pane_id), cwd: session.cwd || process.cwd() };
+      hudPane = {
+        role: 'hud',
+        pane_id: detectNewPaneId(session.tmux_session_name, beforeHudSplit) || displayPaneId(`${session.tmux_session_name}:0.1`),
+        cwd: session.cwd || process.cwd(),
+      };
       process.stdout.write('super-oma reconcile: restored HUD pane.\n');
     }
   }
 
   let inspectorPane = paneRecords.find(p => p.role === 'inspector' && livePanes.some(l => l.pane_id === p.pane_id && !l.dead));
   if (!inspectorPane && opts.inspect !== false) {
+    const beforeInspectSplit = listTmuxPanes(session.tmux_session_name);
     const inspectCommand = `OMA_DIR=${shellQuote(omaDir)} ${shellQuote(process.execPath)} ${shellQuote(superOmaCliPath())} sessions inspect ${shellQuote(sessionId)} --watch`;
     const result = runTmux(['split-window', '-h', '-t', leaderPane.pane_id, '-c', session.cwd || process.cwd(), inspectCommand]);
     if (result.status === 0) {
-      inspectorPane = { role: 'inspector', pane_id: displayPaneId(leaderPane.pane_id), cwd: session.cwd || process.cwd() };
+      inspectorPane = {
+        role: 'inspector',
+        pane_id: detectNewPaneId(session.tmux_session_name, beforeInspectSplit) || displayPaneId(`${session.tmux_session_name}:0.2`),
+        cwd: session.cwd || process.cwd(),
+      };
       process.stdout.write('super-oma reconcile: restored inspector pane.\n');
     }
   }
