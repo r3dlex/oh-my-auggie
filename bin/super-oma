@@ -1,5 +1,5 @@
 #!/bin/sh
-# super-oma — tmux/session supervisor wrapper
+# super-oma — tmux/session supervisor wrapper with standalone UI surfaces
 
 set -e
 
@@ -23,7 +23,6 @@ done
 export OMA_DIR
 
 SUPER_OMA_CLI="$OMA_ROOT/cli/super-oma.mjs"
-
 if [ ! -f "$SUPER_OMA_CLI" ]; then
   echo "super-oma: error: cli/super-oma.mjs not found at $SUPER_OMA_CLI" >&2
   exit 2

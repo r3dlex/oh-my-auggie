@@ -7,6 +7,7 @@ import { superHudSnapshot, superHudWatch } from './commands/super-hud.mjs';
 import { superRun } from './commands/super-run.mjs';
 import { superAttach, superPanesList, superReconcile, superSessionsInspect, superSessionsList, superUp } from './commands/super-session.mjs';
 import { superStatus } from './commands/super-status.mjs';
+import { superOmaStatuslineSnapshot, superOmaStatuslineWatch } from './commands/super-oma-statusline.mjs';
 
 const HELP = `super-oma — tmux/session supervisor for Auggie + OMA
 Usage: super-oma <command> [options]
@@ -16,6 +17,7 @@ Commands:
   super-oma attach [--session <id>]
   super-oma status [--json] [--session <id>]
   super-oma hud [--watch] [--session <id>]
+  super-oma statusline [--watch] [--session <id>]
   super-oma doctor [--json] [--session <id>]
   super-oma reconcile [--session <id>]
   super-oma sessions list [--json]
@@ -52,7 +54,7 @@ function parseArgs(argv) {
     if (tok === '--watch') { args.flags.watch = true; continue; }
     if (tok === '--attach') { args.flags.attach = true; continue; }
     if (tok === '--no-inspect') { args.flags.noInspect = true; continue; }
-    if (['--session', '--leader-cmd', '--cwd', '--lines', '--hud-height'].includes(tok)) {
+    if (['--session', '--leader-cmd', '--cwd', '--lines', '--hud-height', '--interval'].includes(tok)) {
       const next = argv[++i];
       if (!next) {
         process.stderr.write(`super-oma: missing value for ${tok}\n`);
@@ -89,6 +91,7 @@ async function main(argv) {
     cwd: args.values.cwd || null,
     lines: args.values.lines ? Number(args.values.lines) : undefined,
     hudHeight: args.values.hud_height ? Number(args.values.hud_height) : undefined,
+    interval: args.values.interval ? Number(args.values.interval) : 1500,
   };
 
   switch (args.subcommand) {
@@ -100,6 +103,10 @@ async function main(argv) {
       return superStatus(common);
     case 'hud':
       return args.flags.watch ? superHudWatch(common) : superHudSnapshot(common);
+    case 'statusline':
+      return args.flags.watch
+        ? superOmaStatuslineWatch(common.interval, { sessionId: common.session, omaDir: process.env.OMA_DIR })
+        : superOmaStatuslineSnapshot({ sessionId: common.session, omaDir: process.env.OMA_DIR });
     case 'doctor':
       return superDoctor(common);
     case 'reconcile':
