@@ -349,8 +349,11 @@ export function generateCommandManifest(omaDir, opts = {}) {
     const raw = readFileSync(join(commandDir, file), 'utf8');
     const { meta, body } = parseFrontmatter(raw);
     const name = meta.name || (typeof meta.command === 'string' ? meta.command.replace(/^\/oma:/, '') : '');
-    if (!name || !meta.description) {
-      throw new Error(`Malformed command metadata in ${file}: name and description are required`);
+    const slashCommand = typeof meta.command === 'string' && meta.command.trim()
+      ? meta.command.trim()
+      : (name ? `/oma:${name}` : '');
+    if (!name || !meta.description || !slashCommand) {
+      throw new Error(`Malformed command metadata in ${file}: name/command and description are required`);
     }
     const aliases = Array.isArray(meta.aliases)
       ? meta.aliases
@@ -359,7 +362,7 @@ export function generateCommandManifest(omaDir, opts = {}) {
         : [];
     return {
       name,
-      slash_command: `/oma:${name}`,
+      slash_command: slashCommand,
       description: meta.description,
       aliases,
       argument_hint: meta['argument-hint'] || '',
