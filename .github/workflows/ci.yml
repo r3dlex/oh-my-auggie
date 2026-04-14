@@ -61,7 +61,7 @@ jobs:
       - name: Install bats
         run: sudo apt-get update && sudo apt-get install -y bats
       - name: Run CLI e2e tests
-        run: bats e2e/oma-cli.bats
+        run: bats e2e/oma-cli.bats e2e/super-oma-cli.bats
 
   validate-manifests:
     name: Validate manifests
