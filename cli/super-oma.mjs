@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-// cli/super-oma.mjs — super-oma wrapper CLI entry point
+// cli/super-oma.mjs — combined super-oma CLI entry point
 
+import { resolveOmaDir } from './utils.mjs';
+import { loadCommandManifest } from './super-utils.mjs';
 import { superDoctor } from './commands/super-doctor.mjs';
 import { superEventsTail } from './commands/super-events.mjs';
-import { superHudSnapshot, superHudWatch } from './commands/super-hud.mjs';
+import { superOmaHudSnapshot, superOmaHudWatch } from './commands/super-oma-hud.mjs';
+import { superOmaStatuslineSnapshot, superOmaStatuslineWatch } from './commands/super-oma-statusline.mjs';
 import { superRun } from './commands/super-run.mjs';
 import { superAttach, superPanesList, superReconcile, superSessionsInspect, superSessionsList, superUp } from './commands/super-session.mjs';
 import { superStatus } from './commands/super-status.mjs';
-import { superOmaStatuslineSnapshot, superOmaStatuslineWatch } from './commands/super-oma-statusline.mjs';
 
 const HELP = `super-oma — tmux/session supervisor for Auggie + OMA
 Usage: super-oma <command> [options]
@@ -16,14 +18,15 @@ Commands:
   super-oma up [--session <id>] [--leader-cmd <cmd>] [--attach]
   super-oma attach [--session <id>]
   super-oma status [--json] [--session <id>]
-  super-oma hud [--watch] [--session <id>]
-  super-oma statusline [--watch] [--session <id>]
+  super-oma hud [--watch] [--session <id>] [--interval <ms>]
+  super-oma statusline [--watch] [--session <id>] [--interval <ms>]
   super-oma doctor [--json] [--session <id>]
-  super-oma reconcile [--session <id>]
+  super-oma reconcile [--session <id>] [--no-inspect]
   super-oma sessions list [--json]
-  super-oma sessions inspect <id> [--watch|--json]
-  super-oma panes list [--session <id>|--json]
-  super-oma events tail [--session <id>] [--lines <n>|--json]
+  super-oma sessions inspect <id> [--json]
+  super-oma panes list [--json]
+  super-oma events tail [--session <id>] [--lines <n>] [--json]
+  super-oma commands list [--json]
   super-oma run <mode|/oma:command> [args...]
 `;
 
@@ -74,6 +77,21 @@ function parseArgs(argv) {
   return args;
 }
 
+async function superCommandsList(opts = {}) {
+  const manifest = loadCommandManifest(opts.omaDir || resolveOmaDir());
+  if (opts.json) {
+    process.stdout.write(JSON.stringify({ ok: true, commands: manifest.commands }, null, 2) + '\n');
+    return 0;
+  }
+  for (const command of manifest.commands) {
+    const aliases = Array.isArray(command.aliases) && command.aliases.length > 0
+      ? ` [${command.aliases.join(', ')}]`
+      : '';
+    process.stdout.write(`${command.name}${aliases} — ${command.description}\n`);
+  }
+  return 0;
+}
+
 async function main(argv) {
   const args = parseArgs(argv);
   if (!args.subcommand) {
@@ -82,16 +100,17 @@ async function main(argv) {
   }
 
   const common = {
+    omaDir: resolveOmaDir(),
     json: args.flags.json,
-    watch: args.flags.watch,
-    attach: args.flags.attach,
-    inspect: args.flags.noInspect ? false : undefined,
     session: args.values.session || null,
-    leaderCommand: args.values.leader_cmd || null,
-    cwd: args.values.cwd || null,
     lines: args.values.lines ? Number(args.values.lines) : undefined,
     hudHeight: args.values.hud_height ? Number(args.values.hud_height) : undefined,
-    interval: args.values.interval ? Number(args.values.interval) : 1500,
+    leaderCommand: args.values.leader_cmd || null,
+    cwd: args.values.cwd || null,
+    attach: args.flags.attach,
+    inspect: args.flags.noInspect ? false : undefined,
+    intervalMs: args.values.interval ? Number(args.values.interval) : 1500,
+    sessionId: args.values.session || null,
   };
 
   switch (args.subcommand) {
@@ -102,11 +121,9 @@ async function main(argv) {
     case 'status':
       return superStatus(common);
     case 'hud':
-      return args.flags.watch ? superHudWatch(common) : superHudSnapshot(common);
+      return args.flags.watch ? superOmaHudWatch(common.intervalMs, common) : superOmaHudSnapshot(common);
     case 'statusline':
-      return args.flags.watch
-        ? superOmaStatuslineWatch(common.interval, { sessionId: common.session, omaDir: process.env.OMA_DIR })
-        : superOmaStatuslineSnapshot({ sessionId: common.session, omaDir: process.env.OMA_DIR });
+      return args.flags.watch ? superOmaStatuslineWatch(common.intervalMs, common) : superOmaStatuslineSnapshot(common);
     case 'doctor':
       return superDoctor(common);
     case 'reconcile':
@@ -114,12 +131,7 @@ async function main(argv) {
     case 'sessions': {
       const action = args.positional[0] || 'list';
       if (action === 'list') return superSessionsList(common);
-      if (action === 'inspect') {
-        return superSessionsInspect({
-          ...common,
-          session: args.positional[1] || common.session,
-        });
-      }
+      if (action === 'inspect') return superSessionsInspect({ ...common, session: args.positional[1] || common.session });
       process.stderr.write(`super-oma sessions: unknown action: ${action}\n`);
       return 2;
     }
@@ -133,6 +145,12 @@ async function main(argv) {
       const action = args.positional[0] || 'tail';
       if (action === 'tail') return superEventsTail(common);
       process.stderr.write(`super-oma events: unknown action: ${action}\n`);
+      return 2;
+    }
+    case 'commands': {
+      const action = args.positional[0] || 'list';
+      if (action === 'list') return superCommandsList(common);
+      process.stderr.write(`super-oma commands: unknown action: ${action}\n`);
       return 2;
     }
     case 'run':
