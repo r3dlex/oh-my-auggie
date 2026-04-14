@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### CI
+
+- Force JavaScript GitHub Actions to run on Node 24 to remove Node 20 deprecation warnings ahead of the 2026 runner cutoff
+
 ---
 
 ## [0.3.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.2.1...v0.3.1) (2026-04-14)
