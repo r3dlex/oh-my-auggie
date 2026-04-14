@@ -344,21 +344,26 @@ function inferModeImpact(name, body) {
 
 export function generateCommandManifest(omaDir, opts = {}) {
   const commandDir = join(opts.repoRoot || repoRoot(), 'plugins', 'oma', 'commands');
-  const files = readdirSync(commandDir).filter(name => name.endsWith('.md')).sort();
+  const files = readdirSync(commandDir).filter(name => /^oma-.*\.md$/.test(name)).sort();
   const manifest = files.map(file => {
     const raw = readFileSync(join(commandDir, file), 'utf8');
     const { meta, body } = parseFrontmatter(raw);
-    if (!meta.name || !meta.description) {
+    const name = meta.name || (typeof meta.command === 'string' ? meta.command.replace(/^\/oma:/, '') : '');
+    if (!name || !meta.description) {
       throw new Error(`Malformed command metadata in ${file}: name and description are required`);
     }
-    const aliases = Array.isArray(meta.aliases) ? meta.aliases : [];
+    const aliases = Array.isArray(meta.aliases)
+      ? meta.aliases
+      : typeof meta.triggers === 'string'
+        ? meta.triggers.split(',').map(token => token.trim()).filter(Boolean)
+        : [];
     return {
-      name: meta.name,
-      slash_command: `/oma:${meta.name}`,
+      name,
+      slash_command: `/oma:${name}`,
       description: meta.description,
       aliases,
       argument_hint: meta['argument-hint'] || '',
-      mode_impact: inferModeImpact(meta.name, body),
+      mode_impact: inferModeImpact(name, body),
       help_text: body.split('\n').slice(0, 24).join('\n').trim(),
       source_file: `plugins/oma/commands/${file}`,
     };
