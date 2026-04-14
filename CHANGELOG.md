@@ -1,5 +1,21 @@
-## [0.2.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.2.0...v0.2.1) (2026-04-12)
+# Changelog
 
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+### Docs
+
+- Document the upcoming `super-oma` wrapper-first release direction in `README.md`
+- Add a release-readiness checklist for keeping repo, plugin, and marketplace metadata in sync
+
+### Chores
+
+- Align plugin and Claude marketplace metadata on version `0.3.0` for the next release cut
+
+---
+
+## [0.2.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.2.0...v0.2.1) (2026-04-12)
 
 ### Bug Fixes
 
@@ -7,18 +23,15 @@
 
 # [0.2.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.1.7...v0.2.0) (2026-04-12)
 
-
 ### Features
 
 * **graph:** graphwiki auto-build, auto-rebuild, resolveProjectDir, and optional dep ([0b2417d](https://github.com/r3dlex/oh-my-auggie/commit/0b2417da79c6127b3378f5ab32b05b28a3b1ee07))
 
 ## [0.1.7](https://github.com/r3dlex/oh-my-auggie/compare/v0.1.6...v0.1.7) (2026-04-12)
 
-# Changelog
+### CI
 
-All notable changes to this project will be documented in this file.
-
-## [Unreleased]
+- Migrate releases to semantic-release automation
 
 ---
 

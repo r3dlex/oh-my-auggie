@@ -1,6 +1,6 @@
 {
   "name": "oh-my-auggie",
-  "version": "0.1.4",
+  "version": "0.3.0",
   "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
   "author": {
     "name": "oh-my-auggie contributors"

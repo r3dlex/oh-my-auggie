@@ -9,13 +9,13 @@
 <p align="center">
 
   [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
-  [![Version](https://img.shields.io/badge/version-0.2-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![Version](https://img.shields.io/badge/version-0.3.0-blue)](https://github.com/r3dlex/oh-my-auggie)
   [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
   [![License](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
 
 </p>
 
-> **Multi-agent orchestration for [Augment Code's `auggie` CLI](https://www.augmentcode.com)** — the "oh-my-*" experience for auggie.
+> **Multi-agent orchestration for [Augment Code's `auggie` CLI](https://www.augmentcode.com)** — the "oh-my-*" experience for auggie. OMA remains the plugin/workflow layer, and the upcoming `super-oma` release adds an optional tmux/HUD supervisor shell on top without rewriting existing OMA semantics.
 
 ---
 
@@ -44,6 +44,16 @@ Optionally configure MCP servers (adds state persistence and advanced tooling):
 ```
 /oma:mcp-setup
 ```
+
+## super-oma release preview
+
+The next release line prepares `super-oma` as an additive wrapper around Auggie + OMA:
+
+- **Wrapper, not rewrite** — existing `/oma:*` workflows stay intact.
+- **Optional tmux supervisor UX** — HUD, activity panes, attach/reconcile ergonomics.
+- **Graceful degraded mode** — status/doctor flows continue to work from `.oma` state even when tmux is unavailable.
+
+Until that release lands, OMA remains the stable entrypoint and compatibility layer.
 
 ### Manual Install
 

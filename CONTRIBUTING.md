@@ -200,7 +200,28 @@ npm test
 
 ---
 
-## 9. Troubleshooting
+## 9. Release Readiness
+
+Before cutting the next release, keep the publish metadata aligned:
+
+```bash
+# Root/package metadata
+node -e "console.log(require('./package.json').version)"
+node -e "console.log(require('./plugins/oma/package.json').version)"
+node -e "console.log(require('./.claude-plugin/plugin.json').version)"
+node -e "const p=require('./.claude-plugin/marketplace.json'); console.log(p.version, p.plugins[0].version)"
+```
+
+Release prep checklist:
+
+- Sync `package.json`, `plugins/oma/package.json`, `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json`
+- Update `CHANGELOG.md`
+- Update the README version badge and any release-preview docs
+- Run `npm run typecheck`, `npm run build`, and `npm test`
+
+---
+
+## 10. Troubleshooting
 
 ### Skills/agents not showing up after rebuild
 
