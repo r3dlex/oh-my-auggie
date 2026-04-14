@@ -89,17 +89,52 @@ jobs:
               }
             }
           "
-      - name: Verify dist/hooks/*.js exist
+      - name: Verify hook command entrypoints exist
         run: |
           node -e "
             const fs = require('fs');
-            const hooks = ['session-start', 'delegation-enforce', 'stop-gate', 'approval-gate', 'adr-enforce', 'cost-track', 'keyword-detect', 'post-tool-status'];
-            for (const h of hooks) {
-              const p = 'plugins/oma/dist/hooks/' + h + '.js';
-              if (!fs.existsSync(p)) {
-                console.error('MISSING: ' + p);
-                process.exit(1);
+            const hooksManifest = JSON.parse(fs.readFileSync('plugins/oma/hooks/hooks.json', 'utf8'));
+            const missing = [];
+            const invalid = [];
+            const seen = new Set();
+
+            for (const groups of Object.values(hooksManifest.hooks || {})) {
+              for (const group of groups || []) {
+                for (const hook of group.hooks || []) {
+                  const match = typeof hook.command === 'string' && hook.command.match(/dist\\/hooks\\/([A-Za-z0-9-]+\\.js)/);
+                  if (!match) {
+                    invalid.push(hook.command || '<missing command>');
+                    continue;
+                  }
+
+                  const entrypoint = 'plugins/oma/dist/hooks/' + match[1];
+                  if (seen.has(entrypoint)) continue;
+                  seen.add(entrypoint);
+
+                  if (!fs.existsSync(entrypoint)) {
+                    missing.push(entrypoint);
+                    continue;
+                  }
+
+                  console.log('OK: ' + entrypoint);
+                }
               }
-              console.log('OK: ' + p);
+            }
+
+            if (invalid.length) {
+              console.error('FAIL: non-dist hook commands in hooks.json');
+              for (const command of invalid) console.error('INVALID: ' + command);
+              process.exit(1);
+            }
+
+            if (!seen.size) {
+              console.error('FAIL: hooks.json did not declare any dist hook entrypoints');
+              process.exit(1);
+            }
+
+            if (missing.length) {
+              console.error('FAIL: missing compiled hook entrypoints');
+              for (const entrypoint of missing) console.error('MISSING: ' + entrypoint);
+              process.exit(1);
             }
           "
