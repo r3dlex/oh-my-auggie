@@ -4,6 +4,10 @@
   "description": "OMA plugin with TypeScript hooks -- Windows-compatible",
   "type": "module",
   "main": "plugins/oma/dist/index.js",
+  "bin": {
+    "oma": "bin/oma",
+    "super-oma": "bin/super-oma"
+  },
   "exports": {
     ".": {
       "import": "./plugins/oma/dist/index.js"

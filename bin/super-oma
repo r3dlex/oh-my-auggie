@@ -1,0 +1,32 @@
+#!/bin/sh
+# super-oma — tmux/session supervisor wrapper
+
+set -e
+
+OMA_BIN="$(cd "$(dirname "$0")" && pwd)"
+OMA_ROOT="$(cd "$OMA_BIN/.." && pwd)"
+
+OMA_DIR=""
+_check="$PWD"
+while true; do
+  if [ -d "$_check/.oma" ]; then
+    OMA_DIR="$_check/.oma"
+    break
+  fi
+  if [ "$_check" = "/" ] || [ -z "$_check" ]; then
+    OMA_DIR="${HOME:-/tmp}/.oma"
+    break
+  fi
+  _check="$(dirname "$_check")"
+done
+
+export OMA_DIR
+
+SUPER_OMA_CLI="$OMA_ROOT/cli/super-oma.mjs"
+
+if [ ! -f "$SUPER_OMA_CLI" ]; then
+  echo "super-oma: error: cli/super-oma.mjs not found at $SUPER_OMA_CLI" >&2
+  exit 2
+fi
+
+exec node "$SUPER_OMA_CLI" "$@"
