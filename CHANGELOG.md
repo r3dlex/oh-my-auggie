@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### CI
 
+- Fix GitHub Actions ARM test runner label (`ubuntu-24.04-arm`) so CI no longer stalls in queued state
 - Verify local and GitHub CI lanes for typecheck, build, vitest coverage, manifest validation, and CLI e2e
 - Enforce 80%+ minimum branch coverage in `plugins/oma/vitest.config.ts` (statements/functions/branches all remain above 80%)
 
