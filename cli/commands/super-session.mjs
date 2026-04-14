@@ -288,6 +288,9 @@ export async function superReconcile(opts = {}) {
 
   const livePanes = listTmuxPanes(session.tmux_session_name);
   const paneRecords = artifacts.panes?.panes || [];
+  const shouldRestoreInspector = opts.inspect === true
+    || Boolean(artifacts.topology?.inspector_pane_id)
+    || paneRecords.some(p => p.role === 'inspector');
   const leaderPane = paneRecords.find(p => p.role === 'leader' && livePanes.some(l => l.pane_id === p.pane_id && !l.dead))
     || { pane_id: livePanes.find(p => !p.dead)?.pane_id || `${session.tmux_session_name}:0.0` };
 
@@ -307,7 +310,7 @@ export async function superReconcile(opts = {}) {
   }
 
   let inspectorPane = paneRecords.find(p => p.role === 'inspector' && livePanes.some(l => l.pane_id === p.pane_id && !l.dead));
-  if (!inspectorPane && opts.inspect !== false) {
+  if (!inspectorPane && shouldRestoreInspector) {
     const beforeInspectSplit = listTmuxPanes(session.tmux_session_name);
     const inspectCommand = `OMA_DIR=${shellQuote(omaDir)} ${shellQuote(process.execPath)} ${shellQuote(superOmaCliPath())} sessions inspect ${shellQuote(sessionId)} --watch`;
     const result = runTmux(['split-window', '-h', '-t', leaderPane.pane_id, '-c', session.cwd || process.cwd(), inspectCommand]);

@@ -85,7 +85,7 @@ async function main(argv) {
     json: args.flags.json,
     watch: args.flags.watch,
     attach: args.flags.attach,
-    inspect: !args.flags.noInspect,
+    inspect: args.flags.noInspect ? false : undefined,
     session: args.values.session || null,
     leaderCommand: args.values.leader_cmd || null,
     cwd: args.values.cwd || null,
