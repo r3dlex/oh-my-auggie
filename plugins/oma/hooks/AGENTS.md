@@ -18,7 +18,7 @@ After adding a new hook TypeScript file in `../src/hooks/`, register it in `hook
 Current hook registrations:
 - **SessionStart**: `session-start.js` (5000ms)
 - **PreToolUse**: `graph-provider-bridge.js`, `delegation-enforce.js`, `approval-gate.js`, `adr-enforce.js` (all 5000ms)
-- **PostToolUse**: `post-tool-status.js` (3000ms), `cost-track.js`, `keyword-detect.js`, `audit-log.js` (all 5000ms)
+- **PostToolUse**: `post-tool-status.js` (3000ms), `graph-auto-rebuild.js` (3000ms), `cost-track.js`, `keyword-detect.js`, `audit-log.js` (all 5000ms)
 - **Stop**: `stop-gate.js` (5000ms)
 
 ### Testing Requirements

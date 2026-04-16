@@ -19,24 +19,22 @@ oh-my-auggie/
 │       ├── .augment-plugin/
 │       │   ├── plugin.json       # Plugin name, version, entry points
 │       │   └── .mcp.json         # MCP server config (${AUGMENT_PLUGIN_ROOT}/mcp/state-server.mjs)
-│       ├── agents/                # 19 subagent markdown files
+│       ├── agents/                # 20 subagent markdown files
 │       │   ├── oma-explorer.md
 │       │   ├── oma-planner.md
 │       │   ├── oma-executor.md
 │       │   ├── oma-architect.md
-│       │   └── [15 more in v0.2]
-│       ├── commands/              # 44 slash command markdown files
+│       │   └── [16 more in v0.2]
+│       ├── commands/              # 45 slash command markdown files
 │       │   ├── oma-autopilot.md
 │       │   ├── oma-ralph.md
 │       │   ├── oma-status.md
 │       │   ├── oma-cancel.md
 │       │   ├── oma-help.md
-│       │   └── [23 more in v0.2]
+│       │   └── [40 more in v0.2]
 │       ├── hooks/
-│       │   ├── hooks.json         # 6 hook registrations (SessionStart, PreToolUse, Stop, + enterprise)
-│       │   ├── session-start.sh
-│       │   ├── delegation-enforce.sh
-│       │   └── stop-gate.sh
+│       │   ├── hooks.json         # 11 hook registrations (SessionStart, PreToolUse, PostToolUse, Stop)
+│       │   └── AGENTS.md
 │       ├── rules/
 │       │   ├── orchestration.md   # Community rules
 │       │   └── enterprise.md      # Enterprise profile (additive only)
@@ -118,8 +116,8 @@ Enterprise profile activates when `.oma/config.json` contains `"profile": "enter
 
 | Feature | v0.1 | v0.2 |
 |---------|------|------|
-| Core agents | 4 | 19 |
-| Core commands | 5 | 44 |
+| Core agents | 4 | 20 |
+| Core commands | 5 | 45 |
 | Hook-based ADR enforcement | No | Yes (adr-enforce.sh) |
 | Hook-based approval gates | No | Yes (approval-gate.sh) |
 | Cost tracking | No | Yes (cost-track.sh) |

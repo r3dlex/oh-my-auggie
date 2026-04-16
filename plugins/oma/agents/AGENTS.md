@@ -4,7 +4,7 @@
 # agents
 
 ## Purpose
-Contains 19 agent definition files for auggie. Each file defines a specialized agent role via YAML frontmatter (`name`, `description`, `model`, `color`, `tools`) followed by an XML `Agent_Prompt` body. Agents cover the full OMA pipeline from exploration and planning through implementation, verification, and documentation.
+Contains 20 agent definition files for auggie. Each file defines a specialized agent role via YAML frontmatter (`name`, `description`, `model`, `color`, `tools`) followed by an XML `Agent_Prompt` body. Agents cover the full OMA pipeline from exploration and planning through implementation, verification, and documentation.
 
 ## Key Files
 | File | Description |
