@@ -93,9 +93,10 @@ jobs:
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
 
-      - name: Publish to npmjs.com (OIDC trusted publishing)
-        continue-on-error: true
+      - name: Publish oh-my-auggie (unscoped) to npmjs.com
         run: |
           CHANNEL="${{ needs.release.outputs.new-release-channel }}"
           TAG="${CHANNEL:-latest}"
-          cd plugins/oma && npm publish --tag "$TAG" --provenance --access public
+          # Rename to unscoped; runner is ephemeral
+          cd plugins/oma && npm pkg set name="oh-my-auggie"
+          npm publish --tag "$TAG" --provenance --access public
