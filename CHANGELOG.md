@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/r3dlex/oh-my-auggie/compare/v0.3.1...v0.3.2) (2026-04-16)
+
+
+### Bug Fixes
+
+* rename to oh-my-auggie (unscoped) for npmjs publish ([1da5b04](https://github.com/r3dlex/oh-my-auggie/commit/1da5b045221de6464dbd1fe04d5b727e68e027c2))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
