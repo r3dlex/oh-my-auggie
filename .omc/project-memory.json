@@ -191,6 +191,12 @@
       "type": "file"
     },
     {
+      "path": "plugins/oma/package.json",
+      "accessCount": 24,
+      "lastAccessed": 1776756856550,
+      "type": "file"
+    },
+    {
       "path": "plugins/oma/src/types.ts",
       "accessCount": 23,
       "lastAccessed": 1776012922734,
@@ -200,12 +206,6 @@
       "path": "plugins/oma/hooks/hooks.json",
       "accessCount": 23,
       "lastAccessed": 1776029889627,
-      "type": "file"
-    },
-    {
-      "path": "plugins/oma/package.json",
-      "accessCount": 23,
-      "lastAccessed": 1776748260090,
       "type": "file"
     },
     {

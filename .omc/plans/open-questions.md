@@ -88,3 +88,11 @@
 
 - [ ] **Should non-Claude models (Gemini 3.1 Pro, GPT-5.x) be evaluated for cost optimization?** -- Deferred as a separate initiative per the plan's ADR. Worth revisiting after the Opus upgrade lands.
 
+## [npm-trusted-publishing-migration] - 2026-04-21
+
+- [ ] **Is oh-my-auggie's `publish-npm` job currently succeeding without NODE_AUTH_TOKEN?** -- The job has `id-token: write` and `--provenance` but no `NODE_AUTH_TOKEN` env var. Check recent GitHub Actions logs to determine if Trusted Publishing is already working or if publishing is silently broken.
+- [ ] **Does `scope: '@r3dlex'` in oh-my-auggie's publish-npm setup-node interfere with OIDC token exchange for unscoped packages?** -- The package publishes as unscoped `oh-my-auggie` but setup-node has `scope: '@r3dlex'`. May cause the OIDC token to be scoped incorrectly, leading to 403 on publish.
+- [ ] **Are there other r3dlex repos (beyond the 6 audited) that publish to npm?** -- The audit covered repos present locally; there may be additional repos on GitHub with NPM_TOKEN secrets that need migration.
+- [ ] **Should the npmjs.com Trusted Publisher config include a GitHub environment name?** -- Using environments adds an extra layer of protection (only that environment can trigger the OIDC exchange), but none of the current workflows use GitHub environments.
+- [ ] **Does the `changesets/action` in ai-hero-cli handle Trusted Publishing natively?** -- The `NPM_TOKEN: ""` workaround suggests it does, but should be verified against changesets docs to confirm no future breakage.
+
