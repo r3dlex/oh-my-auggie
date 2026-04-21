@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.4.3...v0.5.0) (2026-04-21)
+
+
+### Features
+
+* **vscode:** add vscode-oma extension for agent/workflow visualization ([ce47d37](https://github.com/r3dlex/oh-my-auggie/commit/ce47d37a06591ea175e3bd3da2897185b3d064cf))
+
 ## [0.4.3](https://github.com/r3dlex/oh-my-auggie/compare/v0.4.2...v0.4.3) (2026-04-21)
 
 ## [0.4.2](https://github.com/r3dlex/oh-my-auggie/compare/v0.4.1...v0.4.2) (2026-04-21)
