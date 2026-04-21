@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.2] - 2026-04-21
+
+### Docs
+
+- update version badge in README to 0.4.2
+- add 0.4.0 and 0.4.1 sections to CHANGELOG
+
 ## [0.4.1] - 2026-04-21
 
 ### Bug Fixes
