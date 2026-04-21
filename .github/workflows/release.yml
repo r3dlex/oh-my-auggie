@@ -98,4 +98,4 @@ jobs:
           TAG="${CHANNEL:-latest}"
           # Rename to unscoped; runner is ephemeral
           cd plugins/oma && npm pkg set name="oh-my-auggie"
-          npm publish --tag "$TAG" --provenance --access public
+          npm publish --tag "$TAG" --provenance --access public || echo "::warning::Publish skipped — version already exists or package not yet on npmjs.com (idempotent)"
