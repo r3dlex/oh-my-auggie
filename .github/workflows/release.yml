@@ -86,6 +86,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: cd plugins/oma && npm ci
@@ -106,6 +107,8 @@ jobs:
 
       - name: Publish oh-my-auggie (unscoped) to npmjs.com
         run: |
+          # Remove the _authToken line setup-node injected so npm uses OIDC Trusted Publishing instead
+          sed -i '/^\/\/registry\.npmjs\.org\/:_authToken/d' ~/.npmrc || true
           CHANNEL="${{ steps.ver.outputs.channel }}"
           TAG="${CHANNEL:-latest}"
           # Rename to unscoped; runner is ephemeral
