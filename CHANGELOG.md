@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.5.0...v0.5.1) (2026-04-21)
+
+
+### Bug Fixes
+
+* **release:** make npm publish step idempotent — suppress 404 on first-time package creation ([9978f2d](https://github.com/r3dlex/oh-my-auggie/commit/9978f2da320068e7e7f9c694551ce0c88cb8629b))
+
 # [0.5.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.4.3...v0.5.0) (2026-04-21)
 
 
