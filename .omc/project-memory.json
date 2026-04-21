@@ -1,0 +1,430 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1775975502670,
+  "projectRoot": "/Users/andreburgstahler/Ws/Personal/oh-my-auggie",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": ">=18.0.0",
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "vitest",
+        "version": "2.0.0",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": "Node.js 18.0.0"
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": "npm test",
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {
+      "test": "cd plugins/oma && vitest run",
+      "test:coverage": "cd plugins/oma && vitest run --coverage",
+      "build": "cd plugins/oma && tsc",
+      "typecheck": "cd plugins/oma && tsc --noEmit"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets",
+      "bin",
+      "scripts"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "adr": {
+      "path": "adr",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775975502658,
+      "keyFiles": [
+        "0001-use-auggie-as-subprocess.md",
+        "0002-xml-agent-prompt-format.md"
+      ]
+    },
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 6,
+      "lastAccessed": 1775975502658,
+      "keyFiles": [
+        "buddy-dark.png",
+        "buddy-galaxy-dark.png",
+        "buddy-galaxy-light.png",
+        "buddy-light.png",
+        "oh-my-auggie.svg"
+      ]
+    },
+    "bin": {
+      "path": "bin",
+      "purpose": "Executable scripts",
+      "fileCount": 1,
+      "lastAccessed": 1775975502659,
+      "keyFiles": [
+        "oma"
+      ]
+    },
+    "cli": {
+      "path": "cli",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775975502659,
+      "keyFiles": [
+        "oma.mjs",
+        "utils.mjs"
+      ]
+    },
+    "e2e": {
+      "path": "e2e",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775975502659,
+      "keyFiles": [
+        "oma-cli.bats"
+      ]
+    },
+    "plugins": {
+      "path": "plugins",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775975502659,
+      "keyFiles": []
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1775975502659,
+      "keyFiles": [
+        "release.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "plugins/oma/src/hooks/session-start.ts",
+      "accessCount": 47,
+      "lastAccessed": 1776030893220,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests/unit/hooks/session-start.test.ts",
+      "accessCount": 33,
+      "lastAccessed": 1776029868856,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma",
+      "accessCount": 31,
+      "lastAccessed": 1775977923870,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/src/hooks/keyword-detect.ts",
+      "accessCount": 30,
+      "lastAccessed": 1776030890433,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 28,
+      "lastAccessed": 1776030892350,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/src/utils.ts",
+      "accessCount": 26,
+      "lastAccessed": 1776029786061,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests/unit/hooks/post-tool-status.test.ts",
+      "accessCount": 25,
+      "lastAccessed": 1776013018084,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/post-tool-status.ts",
+      "accessCount": 24,
+      "lastAccessed": 1776013014807,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/types.ts",
+      "accessCount": 23,
+      "lastAccessed": 1776012922734,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/hooks/hooks.json",
+      "accessCount": 23,
+      "lastAccessed": 1776029889627,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/package.json",
+      "accessCount": 21,
+      "lastAccessed": 1776319649882,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/commands/oma-setup.md",
+      "accessCount": 15,
+      "lastAccessed": 1776031240091,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/skills/graph-context/SKILL.md",
+      "accessCount": 14,
+      "lastAccessed": 1776029947048,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/hooks/session-start.mjs",
+      "accessCount": 13,
+      "lastAccessed": 1775951847504,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/commands/oma-config.md",
+      "accessCount": 13,
+      "lastAccessed": 1776031268511,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests/unit/hooks/cost-track.test.ts",
+      "accessCount": 12,
+      "lastAccessed": 1776012993481,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/cost-track.ts",
+      "accessCount": 11,
+      "lastAccessed": 1776012989932,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/setup-rules.mjs",
+      "accessCount": 8,
+      "lastAccessed": 1775951827741,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests/setup-rules.test.ts",
+      "accessCount": 8,
+      "lastAccessed": 1775951867845,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/commands/oma-graph-provider.md",
+      "accessCount": 8,
+      "lastAccessed": 1776031269584,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/delegation-enforce.ts",
+      "accessCount": 7,
+      "lastAccessed": 1775976285721,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src",
+      "accessCount": 7,
+      "lastAccessed": 1775976447441,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/tsconfig.json",
+      "accessCount": 7,
+      "lastAccessed": 1775977915771,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/commands/oma-update.md",
+      "accessCount": 7,
+      "lastAccessed": 1776031256341,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks",
+      "accessCount": 6,
+      "lastAccessed": 1775976438416,
+      "type": "directory"
+    },
+    {
+      "path": "IMPLEMENTATION-PLAN-graph-provider.md",
+      "accessCount": 6,
+      "lastAccessed": 1775999414794,
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 6,
+      "lastAccessed": 1776030878212,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests",
+      "accessCount": 5,
+      "lastAccessed": 1776012951712,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/commands/oma-doctor.md",
+      "accessCount": 5,
+      "lastAccessed": 1776031214945,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/.augment-plugin/plugin.json",
+      "accessCount": 4,
+      "lastAccessed": 1776030899600,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/commands/oma-mcp-setup.md",
+      "accessCount": 4,
+      "lastAccessed": 1776031223085,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/approval-gate.ts",
+      "accessCount": 3,
+      "lastAccessed": 1775975815712,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/MIGRATION-AUDIT.md",
+      "accessCount": 3,
+      "lastAccessed": 1775975962002,
+      "type": "file"
+    },
+    {
+      "path": "prd.json",
+      "accessCount": 2,
+      "lastAccessed": 1775907385722,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/skills/interactive-menu/SKILL.md",
+      "accessCount": 2,
+      "lastAccessed": 1775947365582,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests/parity/runner.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775949914612,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/hooks/keyword-detect.mjs",
+      "accessCount": 2,
+      "lastAccessed": 1775951853693,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/skills/graph-context",
+      "accessCount": 2,
+      "lastAccessed": 1775975963191,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/vitest.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775977926122,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/stop-gate.ts",
+      "accessCount": 2,
+      "lastAccessed": 1776030891364,
+      "type": "file"
+    },
+    {
+      "path": "IMPLEMENTATION-PLAN-v0.2.0.md",
+      "accessCount": 1,
+      "lastAccessed": 1775903936946,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/.oma/state.json",
+      "accessCount": 1,
+      "lastAccessed": 1775904007589,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/hooks/post-tool-status.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1775947542523,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/.mcp.json",
+      "accessCount": 1,
+      "lastAccessed": 1775949194760,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/mcp/package.json",
+      "accessCount": 1,
+      "lastAccessed": 1775949195930,
+      "type": "file"
+    },
+    {
+      "path": "e2e/oma-cli.bats",
+      "accessCount": 1,
+      "lastAccessed": 1775949208077,
+      "type": "directory"
+    },
+    {
+      "path": "cli/commands/doctor.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1775949209494,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/tests/parity",
+      "accessCount": 1,
+      "lastAccessed": 1775949923528,
+      "type": "directory"
+    },
+    {
+      "path": "plugins/oma/src/setup-rules.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775951864323,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/adr-enforce.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775975618938,
+      "type": "directory"
+    }
+  ],
+  "userDirectives": []
+}

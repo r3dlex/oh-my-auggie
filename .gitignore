@@ -1,6 +1,8 @@
 # ── OMA runtime state ─────────────────────────────────────────────────────────
 .oma/
-.omc/
+.omc/logs/
+.omc/state/
+.omc/sessions/
 .claude/
 
 # ── Local dependencies ─────────────────────────────────────────────────────────
