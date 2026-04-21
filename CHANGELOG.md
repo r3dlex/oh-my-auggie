@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.4.0...v0.4.1) (2026-04-21)
+
+
+### Bug Fixes
+
+* **ci:** remove scope from npm publish setup-node; drop plan file ([4e713c4](https://github.com/r3dlex/oh-my-auggie/commit/4e713c4ef62f35d5ddbe776bdc8d054bac58792e))
+
 # [0.4.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.3.3...v0.4.0) (2026-04-21)
 
 
