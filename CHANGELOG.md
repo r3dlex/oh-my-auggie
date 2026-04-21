@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.3.3...v0.4.0) (2026-04-21)
+
+
+### Features
+
+* **oma:** add TTY auto-update prompt and opus4.7 model upgrade ([6d5f587](https://github.com/r3dlex/oh-my-auggie/commit/6d5f587faa53709098762d50b887e918bae0f275))
+
 ## [0.3.3](https://github.com/r3dlex/oh-my-auggie/compare/v0.3.2...v0.3.3) (2026-04-16)
 
 
