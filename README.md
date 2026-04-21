@@ -154,6 +154,32 @@ Drop the `/oma:` prefix — these activate automatically when detected in conver
 
 ---
 
+## VS Code Extension
+
+`vscode-oma` adds a real-time visualization sidebar to VS Code that mirrors OMA's live state while auggie runs.
+
+### Features
+
+- **Activity bar panels** — Workflows, Agents, and Tasks tree views update as OMA executes
+- **Live status bar** — shows active workflow/agent count at a glance
+- **`StateReader` / `OmaStateAdapter`** — reads `.oma/state.json` with a 200ms debounced `FileSystemWatcher` to prevent UI thrashing during heavy parallel execution
+- **MCP server provider** — registers the OMA state server so VS Code tools can query agent state directly
+
+### Install
+
+Build and install the `.vsix` from `vscode-oma/`:
+
+```bash
+cd vscode-oma
+npm install
+npm run build
+code --install-extension oh-my-auggie-vscode-*.vsix
+```
+
+Or install the pre-built `vscode-oma/oh-my-auggie-vscode-0.1.0.vsix` directly from the repo.
+
+---
+
 ## Architecture
 
 ```

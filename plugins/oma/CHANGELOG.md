@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-04-21
+
+### Features
+
+- **vscode-oma**: Add VS Code extension for real-time workflow/agent visualization
+  - Workflows, Agents, Tasks panels in the activity bar
+  - StateReader interface with OmaStateAdapter (reads `.oma/state.json`)
+  - 200ms debounced FileSystemWatcher — prevents UI thrashing during heavy execution
+  - Live status bar showing active workflow/agent count
+  - MCP server provider registration
+
 ## [0.4.2] - 2026-04-21
 
 ### Docs

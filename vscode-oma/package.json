@@ -1,0 +1,49 @@
+{
+  "name": "oh-my-auggie-vscode",
+  "displayName": "oh-my-auggie (OMA)",
+  "description": "Visualize oh-my-auggie agents and workflows in VS Code",
+  "version": "0.1.0",
+  "publisher": "r3dlex",
+  "license": "MIT",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["AI", "Other"],
+  "keywords": ["auggie", "augment", "multi-agent", "orchestration", "workflow"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "oma.showStatus", "title": "OMA: Show Status" },
+      { "command": "oma.clearState", "title": "OMA: Clear State" }
+    ],
+    "viewsContainers": {
+      "activitybar": [{ "id": "oma-explorer", "title": "oh-my-auggie", "icon": "resources/icons/oma-activity.svg" }]
+    },
+    "views": {
+      "oma-explorer": [
+        { "id": "oma.workflows", "name": "Active Workflows" },
+        { "id": "oma.agents", "name": "Agents" },
+        { "id": "oma.tasks", "name": "Tasks" }
+      ]
+    },
+    "configuration": {
+      "title": "OMA",
+      "properties": {
+        "oma.showStatusBar": { "type": "boolean", "default": true, "description": "Show status bar" }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --platform=node --format=cjs --minify",
+    "watch": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --platform=node --format=cjs --watch",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.7.0"
+  }
+}
