@@ -59,16 +59,28 @@ jobs:
 
   publish-npm:
     needs: release
-    if: needs.release.outputs.new-release-published == 'true'
+    if: needs.release.outputs.new-release-published == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
 
     steps:
+      - name: Resolve publish version
+        id: ver
+        run: |
+          if [ -n "${{ needs.release.outputs.new-release-version }}" ]; then
+            echo "tag=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
+            echo "channel=${{ needs.release.outputs.new-release-channel }}" >> "$GITHUB_OUTPUT"
+          else
+            LATEST=$(git ls-remote --tags --sort=-v:refname origin 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
+            echo "tag=${LATEST}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
         with:
-          ref: v${{ needs.release.outputs.new-release-version }}
+          ref: ${{ steps.ver.outputs.tag }}
 
       - name: Setup Node.js for npmjs.com
         uses: actions/setup-node@v4
@@ -95,7 +107,7 @@ jobs:
 
       - name: Publish oh-my-auggie (unscoped) to npmjs.com
         run: |
-          CHANNEL="${{ needs.release.outputs.new-release-channel }}"
+          CHANNEL="${{ steps.ver.outputs.channel }}"
           TAG="${CHANNEL:-latest}"
           # Rename to unscoped; runner is ephemeral
           cd plugins/oma && npm pkg set name="oh-my-auggie"
