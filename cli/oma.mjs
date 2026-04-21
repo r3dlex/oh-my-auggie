@@ -5,6 +5,7 @@ import { resolveOmaDir } from './utils.mjs';
 import { teamSpawn, teamStatus, teamShutdown, detectStaleWorkers } from './commands/team.mjs';
 import { hudSnapshot, hudWatch } from './commands/hud.mjs';
 import { doctorOffline, doctorInstall, doctorCi } from './commands/doctor.mjs';
+import { maybeCheckAndPromptUpdate } from './update.mjs';
 
 // ── Help text ─────────────────────────────────────────────────────────────────
 
@@ -121,6 +122,8 @@ async function main(argv) {
 
   const omaDir = resolveOmaDir();
   const { flags, positional } = args;
+
+  await maybeCheckAndPromptUpdate({ omaDir });
 
   try {
     switch (args.subcommand) {

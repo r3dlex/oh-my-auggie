@@ -12,22 +12,29 @@ function shouldCheckUpdate(cacheDir) {
         if (!existsSync(cacheFile))
             return true;
         const cache = JSON.parse(readFileSync(cacheFile, 'utf8'));
-        const lastChecked = new Date(cache.lastChecked);
-        const hoursSince = (Date.now() - lastChecked.getTime()) / (1000 * 60 * 60);
-        return hoursSince >= 1;
+        const lastChecked = Date.parse(cache.lastChecked ?? '');
+        if (!Number.isFinite(lastChecked))
+            return true;
+        return (Date.now() - lastChecked) >= UPDATE_CACHE_TTL_MS;
     }
     catch {
         return true;
     }
 }
 function spawnBackgroundUpdateCheck(checkScript) {
-    const { spawn } = require('child_process');
-    const child = spawn('node', ['-e', checkScript], {
+    const child = spawn(process.execPath, ['-e', checkScript], {
         cwd: process.cwd(),
         detached: true,
         stdio: 'ignore',
     });
     child.unref();
+}
+function isAutoUpdateDisabled() {
+    const auto = String(process.env.OMA_AUTO_UPDATE ?? '').trim().toLowerCase();
+    if (auto && ['0', 'false', 'off', 'no'].includes(auto))
+        return true;
+    const disable = String(process.env.OMA_DISABLE_AUTO_UPDATE ?? '').trim().toLowerCase();
+    return Boolean(disable && ['1', 'true', 'on', 'yes'].includes(disable));
 }
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export function main() {
@@ -151,6 +158,8 @@ export function main() {
     });
     // Non-blocking background update check
     try {
+        if (isAutoUpdateDisabled())
+            return;
         if (!shouldCheckUpdate(cacheDir))
             return;
         const checkScript = `
@@ -184,7 +193,8 @@ export function main() {
           currentVersion,
           latestVersion,
           lastChecked: new Date().toISOString(),
-          updateAvailable: latestVersion !== currentVersion
+          updateAvailable: latestVersion !== currentVersion,
+          source: 'github-release'
         };
         try { mkdirSync(cacheDir, { recursive: true }); } catch {}
         writeFileSync(join(cacheDir, 'update-check.json'), JSON.stringify(cache, null, 2));

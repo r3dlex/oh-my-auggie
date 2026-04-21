@@ -16,7 +16,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.3.4] - 2026-04-20
+
+### Features
+
+- Add OMX-style automatic update prompt flow to `oma` and `super-oma` wrappers (TTY-only, non-fatal, cache/TTL-aware, disable via env flags)
+- Upgrade Opus agent tier to `opus4.7` (from `claude-opus-4-6`); add `opus47` credit cost and `normalizeModel` aliases
+
+### Docs
+
+- Document wrapper auto-update behavior and disable flags in `README.md` and `/oma:update`
 
 ### CI
 

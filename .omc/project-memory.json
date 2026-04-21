@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1775975502670,
-  "projectRoot": "/Users/andreburgstahler/Ws/Personal/oh-my-auggie",
+  "lastScanned": 1776748155601,
+  "projectRoot": "/Users/andreburgstahler/Ws/Personal/AiTool/oh-my-auggie",
   "techStack": {
     "languages": [
       {
@@ -29,10 +29,10 @@
     "lintCommand": null,
     "devCommand": null,
     "scripts": {
-      "test": "cd plugins/oma && vitest run",
-      "test:coverage": "cd plugins/oma && vitest run --coverage",
-      "build": "cd plugins/oma && tsc",
-      "typecheck": "cd plugins/oma && tsc --noEmit"
+      "test": "npm --prefix plugins/oma run test",
+      "test:coverage": "npm --prefix plugins/oma run coverage",
+      "build": "npm --prefix plugins/oma run build",
+      "typecheck": "npm --prefix plugins/oma run typecheck"
     }
   },
   "conventions": {
@@ -59,18 +59,19 @@
     "adr": {
       "path": "adr",
       "purpose": null,
-      "fileCount": 2,
-      "lastAccessed": 1775975502658,
+      "fileCount": 3,
+      "lastAccessed": 1776748155592,
       "keyFiles": [
         "0001-use-auggie-as-subprocess.md",
-        "0002-xml-agent-prompt-format.md"
+        "0002-xml-agent-prompt-format.md",
+        "AGENTS.md"
       ]
     },
     "assets": {
       "path": "assets",
       "purpose": "Static assets",
       "fileCount": 6,
-      "lastAccessed": 1775975502658,
+      "lastAccessed": 1776748155594,
       "keyFiles": [
         "buddy-dark.png",
         "buddy-galaxy-dark.png",
@@ -82,45 +83,61 @@
     "bin": {
       "path": "bin",
       "purpose": "Executable scripts",
-      "fileCount": 1,
-      "lastAccessed": 1775975502659,
+      "fileCount": 3,
+      "lastAccessed": 1776748155594,
       "keyFiles": [
-        "oma"
+        "AGENTS.md",
+        "oma",
+        "super-oma"
       ]
     },
     "cli": {
       "path": "cli",
       "purpose": null,
-      "fileCount": 2,
-      "lastAccessed": 1775975502659,
+      "fileCount": 6,
+      "lastAccessed": 1776748155595,
       "keyFiles": [
+        "AGENTS.md",
         "oma.mjs",
-        "utils.mjs"
+        "super-oma.mjs",
+        "super-utils.mjs",
+        "update.mjs"
       ]
     },
     "e2e": {
       "path": "e2e",
       "purpose": null,
-      "fileCount": 1,
-      "lastAccessed": 1775975502659,
+      "fileCount": 3,
+      "lastAccessed": 1776748155595,
       "keyFiles": [
-        "oma-cli.bats"
+        "AGENTS.md",
+        "oma-cli.bats",
+        "super-oma-cli.bats"
       ]
+    },
+    "packages": {
+      "path": "packages",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776748155595,
+      "keyFiles": []
     },
     "plugins": {
       "path": "plugins",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1775975502659,
+      "lastAccessed": 1776748155595,
       "keyFiles": []
     },
     "scripts": {
       "path": "scripts",
       "purpose": "Build/utility scripts",
-      "fileCount": 1,
-      "lastAccessed": 1775975502659,
+      "fileCount": 3,
+      "lastAccessed": 1776748155595,
       "keyFiles": [
-        "release.ts"
+        "AGENTS.md",
+        "release.ts",
+        "validate-agents-md.sh"
       ]
     }
   },
@@ -187,8 +204,20 @@
     },
     {
       "path": "plugins/oma/package.json",
-      "accessCount": 21,
-      "lastAccessed": 1776319649882,
+      "accessCount": 23,
+      "lastAccessed": 1776748260090,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/src/hooks/cost-track.ts",
+      "accessCount": 18,
+      "lastAccessed": 1776747293888,
+      "type": "file"
+    },
+    {
+      "path": "plugins/oma/tests/unit/hooks/cost-track.test.ts",
+      "accessCount": 18,
+      "lastAccessed": 1776747294348,
       "type": "file"
     },
     {
@@ -213,18 +242,6 @@
       "path": "plugins/oma/commands/oma-config.md",
       "accessCount": 13,
       "lastAccessed": 1776031268511,
-      "type": "file"
-    },
-    {
-      "path": "plugins/oma/tests/unit/hooks/cost-track.test.ts",
-      "accessCount": 12,
-      "lastAccessed": 1776012993481,
-      "type": "file"
-    },
-    {
-      "path": "plugins/oma/src/hooks/cost-track.ts",
-      "accessCount": 11,
-      "lastAccessed": 1776012989932,
       "type": "file"
     },
     {

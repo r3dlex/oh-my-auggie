@@ -1,12 +1,12 @@
 {
   "name": "oh-my-auggie",
   "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
-  "version": "0.3.1",
+  "version": "0.3.4",
   "plugins": [
     {
       "name": "oma",
       "description": "Multi-agent orchestration plugin with 20+ agents, 28 skills, TypeScript hooks, MCP state server, and enterprise-ready workflows",
-      "version": "0.3.1",
+      "version": "0.3.4",
       "source": "./plugins/oma",
       "category": "productivity",
       "tags": [

@@ -10,6 +10,7 @@ import { superOmaStatuslineSnapshot, superOmaStatuslineWatch } from './commands/
 import { superRun } from './commands/super-run.mjs';
 import { superAttach, superPanesList, superReconcile, superSessionsInspect, superSessionsList, superUp } from './commands/super-session.mjs';
 import { superStatus } from './commands/super-status.mjs';
+import { maybeCheckAndPromptUpdate } from './update.mjs';
 
 const HELP = `super-oma — tmux/session supervisor for Auggie + OMA
 Usage: super-oma <command> [options]
@@ -112,6 +113,8 @@ async function main(argv) {
     intervalMs: args.values.interval ? Number(args.values.interval) : 1500,
     sessionId: args.values.session || null,
   };
+
+  await maybeCheckAndPromptUpdate({ omaDir: common.omaDir });
 
   switch (args.subcommand) {
     case 'up':

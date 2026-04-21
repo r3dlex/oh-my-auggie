@@ -9,7 +9,7 @@
 <p align="center">
 
   [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
-  [![Version](https://img.shields.io/badge/version-0.3.1-blue)](https://github.com/r3dlex/oh-my-auggie)
+  [![Version](https://img.shields.io/badge/version-0.3.4-blue)](https://github.com/r3dlex/oh-my-auggie)
   [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
   [![License](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
 
@@ -54,6 +54,25 @@ Optionally configure MCP servers (adds state persistence and advanced tooling):
 - **Graceful degraded mode** — status/doctor flows continue to work from `.oma` state even when tmux is unavailable.
 
 OMA remains the stable entrypoint and compatibility layer while `super-oma` rollout continues.
+
+### Automatic update prompts (`oma` / `super-oma`)
+
+The shell wrappers now perform an **interactive, non-fatal auto-update check** on TTY sessions:
+
+- Uses `.oma/update-check.json` cache (1h check TTL, prompt cooldown for already-seen versions)
+- Reuses SessionStart background cache warming when available
+- Release source order: GitHub Releases first, then package-channel fallback
+- Prompt is shown only when a newer version is detected and a real TTY is available
+
+Disable prompts:
+
+```bash
+export OMA_AUTO_UPDATE=0
+# or
+export OMA_DISABLE_AUTO_UPDATE=true
+```
+
+Manual update remains available via `/oma:update`.
 
 ### Manual Install
 

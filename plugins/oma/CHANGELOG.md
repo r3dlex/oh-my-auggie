@@ -2,7 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.3.4] - 2026-04-20
+
+### Features
+
+- add TTY-only automatic update prompt support for `oma` / `super-oma` wrappers with `.oma/update-check.json` cache reuse and non-fatal install fallback behavior
+- upgrade Opus agent tier to `opus4.7` (from `claude-opus-4-6`); add `opus47` credit cost and `normalizeModel` aliases
+
+### Docs
+
+- update `/oma:update` docs to reflect wrapper auto-update behavior and package-channel fallback order
+
+## [0.3.3] - 2026-04-16
+
+### Bug Fixes
+
+- dual-publish to npmjs as both scoped and unscoped
+
+## [0.3.2] - 2026-04-16
+
+### Bug Fixes
+
+- rename to oh-my-auggie (unscoped) for npmjs publish
 
 ## [0.3.1] - 2026-04-14
 

@@ -3,7 +3,7 @@
   "name": "oma",
   "display_name": "oh-my-auggie (OMA)",
   "description": "Multi-agent orchestration plugin for Augment Code — Explorer → Planner → Executor → Architect pipeline with persistence loops and CI/CD-native workflows",
-  "version": "0.3.1",
+  "version": "0.3.4",
   "minimum_auggie_version": "0.22.0",
   "agents": [
     "oma-analyst",

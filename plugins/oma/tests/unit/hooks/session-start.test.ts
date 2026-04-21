@@ -24,6 +24,7 @@ vi.mock('../../../src/utils.js', () => ({
 
 import { readFileSync } from 'fs';
 import { existsSync } from 'fs';
+import { spawn } from 'child_process';
 import { loadJsonFile, loadOmaState } from '../../../src/utils.js';
 import { getMergedConfig } from '../../../src/utils.js';
 
@@ -702,6 +703,48 @@ describe('session-start hooks', () => {
       // shouldCheckUpdate returns false → main returns early before line 184
       expect(() => main()).not.toThrow();
       expect(process.exit).toHaveBeenCalledWith(0);
+    });
+  });
+
+  describe('auto-update disable env guards', () => {
+    const originalAuto = process.env.OMA_AUTO_UPDATE;
+    const originalDisable = process.env.OMA_DISABLE_AUTO_UPDATE;
+
+    afterEach(() => {
+      if (originalAuto === undefined) delete process.env.OMA_AUTO_UPDATE;
+      else process.env.OMA_AUTO_UPDATE = originalAuto;
+      if (originalDisable === undefined) delete process.env.OMA_DISABLE_AUTO_UPDATE;
+      else process.env.OMA_DISABLE_AUTO_UPDATE = originalDisable;
+    });
+
+    it('skips background update check when OMA_AUTO_UPDATE=0', () => {
+      process.env.OMA_AUTO_UPDATE = '0';
+      vi.mocked(existsSync).mockReturnValue(false);
+      vi.mocked(readFileSync).mockReturnValue('{}');
+      vi.mocked(spawn).mockClear();
+
+      main();
+
+      const calls = vi.mocked(spawn).mock.calls;
+      const updateCalls = calls.filter((call) =>
+        call[1] && Array.isArray(call[1]) && call[1].includes('-e'),
+      );
+      expect(updateCalls.length).toBe(0);
+    });
+
+    it('skips background update check when OMA_DISABLE_AUTO_UPDATE=true', () => {
+      process.env.OMA_DISABLE_AUTO_UPDATE = 'true';
+      vi.mocked(existsSync).mockReturnValue(false);
+      vi.mocked(readFileSync).mockReturnValue('{}');
+      vi.mocked(spawn).mockClear();
+
+      main();
+
+      const calls = vi.mocked(spawn).mock.calls;
+      const updateCalls = calls.filter((call) =>
+        call[1] && Array.isArray(call[1]) && call[1].includes('-e'),
+      );
+      expect(updateCalls.length).toBe(0);
     });
   });
 

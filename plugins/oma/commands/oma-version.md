@@ -21,7 +21,7 @@ model: haiku4.5
 oma@{version}
 ```
 
-Example: `oma@0.3.1`
+Example: `oma@0.3.2`
 
 **Implementation:**
 - Reads `plugins/oma/package.json`

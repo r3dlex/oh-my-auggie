@@ -1,6 +1,6 @@
 ---
 name: update
-description: Check for and install OMA updates from GitHub Packages
+description: Check for and install OMA updates (GitHub Releases check + package-channel fallback)
 argument-hint: "[--check] [--force]"
 allowed-tools:
   - Read
@@ -27,7 +27,7 @@ node -e "const p = require('./plugins/oma/package.json'); console.log(p.version)
   || cat plugins/oma/package.json | grep '"version"' | head -1
 ```
 
-Store the result as CURRENT_VERSION (e.g. `0.3.1`).
+Store the result as CURRENT_VERSION (e.g. `0.3.2`).
 
 ---
 
@@ -116,12 +116,21 @@ Run the following to upgrade:
 
 ```bash
 npm install -g @r3dlex/oh-my-auggie@latest 2>&1 \
+  || npm install -g oh-my-auggie@latest 2>&1 \
   || npm install @r3dlex/oh-my-auggie@latest 2>&1
 ```
 
 If the install fails with a registry error, suggest the user check that GitHub Packages access is configured.
 
 Print result to the user. Always exit 0 — this is a hook-safe command that must never break auggie.
+
+---
+
+## Notes
+
+- `oma` / `super-oma` wrappers now perform a TTY-only automatic update prompt using this same cache file: `.oma/update-check.json`.
+- Disable automatic prompts with `OMA_AUTO_UPDATE=0` (or `OMA_DISABLE_AUTO_UPDATE=true`).
+- SessionStart keeps warming the cache in the background, so prompt checks usually avoid extra network calls.
 
 ---
 

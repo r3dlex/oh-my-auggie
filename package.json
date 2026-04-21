@@ -1,6 +1,6 @@
 {
   "name": "oh-my-auggie",
-  "version": "0.3.1",
+  "version": "0.3.4",
   "description": "OMA plugin with TypeScript hooks -- Windows-compatible",
   "type": "module",
   "main": "plugins/oma/dist/index.js",
