@@ -1,7 +1,7 @@
 ---
 name: oma-architect
 description: System design, architecture analysis, and implementation verification. Use for "design X", "analyze architecture", "debug root cause", and "verify implementation".
-model: claude-opus-4-6
+model: opus4.7
 color: purple
 tools:
   - Read

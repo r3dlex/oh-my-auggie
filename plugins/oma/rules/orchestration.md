@@ -18,7 +18,7 @@ User invokes /oma:autopilot or /oma:ralph
           │ (codebase map)
           ▼
    ┌─────────────┐
-   │  oma-planner │  claude-opus-4-6 — create 3-6 step plan
+   │  oma-planner │  claude-opus-4-7 — create 3-6 step plan
    └──────┬──────┘
           │ (plan with acceptance criteria)
           ▼
@@ -32,7 +32,7 @@ User invokes /oma:autopilot or /oma:ralph
           └──────────┬──────────┘
                      ▼
             ┌─────────────┐
-            │  oma-architect │  claude-opus-4-6 — verify implementation
+            │  oma-architect │  claude-opus-4-7 — verify implementation
             └──────┬──────┘
                    │
          ┌─────────┴─────────┐
@@ -47,10 +47,10 @@ User invokes /oma:autopilot or /oma:ralph
 |-----------|------------|-------|
 | Codebase search | oma-explorer | haiku4.5 |
 | Requirements analysis | oma-explorer | haiku4.5 |
-| Task planning | oma-planner | claude-opus-4-6 |
-| System design | oma-architect | claude-opus-4-6 |
+| Task planning | oma-planner | claude-opus-4-7 |
+| System design | oma-architect | claude-opus-4-7 |
 | Code implementation | oma-executor | sonnet4.6 |
-| Architecture verification | oma-architect | claude-opus-4-6 |
+| Architecture verification | oma-architect | claude-opus-4-7 |
 
 ## Mode Transitions
 

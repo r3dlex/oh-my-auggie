@@ -1,7 +1,7 @@
 ---
 name: oma-planner
 description: Strategic planning with structured consultation. Creates clear, actionable 3-6 step plans with acceptance criteria.
-model: claude-opus-4-6
+model: opus4.7
 color: blue
 tools:
   - Read

@@ -1,7 +1,7 @@
 ---
 name: oma-analyst
 description: Requirements clarity and hidden constraints. Use for "analyze requirements", "find edge cases", and "identify risks" before implementation.
-model: claude-opus-4-6
+model: opus4.7
 color: orange
 tools:
   - Read

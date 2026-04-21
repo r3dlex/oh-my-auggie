@@ -1,7 +1,7 @@
 ---
 name: oma-simplifier
 description: Behavior-preserving simplification. Use for "simplify this", "reduce complexity", and "clean up without changing behavior".
-model: claude-opus-4-6
+model: opus4.7
 color: green
 tools: []
 disabled_tools: []

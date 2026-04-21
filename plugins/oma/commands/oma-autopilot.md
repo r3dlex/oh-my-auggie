@@ -33,7 +33,7 @@ model: sonnet4.6
 Spawn **oma-explorer** (haiku4.5) to map the codebase structure relevant to the goal.
 
 ### Phase 2: Plan
-Spawn **oma-planner** (claude-opus-4-6) to create a 3-6 step plan with acceptance criteria.
+Spawn **oma-planner** (claude-opus-4-7) to create a 3-6 step plan with acceptance criteria.
 
 ### Phase 3: Confirm
 Present the plan to you for approval. Say "yes" or "proceed" to continue.
@@ -44,7 +44,7 @@ Present the plan to you for approval. Say "yes" or "proceed" to continue.
 - oma-executor logs completion via `oma_task_log`
 
 ### Phase 5: Verify
-Spawn **oma-architect** (claude-opus-4-6) to verify each step against acceptance criteria.
+Spawn **oma-architect** (claude-opus-4-7) to verify each step against acceptance criteria.
 
 ### Phase 6: QA Cycling
 If any step fails verification:

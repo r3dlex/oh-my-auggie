@@ -68,8 +68,8 @@ type EnforcerResult =
 const DEFAULT_ASSIGNMENTS: ModelAssignment[] = [
   { role: 'orchestrator', model: 'claude-sonnet-4-6', priority: 10, canWrite: false },
   { role: 'executor', model: 'claude-sonnet-4-6', priority: 9, canWrite: true },
-  { role: 'explorer', model: 'claude-opus-4-6', priority: 7, canWrite: false },
-  { role: 'architect', model: 'claude-opus-4-6', priority: 8, canWrite: false },
+  { role: 'explorer', model: 'claude-opus-4-7', priority: 7, canWrite: false },
+  { role: 'architect', model: 'claude-opus-4-7', priority: 8, canWrite: false },
   { role: 'verifier', model: 'claude-sonnet-4-6', priority: 6, canWrite: false },
   { role: 'qa', model: 'claude-sonnet-4-6', priority: 5, canWrite: false },
 ];
@@ -326,7 +326,7 @@ function simulateDirectEditBlocked(): void {
       toolName: 'Edit',
       agentId: orchestratorAgent,
       agentRole: 'architect',
-      model: 'claude-opus-4-6',
+      model: 'claude-opus-4-7',
       file: 'src/utils.ts',
       sessionId: 'demo',
     });
@@ -377,7 +377,7 @@ function simulateModelOverride(): void {
 
   // Override executor model temporarily (e.g., for complex refactoring)
   updateModelAssignment('executor', {
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     priority: 10,
   });
 
@@ -387,7 +387,7 @@ function simulateModelOverride(): void {
     toolName: 'Edit',
     agentId: 'oma-executor',
     agentRole: 'executor',
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     file: 'src/api/client.ts',
     sessionId: 'demo',
   });

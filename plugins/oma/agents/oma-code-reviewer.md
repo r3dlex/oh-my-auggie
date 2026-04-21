@@ -1,7 +1,7 @@
 ---
 name: oma-code-reviewer
 description: Comprehensive code review. Use for "review this code", "assess quality", and "find issues" in implementation.
-model: claude-opus-4-6
+model: opus4.7
 color: blue
 tools:
   - Read

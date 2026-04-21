@@ -7,7 +7,8 @@ import { resolveOmaDir, getMergedConfig } from '../utils.js';
 export const CREDIT_COST = {
     'haiku45': 88,
     'sonnet46': 293,
-    'opus46': 488,
+    'opus46': 488, // legacy -- keep for backward compat
+    'opus47': 488,
     'gpt51': 219,
     'gpt52': 390,
     'gpt54': 420,
@@ -55,7 +56,8 @@ function getSessionId() {
 // Values: CREDIT_COST keys (also dot-free)
 const MODEL_TIER_MAP = {
     // Fully hyphenated auggie model strings → dot-free tier
-    'claudeopus46': 'opus46',
+    'claudeopus46': 'opus46', // legacy -- keep for backward compat
+    'claudeopus47': 'opus47',
     'claudesonnet46': 'sonnet46',
     'claudehaiku45': 'haiku45',
     // Dot-hyphen models → dot-free tier
@@ -64,13 +66,14 @@ const MODEL_TIER_MAP = {
     'gpt51': 'gpt51',
     'gemini31pro': 'gemini31pro',
     // Short names (already dot-free)
-    'opus': 'opus46',
+    'opus': 'opus47',
     'sonnet': 'sonnet46',
     'haiku': 'haiku45',
     'minimax': 'haiku45',
     // Dot-stripped model names (e.g. 'sonnet4.6' → 'sonnet46')
     'sonnet46': 'sonnet46',
-    'opus46': 'opus46',
+    'opus46': 'opus46', // legacy -- keep for backward compat
+    'opus47': 'opus47',
     'haiku45': 'haiku45',
 };
 function normalizeModel(model) {

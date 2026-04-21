@@ -33,7 +33,7 @@ Contains 20 agent definition files for auggie. Each file defines a specialized a
 ### Working In This Directory
 When adding a new agent, copy an existing `.md` file as a template and update the YAML frontmatter fields (`name`, `description`, `model`, `color`, `tools`). Do NOT alter the XML `Agent_Prompt` structure or element names. After adding a new file, run `auggie plugin install` to register the agent with the runtime.
 
-Model choices: `claude-opus-4-6` for complex reasoning (analyst, architect, code-reviewer, critic, planner, simplifier), `sonnet4.6` for standard work (debugger, designer, doc-specialist, executor, git-master, qa, scientist, security, test-engineer, tracer, verifier), `haiku4.5` for fast/cheap tasks (explorer, writer).
+Model choices: `claude-opus-4-7` for complex reasoning (analyst, architect, code-reviewer, critic, planner, simplifier), `sonnet4.6` for standard work (debugger, designer, doc-specialist, executor, git-master, qa, scientist, security, test-engineer, tracer, verifier), `haiku4.5` for fast/cheap tasks (explorer, writer).
 
 ### Testing Requirements
 No automated tests cover agent definition files directly. After adding or modifying an agent, verify it loads correctly by running `/oma:status` inside an auggie session.

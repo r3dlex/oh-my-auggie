@@ -56,6 +56,7 @@ describe('cost-track hooks', () => {
       expect(CREDIT_COST).toHaveProperty('haiku45');
       expect(CREDIT_COST).toHaveProperty('sonnet46');
       expect(CREDIT_COST).toHaveProperty('opus46');
+      expect(CREDIT_COST).toHaveProperty('opus47');
       expect(CREDIT_COST).toHaveProperty('gpt51');
       expect(CREDIT_COST).toHaveProperty('gpt52');
       expect(CREDIT_COST).toHaveProperty('gpt54');
@@ -106,6 +107,7 @@ describe('cost-track hooks', () => {
     it('normalizes Auggie model strings to tiers', () => {
       expect(estimateCredits('claude-sonnet-4-6', 'Write')).toBe(293); // claudesonnet46 → sonnet46
       expect(estimateCredits('claude-opus-4-6', 'Write')).toBe(488);   // claudeopus46 → opus46
+      expect(estimateCredits('claude-opus-4-7', 'Write')).toBe(488);
       expect(estimateCredits('claude-haiku-4-5', 'Write')).toBe(88);   // claudehaiu45 → haiku45
       expect(estimateCredits('opus', 'Write')).toBe(488);
       expect(estimateCredits('sonnet', 'Write')).toBe(293);
@@ -121,6 +123,7 @@ describe('cost-track hooks', () => {
       // 'sonnet4.6' → 'sonnet46' → 'sonnet46' → 293
       expect(estimateCredits('sonnet4.6', 'Write')).toBe(293);
       expect(estimateCredits('opus4.6', 'Write')).toBe(488);
+      expect(estimateCredits('opus4.7', 'Write')).toBe(488);
       expect(estimateCredits('haiku4.5', 'Write')).toBe(88);
     });
   });
@@ -515,7 +518,7 @@ describe('cost-track hooks', () => {
     it('normalizes ANTHROPIC_MODEL env var to tier on PostToolUse', async () => {
       process.env.HOOK_TYPE = 'PostToolUse';
       process.env.OMA_TOOL_NAME = 'Write';
-      process.env.ANTHROPIC_MODEL = 'claude-opus-4-6';
+      process.env.ANTHROPIC_MODEL = 'claude-opus-4-7';
       process.env.OMA_DURATION_MS = '300';
       vi.mocked(readFileSync).mockReturnValue('{"sessions":[],"version":"0.2"}');
       await main();

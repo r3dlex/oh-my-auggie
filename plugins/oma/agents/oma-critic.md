@@ -1,7 +1,7 @@
 ---
 name: oma-critic
 description: Plan/design challenge and review. Use for "critique this plan", "challenge this design", and "find weaknesses".
-model: claude-opus-4-6
+model: opus4.7
 color: red
 tools:
   - Read

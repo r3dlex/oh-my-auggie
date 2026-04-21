@@ -74,9 +74,9 @@ model: haiku4.5
 | Agent | Model | Role |
 |-------|-------|------|
 | `oma-explorer` | haiku4.5 | Codebase search and mapping |
-| `oma-planner` | claude-opus-4-6 | Task planning and sequencing |
+| `oma-planner` | claude-opus-4-7 | Task planning and sequencing |
 | `oma-executor` | sonnet4.6 | Code implementation |
-| `oma-architect` | claude-opus-4-6 | Architecture and verification |
+| `oma-architect` | claude-opus-4-7 | Architecture and verification |
 
 ---
 
