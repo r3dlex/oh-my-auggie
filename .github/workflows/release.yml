@@ -86,7 +86,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: cd plugins/oma && npm ci
@@ -106,8 +105,6 @@ jobs:
           "
 
       - name: Publish oh-my-auggie (unscoped) to npmjs.com
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           CHANNEL="${{ steps.ver.outputs.channel }}"
           TAG="${CHANNEL:-latest}"
