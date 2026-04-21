@@ -88,6 +88,9 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Upgrade npm for OIDC Trusted Publishing support
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: cd plugins/oma && npm ci
 
@@ -107,8 +110,9 @@ jobs:
 
       - name: Publish oh-my-auggie (unscoped) to npmjs.com
         run: |
-          # Remove the _authToken line setup-node injected so npm uses OIDC Trusted Publishing instead
+          # Remove static auth token so npm uses OIDC Trusted Publishing instead (requires npm ≥ 11.5.1)
           sed -i '/^\/\/registry\.npmjs\.org\/:_authToken/d' "${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}" || true
+          unset NODE_AUTH_TOKEN
           CHANNEL="${{ steps.ver.outputs.channel }}"
           TAG="${CHANNEL:-latest}"
           # Rename to unscoped; runner is ephemeral
