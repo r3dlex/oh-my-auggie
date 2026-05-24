@@ -73,3 +73,56 @@ cd plugins/oma && npm test
 - node >= 18
 
 <!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+
+<!-- ai-sdlc-init:start -->
+
+## AI SDLC Methodology
+
+This repository uses the AI SDLC methodology scaffolded by `ai-sdlc-init`.
+
+### Architecture Decision Records
+
+Significant architectural decisions are recorded in [`docs/adr/`](docs/adr/).
+Before making a change that affects module boundaries, API contracts, data
+schemas, or dependency direction, check whether a relevant ADR exists.
+If your change contradicts an existing ADR, either update the ADR or open a
+discussion before proceeding.
+
+### Archgate Rules
+
+Code quality rules are defined in [`.rules.ts`](.rules.ts) across five domains:
+`backend`, `frontend`, `data`, `architecture`, `general`. Rules carry a severity
+(`error`, `warn`, `info`). Structural validation of `.rules.ts` runs in CI via
+the `validate-rules` prek hook. Semantic enforcement (did the PR violate a rule?)
+is an agent behavior at PR review time.
+
+### Karpathy Baseline
+
+All agents operating in this repository load
+[`.agents/skills/karpathy-guidelines/SKILL.md`](.agents/skills/karpathy-guidelines/SKILL.md)
+as a baseline. Four rules apply to every task: Think Before Coding, Simplicity
+First, Surgical Changes, Goal-Driven Execution. See the SKILL.md for violation
+and correction examples.
+
+### Drift Verification Protocol
+
+At PR review time, the reviewing agent:
+1. Loads the PR diff alongside the BRD, PRD, acceptance criteria, and any ADRs
+   whose scope overlaps with the changed files.
+2. Produces a drift report identifying whether changes match ACs, conflict with
+   ADRs, or violate architectural constraints from `.rules.ts`.
+3. Leaves the drift report as a PR comment or review summary.
+
+This is a documented agent behavior. It is not enforced as a CI gate in this
+iteration.
+
+### Circuit Breaker Protocol
+
+Before starting work on an issue:
+1. Check whether ≥ 3 prior attempts exist without resolution (look for
+   `attempts:N` labels or a comment history showing repeated failures).
+2. If the circuit is tripped (≥ 3 attempts, no resolution), escalate to a
+   human with a written summary of what was tried and what blocked each attempt.
+3. Do not make a fourth attempt without human acknowledgement.
+
+<!-- ai-sdlc-init:end -->

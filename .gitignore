@@ -39,3 +39,9 @@ erl_crash.dump
 /elixir_ls/
 /config/*.secret.exs
 .omx/
+
+# <!-- ai-sdlc-init:start -->
+# AI SDLC artifacts
+upstream-pocock/
+.prek-cache/
+# <!-- ai-sdlc-init:end -->

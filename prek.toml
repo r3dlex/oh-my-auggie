@@ -1,0 +1,11 @@
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "validate-rules"
+name = "Validate Archgate rules structure"
+entry = "bash scripts/validate-rules.sh"
+language = "system"
+files = '\.rules\.ts$'
+exclude = '^reference/golden-(skills|root)/'
+pass_filenames = false

@@ -1,0 +1,5 @@
+source: mattpocock/skills
+via: r3dlex/skills
+pinned_sha: b8be62ffacb0118fa3eaa29a0923c87c8c11985c
+updated: 2026-05-24
+sync_script: scripts/sync-upstream.sh
