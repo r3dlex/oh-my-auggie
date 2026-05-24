@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"bats /Users/andreburgstahler/Ws/Personal/oh-my-auggie/e2e/oma-cli.bats 2>&1\",\"timeout\":60000,\"description\":\"Run e2e tests with absolute path\"}",
+  "error": "Exit code 1\n1..28\nok 1 oma: --help prints usage summary\nok 2 bin/oma: --help is executable and lists subcommands\nok 3 oma team: spawn creates worker directories\nok 4 oma team: spawn creates meta.json per worker\nok 5 oma team: spawn creates status.json per worker\nok 6 oma team: spawn exits 2 when N is not a positive integer\nok 7 oma team: spawn exits 2 when task string is missing\nok 8 oma team status: exits 0 with no team directory\nok 9 oma team status: shows workers after spawn\nok 10 oma team st...",
+  "timestamp": "2026-04-06T06:52:30.679Z",
+  "retry_count": 2
+}

@@ -11,9 +11,6 @@
     "type": "git",
     "url": "https://github.com/r3dlex/oh-my-auggie.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "files": [
     "dist/**/*"
   ],
@@ -38,5 +35,8 @@
     "tsx": "^4.21.0",
     "typescript": "^5.4.0",
     "vitest": "^1.4.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
