@@ -130,7 +130,7 @@ Require consensus before execution. A gate to ensure alignment.
 - Time-box the consensus process
 
 <Do_Not_Use_When>
-- The user has a fully detailed task (file paths, function names, acceptance criteria) — proceed directly to oma-executor or oma-ralph
+- The user has a fully detailed task (file paths, function names, acceptance criteria) — proceed directly to executor or `/oma:ralph`
 - The task is a quick, single-file fix where consensus overhead >> time saved
 - The user says "just do it" or "skip planning" — respect their intent
 - The task was already consensus-reviewed in a prior session (plan file exists in `.oma/plans/`) — use the existing plan
@@ -139,15 +139,15 @@ Require consensus before execution. A gate to ensure alignment.
 </Do_Not_Use_When>
 
 <Tool_Usage>
-- **oma-planner**: Use to draft the initial plan, identify options, and assess risks before the consensus review
-- **oma-architect**: The primary reviewer in ralplan — architects provide the critical consensus check on architectural decisions
-- **oma-executor**: After consensus is reached, dispatch to oma-executor for implementation
-- **oma-qa**: If the plan includes a quality gate, schedule oma-qa after implementation
-- **oma-analyst**: Use when the problem statement itself is unclear — get clarity on requirements before drafting options
+- **planner**: Use to draft the initial plan, identify options, and assess risks before the consensus review
+- **architect**: The primary reviewer in ralplan — architects provide the critical consensus check on architectural decisions
+- **executor**: After consensus is reached, dispatch to executor for implementation
+- **qa**: If the plan includes a quality gate, schedule qa after implementation
+- **analyst**: Use when the problem statement itself is unclear — get clarity on requirements before drafting options
 </Tool_Usage>
 
 <Why_This_Exists>
-OMA runs inside Auggie and often handles complex, multi-step tasks where the first approach is not always the best. Without a consensus gate, an oma-executor can spend significant effort implementing a solution only to discover the user wanted something different — or an architect later flags an architectural problem. ralplan makes consensus explicit and structured before execution cycles are spent, reducing rework and increasing alignment between human intent and agent action.
+OMA runs inside Auggie and often handles complex, multi-step tasks where the first approach is not always the best. Without a consensus gate, an executor can spend significant effort implementing a solution only to discover the user wanted something different — or an architect later flags an architectural problem. ralplan makes consensus explicit and structured before execution cycles are spent, reducing rework and increasing alignment between human intent and agent action.
 </Why_This_Exists>
 
 <Examples>
@@ -157,21 +157,21 @@ OMA runs inside Auggie and often handles complex, multi-step tasks where the fir
 **Multi-step implementation with trade-offs:**
 ```
 User: "Refactor the auth system to support OAuth2"
-OMA: [oma-planner drafts 3 options: middleware approach, decorator approach, service-layer approach]
+OMA: [planner drafts 3 options: middleware approach, decorator approach, service-layer approach]
 OMA: [Presents options with pros/cons to user]
 User: "I prefer the middleware approach — it keeps auth centralized"
 OMA: [Consensus reached — gate opens]
-OMA: [oma-executor implements middleware-based OAuth2 refactor]
+OMA: [executor implements middleware-based OAuth2 refactor]
 ```
 
 **Architectural decision requiring review:**
 ```
 User: "Add a new MCP server for the team skill"
-OMA: [oma-planner drafts the proposal]
-OMA: [Escalates to oma-architect for consensus review]
-oma-architect: "The worktree manager needs a shared state layer before this is safe to implement"
+OMA: [planner drafts the proposal]
+OMA: [Escalates to architect for consensus review]
+architect: "The worktree manager needs a shared state layer before this is safe to implement"
 OMA: [Concern documented, plan modified]
-oma-architect: "Now agreed — proceed"
+architect: "Now agreed — proceed"
 OMA: [Consensus reached]
 ```
 
@@ -190,14 +190,14 @@ User: "Seriously, just add the log"
 User: "/oma:ralph implement the feature"
 OMA: [ralplan activates first, spends 3 rounds reaching consensus]
 OMA: [Passes to ralph for execution]
-oma-architect (ralph): [Runs its own PASS gate on the first iteration]
+architect (ralph): [Runs its own PASS gate on the first iteration]
 ```
 → User should choose ralph OR ralplan, not both. Use ralph directly for autonomous loops with embedded verification.
 </Examples>
 
 <Escalation_And_Stop_Conditions>
 - **Stop and report:** Minimum consensus not reached after the time-box — document the disagreement, surface it to the user, do not proceed
-- **Stop and escalate:** A concern raised requires an oma-architect review that is not available — wait for architect availability or flag to user
+- **Stop and escalate:** A concern raised requires an architect review that is not available — wait for architect availability or flag to user
 - **Continue:** Concerns are addressable with plan modifications — modify and re-review
 - **Conditional proceed:** Partial consensus reached with documented caveats — present to user for final approval before proceeding
 - **Escalate to user:** Major objection cannot be resolved by the team — present the conflict to the user for a final call

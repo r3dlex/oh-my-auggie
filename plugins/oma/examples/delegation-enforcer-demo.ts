@@ -89,7 +89,7 @@ const assignmentRegistry = new Map<AgentRole, ModelAssignment>(
  *
  * @example
  * ```typescript
- * const model = getModelForAgent('oma-executor', 'executor');
+ * const model = getModelForAgent('executor', 'executor');
  * // Returns: 'claude-sonnet-4-6'
  * ```
  */
@@ -119,7 +119,7 @@ export function getModelForAgent(
  * ```typescript
  * const result = enforceModel({
  *   toolName: 'Edit',
- *   agentId: 'oma-executor',
+ *   agentId: 'executor',
  *   agentRole: 'executor',
  *   model: 'claude-sonnet-4-6',
  *   file: 'src/utils.ts',
@@ -156,7 +156,7 @@ export function enforceModel(ctx: ToolCallContext): EnforcerResult {
       allowed: false,
       reason: `Role "${agentRole}" (agent: ${agentId}) is not permitted to perform write operations. ` +
         `Only "executor" role agents can write.`,
-      suggestion: `Delegate this work to oma-executor using SendMessage or TaskCreate.`,
+      suggestion: `Delegate this work to executor using SendMessage or TaskCreate.`,
     };
   }
 
@@ -166,7 +166,7 @@ export function enforceModel(ctx: ToolCallContext): EnforcerResult {
       allowed: false,
       reason: `Model mismatch: agent "${agentId}" is using "${model}" but role "${agentRole}" ` +
         `requires "${assignment.model}"`,
-      suggestion: `Route the request through oma-executor which uses the correct model.`,
+      suggestion: `Route the request through executor which uses the correct model.`,
     };
   }
 
@@ -239,7 +239,7 @@ export function enforceModelInPreToolUse(
  *
  * The hook intercepts Edit/Write calls and checks whether the calling agent
  * is in the orchestrator's allowlist. If not, the edit is blocked and the
- * agent is instructed to delegate to oma-executor.
+ * agent is instructed to delegate to executor.
  *
  * @param agentId - The agent attempting the write
  * @param toolName - The tool being invoked
@@ -252,16 +252,37 @@ export function delegationEnforceHook(
   const writeTools = ['Edit', 'Write'];
   if (!writeTools.includes(toolName)) return true;
 
-  // Determine agent type from ID prefix
-  const isExecutor = agentId.startsWith('oma-executor') || agentId === 'executor';
-  const isOrchestrator = agentId.startsWith('oma-') && !isExecutor;
+  // Plain plugin agent IDs no longer carry an `oma-` prefix.
+  const isExecutor = agentId === 'executor' || agentId.startsWith('executor-');
+  const knownOrchestrators = new Set([
+    'analyst',
+    'architect',
+    'code-reviewer',
+    'critic',
+    'debugger',
+    'designer',
+    'doc-specialist',
+    'explorer',
+    'git-master',
+    'planner',
+    'qa',
+    'scientist',
+    'security',
+    'simplifier',
+    'test-engineer',
+    'tracer',
+    'verifier',
+    'writer',
+  ]);
+  const baseAgentId = agentId.replace(/-\d+$/, '');
+  const isOrchestrator = knownOrchestrators.has(baseAgentId) && !isExecutor;
 
   if (isOrchestrator) {
     const msg =
       `[OMA: delegation-enforce] Agent "${agentId}" is an orchestrator agent and is not ` +
       `permitted to perform direct file edits. ` +
-      `Use oma-executor to make changes. ` +
-      `Call SendMessage({ to: "oma-executor", message: "...", summary: "..." }) to delegate.`;
+      `Use executor to make changes. ` +
+      `Call SendMessage({ to: "executor", message: "...", summary: "..." }) to delegate.`;
     console.error(msg);
     throw new Error(msg);
   }
@@ -310,13 +331,13 @@ export function registerAgentRole(assignment: ModelAssignment): void {
 // ---------------------------------------------------------------------------
 
 /**
- * Simulates what happens when an orchestrator agent (e.g., oma-architect)
+ * Simulates what happens when an orchestrator agent (e.g., architect)
  * attempts a direct Edit call. The delegation-enforce hook blocks it.
  */
 function simulateDirectEditBlocked(): void {
   console.log('\n--- Simulating: Direct Edit from Orchestrator Agent ---\n');
 
-  const orchestratorAgent = 'oma-architect';
+  const orchestratorAgent = 'architect';
 
   console.log(`${orchestratorAgent} calling Edit(file_path="src/utils.ts", old_string="...", new_string="...")`);
   console.log('Hook: enforceModelInPreToolUse()');
@@ -334,7 +355,7 @@ function simulateDirectEditBlocked(): void {
   } catch (err) {
     console.log(`\nResult: BLOCKED\n`);
     console.log(`Error: ${(err as Error).message}\n`);
-    console.log('Resolution: The orchestrator must delegate to oma-executor.');
+    console.log('Resolution: The orchestrator must delegate to executor.');
   }
 }
 
@@ -345,27 +366,27 @@ function simulateCorrectDelegationFlow(): void {
   console.log('\n--- Simulating: Correct Delegation Flow ---\n');
 
   // Step 1: Orchestrator detects a code change need
-  console.log('[oma-architect] Detected: "Fix typo in src/utils.ts"');
-  console.log('[oma-architect] Creating task for oma-executor...\n');
+  console.log('[architect] Detected: "Fix typo in src/utils.ts"');
+  console.log('[architect] Creating task for executor...\n');
 
   // Step 2: Task is created for executor
-  console.log('[oma-executor] Received task: Fix typo in src/utils.ts');
-  console.log('[oma-executor] Model check:', getModelForAgent('oma-executor', 'executor'));
+  console.log('[executor] Received task: Fix typo in src/utils.ts');
+  console.log('[executor] Model check:', getModelForAgent('executor', 'executor'));
 
   // Step 3: Executor enforces model before writing
   const result = enforceModel({
     toolName: 'Edit',
-    agentId: 'oma-executor',
+    agentId: 'executor',
     agentRole: 'executor',
     model: 'claude-sonnet-4-6',
     file: 'src/utils.ts',
     sessionId: 'demo',
   });
 
-  console.log(`[oma-executor] enforceModel() => allowed=${result.allowed}`);
+  console.log(`[executor] enforceModel() => allowed=${result.allowed}`);
   if (result.allowed) {
-    console.log('[oma-executor] Proceeding with Edit...');
-    console.log('[oma-executor] Edit completed successfully.\n');
+    console.log('[executor] Proceeding with Edit...');
+    console.log('[executor] Edit completed successfully.\n');
   }
 }
 
@@ -381,22 +402,22 @@ function simulateModelOverride(): void {
     priority: 10,
   });
 
-  console.log(`[oma-executor] Using overridden model: ${getModelForAgent('oma-executor', 'executor')}`);
+  console.log(`[executor] Using overridden model: ${getModelForAgent('executor', 'executor')}`);
 
   const result = enforceModel({
     toolName: 'Edit',
-    agentId: 'oma-executor',
+    agentId: 'executor',
     agentRole: 'executor',
     model: 'claude-opus-4-7',
     file: 'src/api/client.ts',
     sessionId: 'demo',
   });
 
-  console.log(`[oma-executor] enforceModel() => allowed=${result.allowed}`);
+  console.log(`[executor] enforceModel() => allowed=${result.allowed}`);
 
   // Restore default
   updateModelAssignment('executor', { model: 'claude-sonnet-4-6', priority: 9 });
-  console.log('[oma-executor] Model assignment restored.\n');
+  console.log('[executor] Model assignment restored.\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -419,10 +440,10 @@ async function main() {
   // --- 2. getModelForAgent usage ---
   console.log('--- getModelForAgent() ---');
   const agents: Array<{ id: string; role: AgentRole }> = [
-    { id: 'oma-orchestrator', role: 'orchestrator' },
-    { id: 'oma-executor', role: 'executor' },
-    { id: 'oma-architect', role: 'architect' },
-    { id: 'oma-verifier', role: 'verifier' },
+    { id: 'architect', role: 'orchestrator' },
+    { id: 'executor', role: 'executor' },
+    { id: 'architect', role: 'architect' },
+    { id: 'verifier', role: 'verifier' },
   ];
   for (const { id, role } of agents) {
     const model = getModelForAgent(id, role);
@@ -440,7 +461,7 @@ async function main() {
   // 3a: Valid executor write
   let result = enforceModel({
     toolName: 'Edit',
-    agentId: 'oma-executor',
+    agentId: 'executor',
     agentRole: 'executor',
     model: 'claude-sonnet-4-6',
     file: 'src/config.ts',
@@ -451,7 +472,7 @@ async function main() {
   // 3b: Non-write tool (always allowed)
   result = enforceModel({
     toolName: 'Read',
-    agentId: 'oma-executor',
+    agentId: 'executor',
     agentRole: 'executor',
     model: 'claude-sonnet-4-6',
     sessionId: 'demo',
@@ -479,7 +500,7 @@ async function main() {
 
   // --- 5. Delegation enforce hook ---
   console.log('--- delegation-enforce Hook ---\n');
-  const orchestratorAgent = 'oma-architect';
+  const orchestratorAgent = 'architect';
   try {
     delegationEnforceHook(orchestratorAgent, 'Edit');
     console.log('Allowed — this should not print!');
@@ -487,7 +508,7 @@ async function main() {
     console.log(`Blocked: ${(err as Error).message.split('\n')[0]}\n`);
   }
 
-  const executorAgent = 'oma-executor';
+  const executorAgent = 'executor';
   try {
     const allowed = delegationEnforceHook(executorAgent, 'Edit');
     console.log(`Executor Edit: ${allowed ? 'Allowed' : 'Blocked'}\n`);

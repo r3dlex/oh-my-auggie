@@ -213,7 +213,7 @@ OMA: "Spec ready (ambiguity: 22%). How would you like to proceed?"
 ```
 User: "I want to add a recommendation engine to our existing MCP server"
 OMA: [Deep Interview — brownfield detected]
-OMA: [Explores existing MCP server codebase via oma-explorer]
+OMA: [Explores existing MCP server codebase via explorer]
 OMA: "I found your server structure in plugins/mcp/. Should the recommendation engine be a new plugin or integrated into the existing handler pipeline?"
 User: "New plugin — I want it to be optional"
 OMA: [Context clarity improves — ambiguity drops]
@@ -228,7 +228,7 @@ OMA: [Deep Interview activates unnecessarily]
 OMA: "What does 'auth refactor' mean to you?"
 User: "Just use the PRD — I already wrote it out"
 ```
-→ Use oma-ralph or oma-team with the existing spec directly.
+→ Use `/oma:ralph` or `/oma:team` with the existing spec directly.
 
 **User wants a quick brainstorm:**
 ```
@@ -237,12 +237,12 @@ OMA: [Deep Interview starts scoring dimensions and asking Socratic questions]
 OMA: "Round 1: Goal clarity is 30% — let's start there. What is the core problem..."
 User: "Whoa, I just wanted ideas, not a full spec"
 ```
-→ Use oma-planner for exploration/brainstorming, not deep-interview.
+→ Use planner for exploration/brainstorming, not deep-interview.
 </Examples>
 
 <Final_Checklist>
 - [ ] Interview state written to `.oma/state.json` with mode `deep-interview`
-- [ ] Brownfield vs. greenfield detection confirmed (brownfield: codebase context gathered via oma-explorer)
+- [ ] Brownfield vs. greenfield detection confirmed (brownfield: codebase context gathered via explorer)
 - [ ] Ambiguity score calculated and shown to user after each round (formula applied correctly)
 - [ ] Questions target the weakest dimension explicitly (named and justified in output)
 - [ ] Challenge modes activated at correct round thresholds (Contrarian at 4+, Simplifier at 6+, Ontologist at 8+ if needed)

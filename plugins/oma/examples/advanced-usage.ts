@@ -97,7 +97,7 @@ interface ToolContext {
  * @example
  * ```typescript
  * const debuggerAgent = createCustomAgent({
- *   id: 'oma-debugger',
+ *   id: 'debugger',
  *   name: 'Debugger Agent',
  *   systemPrompt: 'You are a debugging specialist. Always trace root causes.',
  *   capabilities: ['debug', 'verification'],
@@ -117,7 +117,7 @@ export function createCustomAgent(config: AgentConfig): AgentConfig {
     `Capabilities: ${(config.capabilities ?? []).join(', ') || 'general-purpose'}`,
     `Allowed tools: ${(config.allowedTools ?? ['all']).join(', ')}`,
     'You are operating within the oh-my-auggie orchestration layer.',
-    'Follow delegation protocols. Escalate ambiguities to oma-architect.',
+    'Follow delegation protocols. Escalate ambiguities to architect.',
     '--- END OMA CONFIGURATION ---\n',
   ].join('\n');
 
@@ -324,7 +324,7 @@ interface OrchestrationModeConfig {
  * const config = createOrchestrationConfig({
  *   mode: 'ralph',
  *   maxIterations: 50,
- *   agents: ['oma-executor', 'oma-architect'],
+ *   agents: ['executor', 'architect'],
  *   hooks: ['enforceModelInPreToolUse', 'keywordDetect'],
  * });
  * activateMode(config);
@@ -353,7 +353,7 @@ export function createOrchestrationConfig(
 export async function activateMode(config: OrchestrationModeConfig): Promise<void> {
   console.log(`[OMA Mode] Activating: ${config.mode}`);
   console.log(`  maxIterations: ${config.maxIterations ?? 'unlimited'}`);
-  console.log(`  agents:        ${(config.agents ?? ['oma-executor']).join(', ')}`);
+  console.log(`  agents:        ${(config.agents ?? ['executor']).join(', ')}`);
   console.log(`  hooks:         ${(config.hooks ?? []).join(', ') || 'default'}`);
 
   await new Promise((resolve) => setTimeout(resolve, 50));
@@ -370,7 +370,7 @@ async function main() {
   // --- 1. Custom Agent Creation ---
   console.log('--- Custom Agent Creation ---');
   const executorAgent = createCustomAgent({
-    id: 'oma-executor',
+    id: 'executor',
     name: 'Executor Agent',
     systemPrompt:
       'You implement code changes precisely as specified. ' +
@@ -385,7 +385,7 @@ async function main() {
 
   // --- 2. Custom System Prompt Injection ---
   console.log('--- System Prompt Injection ---');
-  injectSystemPromptFragments('oma-executor', [
+  injectSystemPromptFragments('executor', [
     'Project directive: Always use TypeScript strict mode.',
     'Project directive: All new files must include JSDoc comments.',
   ]);
@@ -468,7 +468,7 @@ async function main() {
     toolId: 'oma:static-analyze',
     args: { path: 'src/auth/login.ts' },
     sessionId: 'advanced-demo',
-    agentId: 'oma-executor',
+    agentId: 'executor',
   });
   console.log(`Tool result: ${JSON.stringify(toolResult)}\n`);
 
@@ -477,7 +477,7 @@ async function main() {
   const ralphConfig = createOrchestrationConfig({
     mode: 'ralph',
     maxIterations: 50,
-    agents: ['oma-executor', 'oma-architect'],
+    agents: ['executor', 'architect'],
     hooks: ['enforceModelInPreToolUse', 'keywordDetect', 'stopGate'],
   });
   await activateMode(ralphConfig);

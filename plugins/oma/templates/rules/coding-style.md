@@ -41,7 +41,7 @@ executor.doSomething()
 
 // CORRECT: Explicit task/result structure
 const task = { id: '1', type: 'implement', target: 'feature-x' }
-const result = await delegateTo('oma-executor', task)
+const result = await delegateTo('executor', task)
 ```
 
 ## Error Handling in Orchestrated Flows

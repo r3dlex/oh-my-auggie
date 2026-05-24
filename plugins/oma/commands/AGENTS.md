@@ -4,55 +4,55 @@
 # commands
 
 ## Purpose
-Contains 44 slash command definition files loaded by auggie. Each command is a Markdown file whose filename becomes the slash command name (e.g., `oma-ralph.md` → `/oma:ralph`). Commands range from full orchestration pipelines to single-purpose utilities and skill invocations.
+Contains 44 slash command definition files loaded by auggie. Each command is a Markdown file whose filename becomes the slash command name (e.g., `ralph.md` → `/oma:ralph`). Commands range from full orchestration pipelines to single-purpose utilities and skill invocations.
 
 ## Key Files
 | File | Description |
 |------|-------------|
-| oma-autopilot.md | Full automated pipeline: explore → plan → implement → verify |
-| oma-ralph.md | Persistence loop: execute → architect verify → PASS → done |
-| oma-ultrawork.md | Parallel multi-agent implementation (high throughput) |
-| oma-ultraqa.md | QA cycling: test, verify, fix, repeat until quality |
-| oma-ralplan.md | Consensus planning with Architect + Critic review |
-| oma-team.md | Coordinated team of N specialized agents |
-| oma-ralphthon.md | Extended ralph loop variant for long-running tasks |
-| oma-tdd.md | Test-driven development workflow |
-| oma-deepinit.md | Deep codebase initialization with hierarchical AGENTS.md generation |
-| oma-deslop.md | AI-slop cleaner: behavior-preserving deletion-first cleanup |
-| oma-deep-interview.md | Socratic deep interview before autonomous execution |
-| oma-science.md | Parallel scientist agents for comprehensive analysis |
-| oma-trace.md | Evidence-driven tracing with competing hypotheses |
-| oma-research.md | External documentation and web research |
-| oma-ask.md | Route questions to Claude, Codex, or Gemini |
-| oma-ccg.md | Claude-Codex-Gemini tri-model orchestration |
-| oma-plan.md | Strategic planning workflow |
-| oma-learner.md | Extract a learned skill from the current session |
-| oma-skillify.md | Turn a repeatable workflow into a reusable skill |
-| oma-skill.md | Manage local skills (list, add, remove, search) |
-| oma-skills.md | List available skills |
-| oma-setup.md | Install or refresh OMA plugin |
-| oma-update.md | Update OMA to latest version |
-| oma-doctor.md | Diagnose and fix OMA installation issues |
-| oma-config.md | Configure OMA settings |
-| oma-note.md | Write to the OMA notepad |
-| oma-status.md | Show current OMA session state and HUD |
-| oma-hud.md | Configure HUD display options |
-| oma-version.md | Display OMA version information |
-| oma-help.md | Show OMA help and command listing |
-| oma-cancel.md | Cancel any active OMA orchestration mode |
-| oma-session.md | Manage worktree dev environments for issues/PRs |
-| oma-session-search.md | Search session history |
-| oma-teleport.md | Navigate to a worktree session |
-| oma-notifications.md | Configure notification integrations |
-| oma-mcp-setup.md | Configure MCP servers |
-| oma-release.md | Generic release assistant |
-| oma-improve-codebase-architecture.md | Architectural improvement workflow |
-| oma-interview.md | Interactive interview workflow |
-| oma-wait.md | Pause execution until a condition is met |
-| oma-whatsnew.md | Show recent OMA changelog |
-| oma-visual-verdict.md | Structured visual QA verdict for screenshot comparisons |
-| oma-writer-memory.md | Agentic memory for writers |
-| oma-graph-provider.md | Graph provider configuration and context |
+| autopilot.md | Full automated pipeline: explore → plan → implement → verify |
+| ralph.md | Persistence loop: execute → architect verify → PASS → done |
+| ultrawork.md | Parallel multi-agent implementation (high throughput) |
+| ultraqa.md | QA cycling: test, verify, fix, repeat until quality |
+| ralplan.md | Consensus planning with Architect + Critic review |
+| team.md | Coordinated team of N specialized agents |
+| ralphthon.md | Extended ralph loop variant for long-running tasks |
+| tdd.md | Test-driven development workflow |
+| deepinit.md | Deep codebase initialization with hierarchical AGENTS.md generation |
+| deslop.md | AI-slop cleaner: behavior-preserving deletion-first cleanup |
+| deep-interview.md | Socratic deep interview before autonomous execution |
+| science.md | Parallel scientist agents for comprehensive analysis |
+| trace.md | Evidence-driven tracing with competing hypotheses |
+| research.md | External documentation and web research |
+| ask.md | Route questions to Claude, Codex, or Gemini |
+| ccg.md | Claude-Codex-Gemini tri-model orchestration |
+| plan.md | Strategic planning workflow |
+| learner.md | Extract a learned skill from the current session |
+| skillify.md | Turn a repeatable workflow into a reusable skill |
+| skill.md | Manage local skills (list, add, remove, search) |
+| skills.md | List available skills |
+| setup.md | Install or refresh OMA plugin |
+| update.md | Update OMA to latest version |
+| doctor.md | Diagnose and fix OMA installation issues |
+| config.md | Configure OMA settings |
+| note.md | Write to the OMA notepad |
+| status.md | Show current OMA session state and HUD |
+| hud.md | Configure HUD display options |
+| version.md | Display OMA version information |
+| help.md | Show OMA help and command listing |
+| cancel.md | Cancel any active OMA orchestration mode |
+| session.md | Manage worktree dev environments for issues/PRs |
+| session-search.md | Search session history |
+| teleport.md | Navigate to a worktree session |
+| notifications.md | Configure notification integrations |
+| mcp-setup.md | Configure MCP servers |
+| release.md | Generic release assistant |
+| improve-codebase-architecture.md | Architectural improvement workflow |
+| interview.md | Interactive interview workflow |
+| wait.md | Pause execution until a condition is met |
+| whatsnew.md | Show recent OMA changelog |
+| visual-verdict.md | Structured visual QA verdict for screenshot comparisons |
+| writer-memory.md | Agentic memory for writers |
+| graph-provider.md | Graph provider configuration and context |
 
 ## For AI Agents
 ### Working In This Directory

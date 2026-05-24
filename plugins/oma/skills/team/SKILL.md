@@ -273,15 +273,15 @@ Monitor progress via inbound `SendMessage` from executors and periodic `TaskList
 </Do_Not_Use_When>
 
 <Tool_Usage>
-- **oma-executor**: Each spawned executor works on an assigned subtask in its own git worktree. The orchestrator assigns tasks via TaskCreate/TaskUpdate before spawning.
-- **oma-planner**: Use before team creation to decompose the task into N independent subtasks that can run concurrently without file conflicts
-- **oma-architect**: Consult when task decomposition might introduce architectural inconsistencies across parallel work
-- **oma-qa**: After team execution completes, run a final quality verification pass across all changed files
+- **executor**: Each spawned executor works on an assigned subtask in its own git worktree. The orchestrator assigns tasks via TaskCreate/TaskUpdate before spawning.
+- **planner**: Use before team creation to decompose the task into N independent subtasks that can run concurrently without file conflicts
+- **architect**: Consult when task decomposition might introduce architectural inconsistencies across parallel work
+- **qa**: After team execution completes, run a final quality verification pass across all changed files
 - **Direct git worktree tools**: The worktree manager API (`createExecutorWorktree`, `removeExecutorWorktree`, `cleanupTeamWorktrees`) is called by the team orchestrator itself — no executor should call these directly
 </Tool_Usage>
 
 <Why_This_Exists>
-OMA orchestrates Auggie agents on real codebases. Some tasks are large enough that a single agent taking turns is too slow — e.g., "fix all TypeScript errors" across 50 files, or "audit all skills for missing sections." Team mode provides git worktree isolation so multiple oma-executor agents can work simultaneously on different files without git conflicts, while the team orchestrator handles task distribution, monitoring, and cleanup. The isolation model prevents the most common failure mode of naive parallel execution: two agents modifying the same file.
+OMA orchestrates Auggie agents on real codebases. Some tasks are large enough that a single agent taking turns is too slow — e.g., "fix all TypeScript errors" across 50 files, or "audit all skills for missing sections." Team mode provides git worktree isolation so multiple executor agents can work simultaneously on different files without git conflicts, while the team orchestrator handles task distribution, monitoring, and cleanup. The isolation model prevents the most common failure mode of naive parallel execution: two agents modifying the same file.
 </Why_This_Exists>
 
 <Examples>
@@ -292,7 +292,7 @@ OMA orchestrates Auggie agents on real codebases. Some tasks are large enough th
 ```
 User: "/oma:team 4 fix all TypeScript errors"
 OMA: [Decomposes: 4 executor worktrees, each assigned ~12 files]
-OMA: [Spawns 4 oma-executor agents, each in its own worktree]
+OMA: [Spawns 4 executor agents, each in its own worktree]
 OMA: [Monitors — executor 3 reports: "Fixed 8/12 files, 4 need manual review"]
 OMA: [Shutdown, cleanup]
 OMA: [Result: 50 TypeScript errors fixed in parallel vs. sequential]
@@ -324,7 +324,7 @@ User: "/oma:team 1 fix the typo in README"
 OMA: [Spawns 1 executor in a worktree for a README typo]
 OMA: [Result: massive overhead for a 1-minute task]
 ```
-→ Use oma-executor directly.
+→ Use executor directly.
 </Examples>
 
 <Escalation_And_Stop_Conditions>

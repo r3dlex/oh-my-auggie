@@ -4,7 +4,7 @@
 # templates
 
 ## Purpose
-Template files used by OMA commands and skills when scaffolding new project artifacts. Contains a `rules/` subdirectory with template rule files that are copied into projects during `oma-setup` or rule initialization.
+Template files used by OMA commands and skills when scaffolding new project artifacts. Contains a `rules/` subdirectory with template rule files that are copied into projects during `/oma:setup` or rule initialization.
 
 ## Key Files
 | File | Description |

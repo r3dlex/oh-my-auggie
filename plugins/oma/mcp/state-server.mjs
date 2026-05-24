@@ -274,7 +274,7 @@ const tools = {
     inputSchema: {
       type: 'object',
       properties: {
-        agent: { type: 'string', description: 'Agent name (e.g. oma-architect)' },
+        agent: { type: 'string', description: 'Agent name (e.g. architect)' },
         status: { type: 'string', description: 'Status (PASS, FAIL, PARTIAL)' },
         summary: { type: 'string', description: 'Brief summary of task outcome' }
       },

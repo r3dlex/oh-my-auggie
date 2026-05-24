@@ -2,7 +2,7 @@
  * ralplan runtime — Consensus planning loop
  *
  * Runs a Planner → Architect → Critic loop until consensus is reached or max 5 iterations.
- * Agents: oma-planner (drafts), oma-architect (technical review), oma-critic (risks & alternatives)
+ * Agents: planner (drafts), architect (technical review), critic (risks & alternatives)
  */
 import { resolveOmaDir } from '../utils.js';
 import { loadJsonFileSafe, saveJsonFileSafe } from '../utils.js';
@@ -57,8 +57,8 @@ async function spawnAgent(agentName, task, context, iteration) {
 }
 function buildAgentPrompt(agentName, task, context, iteration) {
     const iterationNote = iteration > 1 ? `\n**Iteration ${iteration}** - previous concerns: ${context.concerns.map(c => c.concern).join('; ')}` : '';
-    if (agentName === 'oma-planner') {
-        return `You are oma-planner. Draft a plan for: ${task}
+    if (agentName === 'planner') {
+        return `You are planner. Draft a plan for: ${task}
 
 Provide:
 1. A clear problem statement
@@ -69,8 +69,8 @@ Provide:
 
 Return your response as JSON with fields: problemStatement, options[], selectedOption, implementationPlan[].`;
     }
-    if (agentName === 'oma-architect') {
-        return `You are oma-architect. Review this plan for technical feasibility: ${task}
+    if (agentName === 'architect') {
+        return `You are architect. Review this plan for technical feasibility: ${task}
 
 Problem: ${context.problemStatement}
 Selected approach: ${context.selectedOption}
@@ -83,8 +83,8 @@ Review for:
 
 Return JSON: { approved: boolean, concerns: string[], riskLevel: "LOW"|"MEDIUM"|"HIGH"|"CRITICAL", notes: string }${iterationNote}`;
     }
-    if (agentName === 'oma-critic') {
-        return `You are oma-critic. Identify risks, edge cases, and alternatives: ${task}
+    if (agentName === 'critic') {
+        return `You are critic. Identify risks, edge cases, and alternatives: ${task}
 
 Current plan: ${context.selectedOption}
 Architect concerns: ${context.consensusStatus['Risk acceptance']?.notes || 'none'}
@@ -226,7 +226,7 @@ export async function main(task) {
         state.iteration = i;
         console.error(`[ralplan] Iteration ${i}/${MAX_ITERATIONS}`);
         // Step 1: Planner drafts
-        const plannerResp = await spawnAgent('oma-planner', task, state, i);
+        const plannerResp = await spawnAgent('planner', task, state, i);
         console.error(`[ralplan] Planner iteration ${i} - approved: ${plannerResp.approved}`);
         if (plannerResp.approved && i === 1) {
             // Extract initial plan from planner
@@ -249,20 +249,20 @@ export async function main(task) {
             updateRalplanState(state);
         }
         // Step 2: Architect reviews (SEQUENTIAL - wait for completion)
-        const architectResp = await spawnAgent('oma-architect', task, state, i);
+        const architectResp = await spawnAgent('architect', task, state, i);
         console.error(`[ralplan] Architect iteration ${i} - approved: ${architectResp.approved}, risk: ${architectResp.riskLevel}`);
         // Step 3: Critic evaluates (SEQUENTIAL - wait for architect)
-        const criticResp = await spawnAgent('oma-critic', task, state, i);
+        const criticResp = await spawnAgent('critic', task, state, i);
         console.error(`[ralplan] Critic iteration ${i} - approved: ${criticResp.approved}, risk: ${criticResp.riskLevel}`);
         // Record concerns
         if (architectResp.concerns.length > 0) {
             for (const concern of architectResp.concerns) {
-                state.concerns.push({ agent: 'oma-architect', concern, resolution: 'Addressed in architect review' });
+                state.concerns.push({ agent: 'architect', concern, resolution: 'Addressed in architect review' });
             }
         }
         if (criticResp.concerns.length > 0) {
             for (const concern of criticResp.concerns) {
-                state.concerns.push({ agent: 'oma-critic', concern, resolution: 'Addressed in critic review' });
+                state.concerns.push({ agent: 'critic', concern, resolution: 'Addressed in critic review' });
             }
         }
         // Update consensus status

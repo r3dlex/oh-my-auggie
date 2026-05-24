@@ -27,10 +27,10 @@ Prefer lower-cost models for appropriate tasks:
 
 | Agent | Community | Enterprise | Rationale |
 |-------|-----------|------------|-----------|
-| oma-explorer | haiku4.5 | haiku4.5 | Already optimal |
-| oma-planner | claude-opus-4-7 | claude-opus-4-7 | Complex reasoning required |
-| oma-executor | sonnet4.6 | sonnet4.6 | Standard implementation |
-| oma-architect | claude-opus-4-7 | claude-opus-4-7 | Verification requires depth |
+| explorer | haiku4.5 | haiku4.5 | Already optimal |
+| planner | claude-opus-4-7 | claude-opus-4-7 | Complex reasoning required |
+| executor | sonnet4.6 | sonnet4.6 | Standard implementation |
+| architect | claude-opus-4-7 | claude-opus-4-7 | Verification requires depth |
 
 **Cost guidance:** When multiple models are viable, prefer the lower-cost option that meets the capability requirement.
 

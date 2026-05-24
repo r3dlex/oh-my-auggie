@@ -13,12 +13,12 @@ User invokes /oma:autopilot or /oma:ralph
          │
          ▼
    ┌─────────────┐
-   │ oma-explorer │  haiku4.5 — map codebase structure
+   │ explorer │  haiku4.5 — map codebase structure
    └──────┬──────┘
           │ (codebase map)
           ▼
    ┌─────────────┐
-   │  oma-planner │  claude-opus-4-7 — create 3-6 step plan
+   │  planner │  claude-opus-4-7 — create 3-6 step plan
    └──────┬──────┘
           │ (plan with acceptance criteria)
           ▼
@@ -26,13 +26,13 @@ User invokes /oma:autopilot or /oma:ralph
           │
           ▼
    ┌─────────────┐     ┌─────────────┐
-   │ oma-executor │ ──► │ oma-executor │  parallel execution
+   │ executor │ ──► │ executor │  parallel execution
    └──────┬──────┘     └──────┬──────┘
           │ (completed)         │
           └──────────┬──────────┘
                      ▼
             ┌─────────────┐
-            │  oma-architect │  claude-opus-4-7 — verify implementation
+            │  architect │  claude-opus-4-7 — verify implementation
             └──────┬──────┘
                    │
          ┌─────────┴─────────┐
@@ -45,12 +45,12 @@ User invokes /oma:autopilot or /oma:ralph
 
 | Task Type | Delegate To | Model |
 |-----------|------------|-------|
-| Codebase search | oma-explorer | haiku4.5 |
-| Requirements analysis | oma-explorer | haiku4.5 |
-| Task planning | oma-planner | claude-opus-4-7 |
-| System design | oma-architect | claude-opus-4-7 |
-| Code implementation | oma-executor | sonnet4.6 |
-| Architecture verification | oma-architect | claude-opus-4-7 |
+| Codebase search | explorer | haiku4.5 |
+| Requirements analysis | explorer | haiku4.5 |
+| Task planning | planner | claude-opus-4-7 |
+| System design | architect | claude-opus-4-7 |
+| Code implementation | executor | sonnet4.6 |
+| Architecture verification | architect | claude-opus-4-7 |
 
 ## Mode Transitions
 
@@ -90,7 +90,7 @@ User invokes /oma:autopilot or /oma:ralph
 
 **Rule:** When OMA mode is active, the orchestrator MUST NOT use Edit, Write, or file removal tools directly.
 
-**Exception:** oma-executor is the sole agent permitted to write files during orchestration.
+**Exception:** executor is the sole agent permitted to write files during orchestration.
 
 **How enforced:** delegation-enforce.sh PreToolUse hook blocks file operations when mode != none.
 

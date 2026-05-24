@@ -39,10 +39,10 @@ When creating PRs in orchestrated projects:
 
 When delegating via OMA:
 
-1. **Plan first** — use `oma-planner` before implementation
-2. **Implement** — use `oma-executor` for code
-3. **Verify** — use `oma-verifier` before commit
-4. **Review** — use `oma-architect` for architecture sign-off
+1. **Plan first** — use `planner` before implementation
+2. **Implement** — use `executor` for code
+3. **Verify** — use `verifier` before commit
+4. **Review** — use `architect` for architecture sign-off
 5. **Commit** — follow conventional commits format
 
 ## Atomic Commits

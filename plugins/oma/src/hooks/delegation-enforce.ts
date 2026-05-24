@@ -32,8 +32,8 @@ export async function main(): Promise<void> {
   if (state.mode !== 'none' && state.active === true) {
     const output = {
       decision: 'block',
-      reason: `OMA orchestration mode (${state.mode}) is active. Direct file edits are blocked. Use oma-executor agent for all code changes.`,
-      systemMessage: `Delegation enforcement: orchestration mode is active. Spawn oma-executor via Task tool for code changes.`,
+      reason: `OMA orchestration mode (${state.mode}) is active. Direct file edits are blocked. Use executor agent for all code changes.`,
+      systemMessage: `Delegation enforcement: orchestration mode is active. Spawn executor via Task tool for code changes.`,
     };
     console.error(JSON.stringify(output));
     process.exit(2);
