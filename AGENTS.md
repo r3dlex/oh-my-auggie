@@ -5,6 +5,30 @@
 ## Purpose
 oh-my-auggie — multi-agent orchestration layer for Augment Code's auggie CLI. Provides 19 specialized agents, 44 slash commands, 36 skills, and 10 hooks for automated, multi-step AI workflows in the auggie IDE.
 
+
+
+## Available Models
+
+Augment Code's auggie CLI supports the following models (from [Augment Docs](https://docs.augmentcode.com/models/available-models)):
+
+| Model | Provider | Tier | Capabilities |
+|-------|----------|------|-------------|
+| `claude-sonnet-4.6` | Anthropic | High | Full agentic coding, multi-step plans, reasoning |
+| `claude-opus-4.6` | Anthropic | High | Deep reasoning, complex agentic tasks, architecture |
+| `claude-opus-4.7` | Anthropic | High | Cutting-edge reasoning, max capability |
+| `claude-sonnet-4.5` | Anthropic | Standard | Fast and capable for most tasks |
+| `claude-sonnet-4` | Anthropic | Standard | Reliable baseline coding |
+| `claude-haiku-4.5` | Anthropic | Fast | Lightweight lookups, simple edits |
+| `claude-opus-4.5` | Anthropic | High | Legacy high-tier reasoning |
+| `gemini-3.1-pro` | Google | High | Structural thinking, planning, debugging |
+| `gpt-5.5` | OpenAI | High | Frontier reasoning, complex tool use |
+| `gpt-5.4` | OpenAI | High | Frontier reasoning, complex tool use |
+| `gpt-5.2` | OpenAI | Standard | General coding tasks |
+| `gpt-5.1` | OpenAI | Standard | General coding tasks |
+| `prism-claude-gemini` | Mixed | High | Routes between Opus 4.7, Sonnet 4.6, Gemini 3.0 Flash |
+| `prism-gpt-kimi` | Mixed | High | Routes between GPT-5.5, GPT-5.4, Kimi K2.6 |
+
+Default model for `auggie` is `claude-sonnet-4.6`. Use the `/model` slash command inside auggie to switch models.
 ## Key Files
 | File | Description |
 |------|-------------|

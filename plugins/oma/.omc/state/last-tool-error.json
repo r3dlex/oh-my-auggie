@@ -1,0 +1,7 @@
+{
+  "tool_name": "Read",
+  "tool_input_preview": "{\"file_path\":\"/Users/andreburgstahler/Ws/Personal/AiTool/oh-my-githubcopilot/vscode-omp/src/state/state-reader.ts\"}",
+  "error": "File does not exist. Note: your current working directory is /Users/andreburgstahler/Ws/Personal/AiTool/oh-my-auggie/plugins/oma.",
+  "timestamp": "2026-04-21T11:50:46.678Z",
+  "retry_count": 1
+}

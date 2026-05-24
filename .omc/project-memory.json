@@ -245,6 +245,12 @@
       "type": "file"
     },
     {
+      "path": "README.md",
+      "accessCount": 9,
+      "lastAccessed": 1776767706302,
+      "type": "file"
+    },
+    {
       "path": "plugins/oma/src/setup-rules.mjs",
       "accessCount": 8,
       "lastAccessed": 1775951827741,
@@ -296,12 +302,6 @@
       "path": "IMPLEMENTATION-PLAN-graph-provider.md",
       "accessCount": 6,
       "lastAccessed": 1775999414794,
-      "type": "file"
-    },
-    {
-      "path": "README.md",
-      "accessCount": 6,
-      "lastAccessed": 1776030878212,
       "type": "file"
     },
     {

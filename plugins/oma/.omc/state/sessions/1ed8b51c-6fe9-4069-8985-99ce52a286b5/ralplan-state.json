@@ -1,0 +1,11 @@
+{
+  "active": true,
+  "started_at": "2026-04-21T11:23:41.281Z",
+  "current_phase": "ralplan",
+  "original_prompt": "/ralplan \"Create a Visual Studio plugin for oh-my-gemini oh-my-auggie (super-oma based) oh-my-githubcopilot like in  jmstar85-oh-my-githubcopilot, ensure Tasks and agents are visualizable in the plugin during execution.\"",
+  "session_id": "1ed8b51c-6fe9-4069-8985-99ce52a286b5",
+  "project_path": "/Users/andreburgstahler/Ws/Personal/AiTool/oh-my-auggie/plugins/oma",
+  "awaiting_confirmation": true,
+  "awaiting_confirmation_set_at": "2026-04-21T11:23:41.281Z",
+  "last_checked_at": "2026-04-21T11:23:41.281Z"
+}

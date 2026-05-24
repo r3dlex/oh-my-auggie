@@ -1,0 +1,10 @@
+{
+  "active": false,
+  "started_at": "2026-04-11T23:01:10.925Z",
+  "session_id": "b6a3c490-facb-448e-b31b-68fa90228acd",
+  "project_path": "/Users/andreburgstahler/Ws/Personal/oh-my-auggie/plugins/oma",
+  "last_checked_at": "2026-04-11T23:01:10.925Z",
+  "current_phase": "complete",
+  "completed_at": "2026-04-12T09:34:37.610Z",
+  "deactivated_reason": "skill_completed"
+}
