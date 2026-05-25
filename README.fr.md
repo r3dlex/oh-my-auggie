@@ -1,218 +1,143 @@
-# oh-my-auggie
+# oh-my-auggie (oma)
 
-<!-- Banner -->
-<p align="center">
-  <img src="assets/oma-banner.png" alt="oh-my-auggie banner" width="100%"/>
-</p>
+> **Sister projects:** [oh-my-claudecode (OMC)](https://github.com/Yeachan-Heo/oh-my-claudecode) | [oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex) | [oh-my-githubcopilot (OMP)](https://github.com/r3dlex/oh-my-githubcopilot) | [oh-my-gemini (OMG)](https://github.com/r3dlex/oh-my-gemini) | [oh-my-auggie (OMA)](https://github.com/r3dlex/oh-my-auggie)
 
-<!-- Badges -->
-<p align="center">
+**Orchestration multi-agent pour la CLI auggie d'Augment Code. Aucune courbe d'apprentissage.**
 
-  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
-  [![Version](https://img.shields.io/badge/version-0.3.4-blue)](https://github.com/r3dlex/oh-my-auggie)
-  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
-  [![Licence](https://img.shields.io/badge/licence-Apache%202.0-orange)](LICENSE)
+_N'apprenez pas la CLI auggie d'Augment Code. Utilisez simplement oma._
 
-</p>
+> Ce README localise suit le modele OMA unifie. Les commandes restent inchangees afin de pouvoir etre copiees directement.
 
-> **Orchestration multi-agent pour [l'interface CLI `auggie` d'Augment Code](https://www.augmentcode.com)** — l'expérience "oh-my-*" pour auggie.
+[English](README.md) • [Get Started](#quick-start) • [CLI Reference](#cli-reference) • [Workflows](#workflows) • [Discord](https://discord.gg/PUwSMR9XNk)
 
 ---
 
-## Installation
+## Pourquoi oma ?
 
-### Prérequis
+Every software team juggles implementation, architecture, security review, testing, and DevOps — all simultaneously. `oma` orchestrates specialized agents so every dimension gets expert attention, in parallel, without you herding cats.
 
-- `auggie` >= 0.22.0 — [docs d'installation](https://www.augmentcode.com)
-- `node` >= 18 (pour le serveur d'état MCP)
+OMA meets Auggie where it already works: marketplace plugins, `/oma:*` slash commands, and optional `oma`/`super-oma` shell wrappers. It preserves Augment Code's agentic coding loop while adding durable state, team orchestration, HUD visibility, and workflow skills for planning, execution, review, and QA.
 
-### Installation via le Marketplace (recommandé)
+---
+
+## Quick Start
+
+```bash
+npm install -g oh-my-auggie
+oma setup --scope project
+oma
+```
+
+After setup, restart your CLI for the `/` commands to appear.
+
+```bash
+oma doctor              # check prerequisites
+oma team run --task "..." --workers 2   # parallel work
+oma hud --watch         # live status
+```
+
+Auggie marketplace install:
 
 ```bash
 auggie plugin marketplace add r3dlex/oh-my-auggie
 auggie plugin install oma@oh-my-auggie
-```
-Then initialize OMA in your project:
-
-```
 /oma:setup
 ```
 
-Optionally configure MCP servers (adds state persistence and advanced tooling):
+---
 
-```
-/oma:mcp-setup
-```
+## Fonctionnalites
 
-C'est tout. Le plugin enregistre automatiquement toutes les commandes, agents, hooks et le serveur d'état MCP.
+| Feature | Description |
+|---------|-------------|
+| **Specialized Agents** | 20+ agents: analyst, architect, executor, debugger, critic, verifier, test-engineer, writer, and more |
+| **Parallel Team Mode** | tmux-based multi-worker orchestration with shared task state |
+| **Workflow Skills** | 36+ built-in skills — plan, deep-interview, ralph, autopilot, ultrawork, code-review, and more |
+| **Persistent Hooks** | Automatic tool tracking, project memory, session management |
+| **Real-time HUD** | Live status overlay showing agents, costs, and progress |
+| **CI/CD Ready** | Verification gates, test integration, release workflows |
+| **Multilingual** | README in 12 languages |
 
-### Installation manuelle
+---
+
+## CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `oma` | Launch interactive session |
+| `oma setup` | Configure Augment Code auggie integration |
+| `oma doctor` | Check prerequisites and fix issues |
+| `oma team run` | Start parallel team execution |
+| `oma team status` | Check team progress |
+| `oma hud --watch` | Show live status overlay |
+| `oma trace` | Show execution trace |
+
+See [SPEC.md](SPEC.md) for all commands.
+
+---
+
+## Workflows
+
+`oma` ships execution-mode and planning-mode workflows as built-in skills.
+
+### Execution Modes
+
+| Skill | Purpose |
+|-------|---------|
+| `$autopilot` | Idea → working code end-to-end |
+| `$team` | N coordinated agents on a shared task |
+| `$ralph` | Persistent completion loop until verified |
+| `$ultrawork` | Maximum parallel throughput execution |
+| `$ultraqa` | QA cycling until goals are met |
+
+### Planning Modes
+
+| Skill | Purpose |
+|-------|---------|
+| `$plan` | Strategic planning with optional interviews |
+| `$deep-interview` | Socratic clarification before execution |
+| `$ralplan` | Consensus planning with Architect + Critic review |
+
+### Utility Modes
+
+| Skill | Purpose |
+|-------|---------|
+| `$code-review` | Comprehensive code review |
+| `$security-review` | Security audit |
+| `$doctor` | Diagnose and fix installation issues |
+| `$trace` | Agent flow trace and summary |
+| `$note` | Save session notes |
+| `$wiki` | Persistent project wiki |
+
+---
+
+## Mode equipe
 
 ```bash
-git clone https://github.com/r3dlex/oh-my-auggie.git
-cd oh-my-auggie
-auggie plugin install --source ./plugins/oma oma@oh-my-auggie
-```
-Then initialize OMA in your project:
-
-```
-/oma:setup
+oma team run --task "review src/ for reliability gaps" --workers 4
+oma team status --team oma --json
+oma team resume --team oma
+oma team shutdown --team oma --force
 ```
 
-Optionally configure MCP servers (adds state persistence and advanced tooling):
-
-```
-/oma:mcp-setup
-```
-
-<p align="center">
-  <img src="assets/buddy-dark.png" alt="OMA - Dark Theme" width="300" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>OMA — installed and ready. What do you want to build?</em>
-</p>
+OMA team mode is tmux-first when a terminal is available, stores durable state under `.oma/`, and keeps `/oma:team`, `oma team`, and `super-oma` aligned so Auggie users can resume or inspect runs without losing context.
 
 ---
 
-## Commandes
+## Documentation
 
-Une fois installé, ces commandes slash sont disponibles :
-
-| Commande | Description |
-|----------|-------------|
-| `/oma:autopilot` | Pipeline autonome complet — expansion, planification, implémentation, QA, validation |
-| `/oma:ralph` | Boucle de persistance — continue à travailler jusqu'à ce que tous les critères d'acceptation soient atteints |
-| `/oma:ultrawork` | Exécution parallèle à haut débit via des sous-agents concurrents |
-| `/oma:team` | Équipe coordonnée de N agents |
-| `/oma:ultraqa` | Bouclage QA : tester, vérifier, corriger, répéter |
-| `/oma:ralplan` | Planification par consensus avec revue Architect + Critique |
-| `/oma:plan` | Planification stratégique avec revue analyste/architecte |
-| `/oma:cancel` | Annuler le mode actif et effacer l'état |
-| `/oma:status` | Afficher le mode et l'état actuels |
-| `/oma:ask <model>` | Interroger avec un modèle spécifique |
-| `/oma:note` | Écrire dans le bloc-notes (priorité, travail, manuel) |
-| `/oma:doctor` | Diagnostiquer les problèmes d'installation |
-
-### Déclencheurs par mot-clé
-
-Oubliez le préfixe `/oma:` — ceux-ci s'activent automatiquement lorsqu'ils sont détectés dans la conversation :
-
-| Mot-clé | Active |
-|---------|--------|
-| `autopilot` | `/oma:autopilot` |
-| `ralph`, "don't stop" | `/oma:ralph` |
-| `ulw`, `ultrawork` | `/oma:ultrawork` |
-| `ralplan` | `/oma:ralplan` |
-| `canceloma` | `/oma:cancel` |
-| `deslop`, "anti-slop" | passage de nettoyage deslop |
-
-<p align="center">
-  <img src="assets/buddy-galaxy-dark.png" alt="OMA - Galaxy Theme" width="300" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>OMA — parallel agents, persistent state, zero dependency overhead</em>
-</p>
+- [Full Documentation](SPEC.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
 
 ---
 
-## Architecture
+## Licence
 
-```
-oh-my-auggie/
-├── plugins/oma/
-│   ├── agents/          # 4 sous-agents (v0.1): explorer, planner, executor, architect
-│   ├── commands/        # 5 commandes (v0.1): autopilot, ralph, status, cancel, help
-│   ├── hooks/           # 3 hooks : session-start, delegation-enforce, stop-gate
-│   ├── rules/           # orchestration.md, enterprise.md (additif)
-│   └── mcp/
-│       └── state-server.mjs   # Serveur d'état MCP zero-dépendance
-├── .augment-plugin/
-│   └── marketplace.json  # Manifeste du marketplace Auggie
-└── e2e/
-    └── oma-core-loop.bats   # 34 tests d'intégration
-```
-
-**Fichiers d'état** (stockés dans `.oma/` — ignorés par git) :
-
-| Fichier | Purpose |
-|---------|---------|
-| `.oma/state.json` | mode, active, iteration |
-| `.oma/notepad.json` | sections priority, working, manual |
-| `.oma/task.log.json` | historique des verdicts architecte/executor |
+`oma` is open source under the [Apache License 2.0](LICENSE).
 
 ---
 
-## Profils
+## Sponsors
 
-| Profil | Description |
-|--------|-------------|
-| **Communauté** (défaut) | Plein de parallélisation, sans portes d'approbation |
-| **Entreprise** | Routage de modèle conscient des coûts, exigences ADR, portes d'approbation |
-
-L'entreprise est activée en créant `.oma/config.json` avec `{ "profile": "enterprise" }`. L'entreprise ne fait qu'*ajouter* des règles — elle ne supprime jamais les fonctionnalités de la communauté.
-
----
-
-## Développement
-
-```bash
-# Exécuter la suite de tests
-bats e2e/oma-core-loop.bats
-
-# Linter les scripts de hooks
-shellcheck plugins/oma/hooks/*.sh
-
-# Valider tous les manifestes
-node -e "
-  const fs = require('fs');
-  const files = [
-    '.augment-plugin/marketplace.json',
-    'plugins/oma/.augment-plugin/plugin.json',
-    'plugins/oma/.augment-plugin/.mcp.json',
-    'plugins/oma/hooks/hooks.json',
-    '.claude-plugin/plugin.json'
-  ];
-  for (const f of files) {
-    try { JSON.parse(fs.readFileSync(f)); console.log('OK: ' + f); }
-    catch(e) { console.error('FAIL: ' + f + ' - ' + e.message); process.exit(1); }
-  }
-"
-```
-
----
-
-## Sécurité
-
-Veuillez consulter notre [Politique de sécurité](SECURITY.md) pour les versions supportées et les directives de signalement des vulnérabilités.
-
----
-
-## Liens
-
-| Ressource | URL |
-|-----------|-----|
-| Augment Code | https://www.augmentcode.com |
-| docs CLI auggie | https://www.augmentcode.com/docs/cli |
-| docs Plugins | https://www.augmentcode.com/docs/cli/plugins |
-| docs Hooks | https://www.augmentcode.com/docs/cli/hooks |
-| docs MCP | https://www.augmentcode.com/docs/cli/integrations |
-| Sécurité | https://github.com/r3dlex/oh-my-auggie/blob/main/SECURITY.md |
-| oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
-
----
-
-## Sponsor
-
-**:heart: Vous adorez oh-my-auggie ? Envisagez de sponsoriser son développement.**
-
-Votre parrainage finance directement le temps et l'énergie investis pour rendre l'orchestration multi-agent accessible à chaque développeur sur la plateforme Augment Code. Chaque contribution — quelle que soit sa taille — aide à maintenir le projet vivant, réactif et en amélioration.
-
-👉 **[Sponsoriser sur GitHub](https://github.com/sponsors/r3dlex)**
-
-Options uniques et récurrentes disponibles. Les sponsors sont reconnus dans le README du projet et dans les notes de version.
-
----
-
-*oh-my-auggie n'est pas affilié à Augment Code. "auggie" et "Augment Code" sont des marques déposées de leurs propriétaires respectifs.*
+If `oma` saves you time, consider [sponsoring the project](https://github.com/sponsors/r3dlex) ❤️

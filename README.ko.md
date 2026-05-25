@@ -1,220 +1,143 @@
-# oh-my-auggie
+# oh-my-auggie (oma)
 
-<!-- Banner -->
-<p align="center">
-  <img src="assets/oma-banner.png" alt="oh-my-auggie 배너" width="100%"/>
-</p>
+> **Sister projects:** [oh-my-claudecode (OMC)](https://github.com/Yeachan-Heo/oh-my-claudecode) | [oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex) | [oh-my-githubcopilot (OMP)](https://github.com/r3dlex/oh-my-githubcopilot) | [oh-my-gemini (OMG)](https://github.com/r3dlex/oh-my-gemini) | [oh-my-auggie (OMA)](https://github.com/r3dlex/oh-my-auggie)
 
-<!-- Badges -->
-<p align="center">
+**Augment Code auggie CLI를 위한 멀티 에이전트 오케스트레이션. 학습 곡선은 거의 없습니다.**
 
-  [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=r3dlex&logo=GitHub%20Sponsors&color=success)](https://github.com/sponsors/r3dlex)
-  [![버전](https://img.shields.io/badge/version-0.3.4-blue)](https://github.com/r3dlex/oh-my-auggie)
-  [![auggie](https://img.shields.io/badge/auggie-%3E%3D%200.22.0-green)](https://www.augmentcode.com)
-  [![라이선스](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
+_Augment Code auggie CLI를 새로 익히지 말고 oma를 사용하세요._
 
-</p>
+> 이 현지화 README는 통합 OMA 템플릿을 따릅니다. 명령은 바로 복사할 수 있도록 그대로 유지했습니다.
+
+[English](README.md) • [Get Started](#quick-start) • [CLI Reference](#cli-reference) • [Workflows](#workflows) • [Discord](https://discord.gg/PUwSMR9XNk)
 
 ---
 
-> **[Augment Code의 `auggie` CLI](https://www.augmentcode.com)를 위한 멀티 에이전트 오케스트레이션** — auggie를 위한 "oh-my-*" 경험을 제공합니다.
+## 왜 oma인가?
+
+Every software team juggles implementation, architecture, security review, testing, and DevOps — all simultaneously. `oma` orchestrates specialized agents so every dimension gets expert attention, in parallel, without you herding cats.
+
+OMA meets Auggie where it already works: marketplace plugins, `/oma:*` slash commands, and optional `oma`/`super-oma` shell wrappers. It preserves Augment Code's agentic coding loop while adding durable state, team orchestration, HUD visibility, and workflow skills for planning, execution, review, and QA.
 
 ---
 
-## 설치
+## Quick Start
 
-### 필수 조건
+```bash
+npm install -g oh-my-auggie
+oma setup --scope project
+oma
+```
 
-- `auggie` >= 0.22.0 — [설치 문서](https://www.augmentcode.com)
-- `node` >= 18 (MCP 상태 서버용)
+After setup, restart your CLI for the `/` commands to appear.
 
-### 마켓플레이스 설치 (권장)
+```bash
+oma doctor              # check prerequisites
+oma team run --task "..." --workers 2   # parallel work
+oma hud --watch         # live status
+```
+
+Auggie marketplace install:
 
 ```bash
 auggie plugin marketplace add r3dlex/oh-my-auggie
 auggie plugin install oma@oh-my-auggie
-```
-Then initialize OMA in your project:
-
-```
 /oma:setup
 ```
 
-Optionally configure MCP servers (adds state persistence and advanced tooling):
+---
 
-```
-/oma:mcp-setup
-```
+## 기능
 
-설치 완료. 플러그인이 모든 명령, 에이전트, 훅 및 MCP 상태 서버를 자동으로 등록합니다.
+| Feature | Description |
+|---------|-------------|
+| **Specialized Agents** | 20+ agents: analyst, architect, executor, debugger, critic, verifier, test-engineer, writer, and more |
+| **Parallel Team Mode** | tmux-based multi-worker orchestration with shared task state |
+| **Workflow Skills** | 36+ built-in skills — plan, deep-interview, ralph, autopilot, ultrawork, code-review, and more |
+| **Persistent Hooks** | Automatic tool tracking, project memory, session management |
+| **Real-time HUD** | Live status overlay showing agents, costs, and progress |
+| **CI/CD Ready** | Verification gates, test integration, release workflows |
+| **Multilingual** | README in 12 languages |
 
-### 수동 설치
+---
+
+## CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `oma` | Launch interactive session |
+| `oma setup` | Configure Augment Code auggie integration |
+| `oma doctor` | Check prerequisites and fix issues |
+| `oma team run` | Start parallel team execution |
+| `oma team status` | Check team progress |
+| `oma hud --watch` | Show live status overlay |
+| `oma trace` | Show execution trace |
+
+See [SPEC.md](SPEC.md) for all commands.
+
+---
+
+## 워크플로
+
+`oma` ships execution-mode and planning-mode workflows as built-in skills.
+
+### Execution Modes
+
+| Skill | Purpose |
+|-------|---------|
+| `$autopilot` | Idea → working code end-to-end |
+| `$team` | N coordinated agents on a shared task |
+| `$ralph` | Persistent completion loop until verified |
+| `$ultrawork` | Maximum parallel throughput execution |
+| `$ultraqa` | QA cycling until goals are met |
+
+### Planning Modes
+
+| Skill | Purpose |
+|-------|---------|
+| `$plan` | Strategic planning with optional interviews |
+| `$deep-interview` | Socratic clarification before execution |
+| `$ralplan` | Consensus planning with Architect + Critic review |
+
+### Utility Modes
+
+| Skill | Purpose |
+|-------|---------|
+| `$code-review` | Comprehensive code review |
+| `$security-review` | Security audit |
+| `$doctor` | Diagnose and fix installation issues |
+| `$trace` | Agent flow trace and summary |
+| `$note` | Save session notes |
+| `$wiki` | Persistent project wiki |
+
+---
+
+## 팀 모드
 
 ```bash
-git clone https://github.com/r3dlex/oh-my-auggie.git
-cd oh-my-auggie
-auggie plugin install --source ./plugins/oma oma@oh-my-auggie
-```
-Then initialize OMA in your project:
-
-```
-/oma:setup
+oma team run --task "review src/ for reliability gaps" --workers 4
+oma team status --team oma --json
+oma team resume --team oma
+oma team shutdown --team oma --force
 ```
 
-Optionally configure MCP servers (adds state persistence and advanced tooling):
-
-```
-/oma:mcp-setup
-```
-
-<p align="center">
-  <img src="assets/buddy-dark.png" alt="OMA - Dark Theme" width="300" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>OMA — installed and ready. What do you want to build?</em>
-</p>
+OMA team mode is tmux-first when a terminal is available, stores durable state under `.oma/`, and keeps `/oma:team`, `oma team`, and `super-oma` aligned so Auggie users can resume or inspect runs without losing context.
 
 ---
 
-## 명령어
+## 문서
 
-설치되면 다음 슬래시 명령어를 사용할 수 있습니다:
-
-| 명령어 | 설명 |
-|--------|------|
-| `/oma:autopilot` | 완전한 자율 파이프라인 — 확장, 계획, 구현, QA, 검증 |
-| `/oma:ralph` | 지속 루프 — 모든 수락 기준이 통과할 때까지 계속 작업 |
-| `/oma:ultrawork` | 동시 서브에이전트를 통한 고처리량 병렬 실행 |
-| `/oma:team` | N명의 에이전트 조정 팀 |
-| `/oma:ultraqa` | QA 사이클: 테스트, 검증, 수정, 반복 |
-| `/oma:ralplan` | 아키텍트 + 비평가 리뷰를 통한 합의 계획 |
-| `/oma:plan` | 분석가/아키텍트 리뷰가 있는 전략적 계획 |
-| `/oma:cancel` | 활성 모드 취소 및 상태 초기화 |
-| `/oma:status` | 현재 모드 및 상태 표시 |
-| `/oma:ask <model>` | 특정 모델로 쿼리 |
-| `/oma:note` | 메모장에 작성 (우선순위, 작업, 수동) |
-| `/oma:doctor` | 설치 문제 진단 |
-
-### 키워드 트리거
-
-`/oma:` 접두사를 생략해도 됩니다 — 대화에서 감지되면 자동으로 활성화됩니다:
-
-| 키워드 | 활성화 |
-|--------|--------|
-| `autopilot` | `/oma:autopilot` |
-| `ralph`, "don't stop" | `/oma:ralph` |
-| `ulw`, `ultrawork` | `/oma:ultrawork` |
-| `ralplan` | `/oma:ralplan` |
-| `canceloma` | `/oma:cancel` |
-| `deslop`, "anti-slop" | deslop 정리 패스 |
-
-<p align="center">
-  <img src="assets/buddy-galaxy-dark.png" alt="OMA - Galaxy Theme" width="300" style="border-radius:12px;"/>
-</p>
-
-<p align="center">
-  <em>OMA — parallel agents, persistent state, zero dependency overhead</em>
-</p>
+- [Full Documentation](SPEC.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
 
 ---
 
-## 아키텍처
+## 라이선스
 
-```
-oh-my-auggie/
-├── plugins/oma/
-│   ├── agents/          # 4개의 서브에이전트 (v0.1): explorer, planner, executor, architect
-│   ├── commands/        # 5개의 명령어 (v0.1): autopilot, ralph, status, cancel, help
-│   ├── hooks/           # 3개의 훅: session-start, delegation-enforce, stop-gate
-│   ├── rules/           # orchestration.md, enterprise.md (추가 방식)
-│   └── mcp/
-│       └── state-server.mjs   # 의존성 없는 MCP 상태 서버
-├── .augment-plugin/
-│   └── marketplace.json  # Auggie 마켓플레이스 매니페스트
-└── e2e/
-    └── oma-core-loop.bats   # 34개의 통합 테스트
-```
-
-**상태 파일** (`.oma/`에 저장 — git 무시됨):
-
-| 파일 | 목적 |
-|------|------|
-| `.oma/state.json` | 모드, 활성 상태, 반복 횟수 |
-| `.oma/notepad.json` | 우선순위, 작업, 수동 섹션 |
-| `.oma/task.log.json` | 아키텍트/실행자 판정 역사 |
-
----
-
-## 프로필
-
-| 프로필 | 설명 |
-|--------|------|
-| **Community** (기본) | 완전한 병렬화, 승인 게이트 없음 |
-| **Enterprise** | 비용 인식 모델 라우팅, ADR 요구사항, 승인 게이트 |
-
-Enterprise는 `.oma/config.json`에 `{ "profile": "enterprise" }`를 생성하여 활성화됩니다. Enterprise는 커뮤니티 기능을 제거하지 않고 *추가만* 합니다.
-
----
-
-## 개발
-
-```bash
-# 테스트 스위트 실행
-bats e2e/oma-core-loop.bats
-
-# 훅 스크립트 린트
-shellcheck plugins/oma/hooks/*.sh
-
-# 모든 매니페스트 검증
-node -e "
-  const fs = require('fs');
-  const files = [
-    '.augment-plugin/marketplace.json',
-    'plugins/oma/.augment-plugin/plugin.json',
-    'plugins/oma/.augment-plugin/.mcp.json',
-    'plugins/oma/hooks/hooks.json',
-    '.claude-plugin/plugin.json'
-  ];
-  for (const f of files) {
-    try { JSON.parse(fs.readFileSync(f)); console.log('OK: ' + f); }
-    catch(e) { console.error('FAIL: ' + f + ' - ' + e.message); process.exit(1); }
-  }
-"
-```
-
----
-
-## 보안
-
-지원되는 버전과 취약점 보고 가이드라인은 [보안 정책](SECURITY.md)을 참고하세요.
-
----
-
-## 링크
-
-| 리소스 | URL |
-|--------|-----|
-| Augment Code | https://www.augmentcode.com |
-| auggie CLI 문서 | https://www.augmentcode.com/docs/cli |
-| 플러그인 문서 | https://www.augmentcode.com/docs/cli/plugins |
-| 훅 문서 | https://www.augmentcode.com/docs/cli/hooks |
-| MCP 문서 | https://www.augmentcode.com/docs/cli/integrations |
-| 보안 | [SECURITY.md](SECURITY.md) |
-| oh-my-auggie | https://github.com/r3dlex/oh-my-auggie |
+`oma` is open source under the [Apache License 2.0](LICENSE).
 
 ---
 
 ## 스폰서
 
-**:heart: oh-my-auggie를 사랑하시나요? 개발을 스폰서를 고려해 보세요.**
-
-여러분의 스폰서십은 Augment Code 플랫폼의 모든 개발자에게 멀티 에이전트 오케스트레이션을Accessible하게 만드는 데 투입되는 시간과 에너지를 직접 지원합니다. 크기에 상관없이 모든 기여는 프로젝트를 생존하고, 반응灵敏하며, 개선되게 유지하는 데 도움이 됩니다.
-
-👉 **[GitHub에서 스폰서하기](https://github.com/sponsors/r3dlex)**
-
-일회성 및 정기 결제 옵션을 제공합니다. 스폰서는 프로젝트 README와 릴리스 노트에 인정받습니다.
-
----
-
-*oh-my-auggie는 Augment Code와 제휴하지 않습니다. "auggie" 및 "Augment Code"는 각 소유자의 상표입니다.*
+If `oma` saves you time, consider [sponsoring the project](https://github.com/sponsors/r3dlex) ❤️
