@@ -12,7 +12,8 @@
     "url": "https://github.com/r3dlex/oh-my-auggie.git"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "README.md"
   ],
   "readme": "README.md",
   "scripts": {
