@@ -2,7 +2,7 @@
  * ultrawork runtime — parallel execution engine for concurrent agent tasks.
  *
  * Accepts a task description, decomposes it into independent subtasks (2–8),
- * spawns oma-executor subagents in parallel, collects results, and produces
+ * spawns executor subagents in parallel, collects results, and produces
  * a structured execution report.
  */
 
@@ -78,7 +78,7 @@ function saveUltraworkState(omaDir: string, state: OmaState): void {
 // ─── Executor spawning ─────────────────────────────────────────────────────
 
 /**
- * Spawns a single oma-executor agent for a subtask.
+ * Spawns a single executor agent for a subtask.
  * Returns a promise that resolves with the subtask result.
  */
 function spawnExecutor(

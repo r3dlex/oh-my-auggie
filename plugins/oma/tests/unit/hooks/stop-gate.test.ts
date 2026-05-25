@@ -74,11 +74,11 @@ describe('stop-gate hooks', () => {
     it('allows stop when ralph active but architect PASS verdict found', () => {
       const state = { mode: 'ralph', active: true };
       const taskLog = [
-        { agent: 'oma-architect', status: 'PASS' },
+        { agent: 'architect', status: 'PASS' },
       ] as Array<{ agent?: string; status?: string }>;
 
       const lastArchitect = [...taskLog].reverse().find(
-        (entry) => entry.agent === 'oma-architect' && entry.status === 'PASS'
+        (entry) => entry.agent === 'architect' && entry.status === 'PASS'
       );
       const blocked = PERSISTENT_MODES.has(state.mode) && state.active === true && !(state.mode === 'ralph' && lastArchitect);
       expect(blocked).toBe(false);
@@ -87,11 +87,11 @@ describe('stop-gate hooks', () => {
     it('blocks stop when ralph active without architect PASS', () => {
       const state = { mode: 'ralph', active: true };
       const taskLog = [
-        { agent: 'oma-executor', status: 'DONE' },
+        { agent: 'executor', status: 'DONE' },
       ] as Array<{ agent?: string; status?: string }>;
 
       const lastArchitect = [...taskLog].reverse().find(
-        (entry) => entry.agent === 'oma-architect' && entry.status === 'PASS'
+        (entry) => entry.agent === 'architect' && entry.status === 'PASS'
       );
       const blocked = PERSISTENT_MODES.has(state.mode) && state.active === true && !(state.mode === 'ralph' && lastArchitect);
       expect(blocked).toBe(true);
@@ -100,11 +100,11 @@ describe('stop-gate hooks', () => {
     it('blocks stop when ralph active with architect FAIL verdict', () => {
       const state = { mode: 'ralph', active: true };
       const taskLog = [
-        { agent: 'oma-architect', status: 'FAIL' },
+        { agent: 'architect', status: 'FAIL' },
       ] as Array<{ agent?: string; status?: string }>;
 
       const lastArchitect = [...taskLog].reverse().find(
-        (entry) => entry.agent === 'oma-architect' && entry.status === 'PASS'
+        (entry) => entry.agent === 'architect' && entry.status === 'PASS'
       );
       const blocked = PERSISTENT_MODES.has(state.mode) && state.active === true && !(state.mode === 'ralph' && lastArchitect);
       expect(blocked).toBe(true);
@@ -115,7 +115,7 @@ describe('stop-gate hooks', () => {
       const taskLog: Array<{ agent?: string; status?: string }> = [];
 
       const lastArchitect = [...taskLog].reverse().find(
-        (entry) => entry.agent === 'oma-architect' && entry.status === 'PASS'
+        (entry) => entry.agent === 'architect' && entry.status === 'PASS'
       );
       const blocked = PERSISTENT_MODES.has(state.mode) && state.active === true && !(state.mode === 'ralph' && lastArchitect);
       expect(blocked).toBe(true);
@@ -124,12 +124,12 @@ describe('stop-gate hooks', () => {
     it('blocks when ralph active with architect entry but wrong status', () => {
       const state = { mode: 'ralph', active: true };
       const taskLog = [
-        { agent: 'oma-architect', status: 'PENDING' },
-        { agent: 'oma-architect', status: 'REVIEW' },
+        { agent: 'architect', status: 'PENDING' },
+        { agent: 'architect', status: 'REVIEW' },
       ] as Array<{ agent?: string; status?: string }>;
 
       const lastArchitect = [...taskLog].reverse().find(
-        (entry) => entry.agent === 'oma-architect' && entry.status === 'PASS'
+        (entry) => entry.agent === 'architect' && entry.status === 'PASS'
       );
       const blocked = PERSISTENT_MODES.has(state.mode) && state.active === true && !(state.mode === 'ralph' && lastArchitect);
       expect(blocked).toBe(true);
@@ -138,16 +138,16 @@ describe('stop-gate hooks', () => {
     it('allows when ralph active with PASS architect entry in middle of log', () => {
       const state = { mode: 'ralph', active: true };
       const taskLog = [
-        { agent: 'oma-executor', status: 'WORKING' },
-        { agent: 'oma-architect', status: 'PASS' },
-        { agent: 'oma-executor', status: 'WORKING' },
+        { agent: 'executor', status: 'WORKING' },
+        { agent: 'architect', status: 'PASS' },
+        { agent: 'executor', status: 'WORKING' },
       ] as Array<{ agent?: string; status?: string }>;
 
       const lastArchitect = [...taskLog].reverse().find(
-        (entry) => entry.agent === 'oma-architect' && entry.status === 'PASS'
+        (entry) => entry.agent === 'architect' && entry.status === 'PASS'
       );
       expect(lastArchitect).toBeDefined();
-      expect(lastArchitect!.agent).toBe('oma-architect');
+      expect(lastArchitect!.agent).toBe('architect');
       expect(lastArchitect!.status).toBe('PASS');
     });
 
@@ -220,7 +220,7 @@ describe('stop-gate hooks', () => {
       const output = {
         decision: 'block',
         reason: `${mode} mode is active. Cannot stop until verification is complete or iteration limit (${maxIterations}) is reached.`,
-        systemMessage: `Stop blocked: ${mode} mode active (iteration ${iteration + 1}/${maxIterations}). Wait for oma-architect verification or run /oma:cancel to force-stop.`,
+        systemMessage: `Stop blocked: ${mode} mode active (iteration ${iteration + 1}/${maxIterations}). Wait for architect verification or run /oma:cancel to force-stop.`,
       };
       expect(output.systemMessage).toContain('ultrawork');
       expect(output.systemMessage).toContain('iteration 4/50');
@@ -230,7 +230,7 @@ describe('stop-gate hooks', () => {
       const mode = 'ralph';
       const iteration = undefined;
       const maxIterations = 50;
-      const systemMessage = `Stop blocked: ${mode} mode active (iteration ${((iteration as number | undefined) ?? 0) + 1}/${maxIterations}). Wait for oma-architect verification or run /oma:cancel to force-stop.`;
+      const systemMessage = `Stop blocked: ${mode} mode active (iteration ${((iteration as number | undefined) ?? 0) + 1}/${maxIterations}). Wait for architect verification or run /oma:cancel to force-stop.`;
       expect(systemMessage).toContain('iteration 1/50');
     });
 
@@ -258,7 +258,7 @@ describe('stop-gate hooks', () => {
     });
 
     it('returns parsed array for valid task log', () => {
-      const mockLog = [{ agent: 'oma-architect', status: 'PASS' }];
+      const mockLog = [{ agent: 'architect', status: 'PASS' }];
       vi.mocked(loadJsonFile).mockReturnValue(mockLog);
       expect(loadJsonFile('/some/path/task.log.json')).toEqual(mockLog);
     });
@@ -309,7 +309,7 @@ describe('stop-gate hooks', () => {
       vi.mocked(resolveOmaDir).mockReturnValue('/mock/oma');
       vi.mocked(loadOmaState).mockReturnValue({ mode: 'ralph', active: true, iteration: 2 });
       vi.mocked(loadJsonFile).mockReturnValue([
-        { agent: 'oma-architect', status: 'PASS' },
+        { agent: 'architect', status: 'PASS' },
       ]);
       await main();
       expect(process.exit).toHaveBeenCalledWith(0);
@@ -359,7 +359,7 @@ describe('stop-gate hooks', () => {
       vi.mocked(resolveOmaDir).mockReturnValue('/mock/oma');
       vi.mocked(loadOmaState).mockReturnValue({ mode: 'ralph', active: true, iteration: 1 });
       vi.mocked(loadJsonFile).mockReturnValue([
-        { agent: 'oma-executor', status: 'DONE' },
+        { agent: 'executor', status: 'DONE' },
       ]);
       await main();
       expect(process.exit).toHaveBeenCalledWith(2);
@@ -377,7 +377,7 @@ describe('stop-gate hooks', () => {
       vi.mocked(resolveOmaDir).mockReturnValue('/mock/oma');
       vi.mocked(loadOmaState).mockReturnValue({ mode: 'ralph', active: true });
       vi.mocked(loadJsonFile).mockReturnValue([
-        { agent: 'oma-architect', status: 'FAIL' },
+        { agent: 'architect', status: 'FAIL' },
       ]);
       await main();
       expect(process.exit).toHaveBeenCalledWith(2);

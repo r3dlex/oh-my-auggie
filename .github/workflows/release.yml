@@ -33,8 +33,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@r3dlex'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: cd plugins/oma && npm ci
@@ -54,8 +53,74 @@ jobs:
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
+  publish-github-packages:
+    needs: release
+    if: needs.release.outputs.new-release-published == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Resolve publish version
+        id: ver
+        run: |
+          if [ -n "${{ needs.release.outputs.new-release-version }}" ]; then
+            echo "checkout_ref=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
+            echo "channel=${{ needs.release.outputs.new-release-channel }}" >> "$GITHUB_OUTPUT"
+            echo "expected_version=${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "checkout_ref=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
+            echo "expected_version=" >> "$GITHUB_OUTPUT"
+          else
+            LATEST=$(git ls-remote --tags --sort=-v:refname "https://github.com/${{ github.repository }}.git" 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
+            echo "checkout_ref=${LATEST}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
+            echo "expected_version=${LATEST#v}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ver.outputs.checkout_ref }}
+
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Install dependencies
+        run: cd plugins/oma && npm ci
+
+      - name: Build
+        run: cd plugins/oma && npm run prepare
+
+      - name: Verify GitHub Packages version matches npmjs version
+        run: |
+          cd plugins/oma
+          EXPECTED="${{ steps.ver.outputs.expected_version }}"
+          ACTUAL=$(node -p "require('./package.json').version")
+          if [ -n "$EXPECTED" ] && [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::GitHub Packages version ($ACTUAL) does not match npmjs release version ($EXPECTED)"
+            exit 1
+          fi
+          echo "Publishing GitHub Packages version ${ACTUAL} to match npmjs.com"
+
+      - name: Publish @r3dlex/oh-my-auggie to GitHub Packages
+        env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd plugins/oma
+          CHANNEL="${{ steps.ver.outputs.channel }}"
+          TAG="${CHANNEL:-latest}"
+          npm pkg set name="@r3dlex/oh-my-auggie"
+          # --provenance omitted: GitHub Packages does not support npm provenance attestations
+          npm publish --registry https://npm.pkg.github.com --tag "$TAG" --ignore-scripts || echo "::warning::GitHub Packages publish skipped — version already exists (idempotent)"
 
   publish-npm:
     needs: release
@@ -70,17 +135,20 @@ jobs:
         id: ver
         run: |
           if [ -n "${{ needs.release.outputs.new-release-version }}" ]; then
-            echo "tag=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
+            echo "checkout_ref=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
             echo "channel=${{ needs.release.outputs.new-release-channel }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "checkout_ref=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
           else
-            LATEST=$(git ls-remote --tags --sort=-v:refname origin 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
-            echo "tag=${LATEST}" >> "$GITHUB_OUTPUT"
+            LATEST=$(git ls-remote --tags --sort=-v:refname "https://github.com/${{ github.repository }}.git" 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
+            echo "checkout_ref=${LATEST}" >> "$GITHUB_OUTPUT"
             echo "channel=" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/checkout@v4
         with:
-          ref: ${{ steps.ver.outputs.tag }}
+          ref: ${{ steps.ver.outputs.checkout_ref }}
 
       - name: Setup Node.js for npmjs.com
         uses: actions/setup-node@v4
@@ -118,3 +186,64 @@ jobs:
           # Rename to unscoped; runner is ephemeral
           cd plugins/oma && npm pkg set name="oh-my-auggie"
           npm publish --tag "$TAG" --provenance --access public || echo "::warning::Publish skipped — version already exists or package not yet on npmjs.com (idempotent)"
+
+  publish-gh-packages:
+    needs: release
+    if: needs.release.outputs.new-release-published == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Resolve publish version
+        id: ver
+        run: |
+          if [ -n "${{ needs.release.outputs.new-release-version }}" ]; then
+            echo "checkout_ref=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
+            echo "channel=${{ needs.release.outputs.new-release-channel }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "checkout_ref=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
+          else
+            LATEST=$(git ls-remote --tags --sort=-v:refname "https://github.com/${{ github.repository }}.git" 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
+            echo "checkout_ref=${LATEST}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ver.outputs.checkout_ref }}
+
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Install dependencies
+        run: cd plugins/oma && npm ci
+
+      - name: Build
+        run: cd plugins/oma && npm run prepare
+
+      - name: Strip publishConfig and prepare script
+        run: |
+          cd plugins/oma
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            delete pkg.publishConfig;
+            if (pkg.scripts) delete pkg.scripts.prepare;
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Publish oh-my-auggie to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CHANNEL="${{ steps.ver.outputs.channel }}"
+          TAG="${CHANNEL:-latest}"
+          cd plugins/oma && npm pkg set name="@r3dlex/oh-my-auggie"
+          # --provenance omitted: GitHub Packages does not support npm provenance attestations
+          npm publish --tag "$TAG" --access public --ignore-scripts || echo "::warning::GitHub Packages publish skipped — version already exists (idempotent)"

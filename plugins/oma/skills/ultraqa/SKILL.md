@@ -120,10 +120,10 @@ Quality assurance through iterative test-verify-fix cycles.
 </Do_Not_Use_When>
 
 <Tool_Usage>
-- **oma-qa**: Use when a dedicated QA cycle is the primary task (user invoked `/oma:ultraqa` directly)
-- **oma-executor**: Use for applying fixes found during the QA cycle — the executor runs each Fix phase
-- **oma-architect**: Consult when a QA failure reveals an architectural issue rather than a simple bug
-- **oma-verifier**: Use instead of oma-qa when the task is to verify an already-fixed change — a single verification pass rather than a full cycle
+- **qa**: Use when a dedicated QA cycle is the primary task (user invoked `/oma:ultraqa` directly)
+- **executor**: Use for applying fixes found during the QA cycle — the executor runs each Fix phase
+- **architect**: Consult when a QA failure reveals an architectural issue rather than a simple bug
+- **verifier**: Use instead of qa when the task is to verify an already-fixed change — a single verification pass rather than a full cycle
 </Tool_Usage>
 
 <Why_This_Exists>
@@ -171,12 +171,12 @@ Agent: /oma:ultraqa
 OMA: [No existing tests exist — Cycle 1 has no regression baseline]
 OMA: [QA stalls at "compare to expectations" with no measurable baseline]
 ```
-→ Should use oma-executor directly with manual spot-checks instead.
+→ Should use executor directly with manual spot-checks instead.
 </Examples>
 
 <Escalation_And_Stop_Conditions>
 - **Stop and report:** After 5 cycles with Must-Pass tests still failing — surface the exact failures and stop further cycles
-- **Stop and escalate:** A QA failure points to an architectural problem (not a bug) — escalate to oma-architect before continuing
+- **Stop and escalate:** A QA failure points to an architectural problem (not a bug) — escalate to architect before continuing
 - **Continue:** Non-critical (Should-Pass / Nice-to-Pass) failures remain; document and proceed
 - **Escalate to user:** After 5 cycles, Must-Pass tests pass but Should-Pass issues remain — ask user whether to iterate further or accept with caveats
 - **Hard stop:** User says "enough" or "ship it" — respect the intent, document remaining issues, close out

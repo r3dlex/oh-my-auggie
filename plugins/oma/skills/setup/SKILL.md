@@ -130,10 +130,10 @@ Configure MCP servers.
 - Make setup repeatable
 
 <Tool_Usage>
-- **oma-executor**: Primary agent for running the actual setup steps — executor creates files, installs dependencies, runs commands
-- **oma-analyst**: Use when the project type cannot be auto-detected — analyst determines what kind of project this is and what it needs
-- **oma-architect**: Consult when setup involves architectural decisions (e.g., choosing between monorepo vs. polyrepo, choosing a framework)
-- **oma-verifier**: After setup completes, use verifier to confirm the environment is healthy and ready for development
+- **executor**: Primary agent for running the actual setup steps — executor creates files, installs dependencies, runs commands
+- **analyst**: Use when the project type cannot be auto-detected — analyst determines what kind of project this is and what it needs
+- **architect**: Consult when setup involves architectural decisions (e.g., choosing between monorepo vs. polyrepo, choosing a framework)
+- **verifier**: After setup completes, use verifier to confirm the environment is healthy and ready for development
 - **Direct Bash tools**: For reading existing config files, running diagnostics, and executing setup commands directly (not for spawning agents)
 </Tool_Usage>
 

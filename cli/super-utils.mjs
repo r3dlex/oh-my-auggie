@@ -344,7 +344,7 @@ function inferModeImpact(name, body) {
 
 export function generateCommandManifest(omaDir, opts = {}) {
   const commandDir = join(opts.repoRoot || repoRoot(), 'plugins', 'oma', 'commands');
-  const files = readdirSync(commandDir).filter(name => /^oma-.*\.md$/.test(name)).sort();
+  const files = readdirSync(commandDir).filter(name => /^(oma-)?[a-z].*.md$/.test(name)).sort();
   const manifest = files.map(file => {
     const raw = readFileSync(join(commandDir, file), 'utf8');
     const { meta, body } = parseFrontmatter(raw);

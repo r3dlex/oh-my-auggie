@@ -103,9 +103,9 @@ Dynamic concurrency based on system load. Use for resource-intensive tasks.
 </Do_Not_Use_When>
 
 <Tool_Usage>
-- **oma-executor**: The primary worker — ultrawork dispatches executor agents to run tasks in parallel. Each executor works in its own context with no cross-agent state sharing.
-- **oma-planner**: Use before ultrawork to analyze task independence and decompose the work into non-conflicting subtasks
-- **oma-architect**: Consult when tasks involve architectural decisions — ensure parallel changes don't accidentally create inconsistent design decisions
+- **executor**: The primary worker — ultrawork dispatches executor agents to run tasks in parallel. Each executor works in its own context with no cross-agent state sharing.
+- **planner**: Use before ultrawork to analyze task independence and decompose the work into non-conflicting subtasks
+- **architect**: Consult when tasks involve architectural decisions — ensure parallel changes don't accidentally create inconsistent design decisions
 - **Direct Bash tools**: For truly trivial independent ops (e.g., linting 10 files in parallel), use Bash with background jobs directly rather than spawning agents
 </Tool_Usage>
 
@@ -158,7 +158,7 @@ OMA: [Result: same as running echo once, but 5x the token cost]
 <Escalation_And_Stop_Conditions>
 - **Stop and report:** A task in the parallel set fails — report which task failed, surface the error, stop collecting further results
 - **Continue with partial:** A non-critical task fails but others succeed — report failure, continue waiting for remaining tasks
-- **Stop and escalate:** A failure reveals an architectural inconsistency (e.g., two parallel tasks made conflicting design decisions) — escalate to oma-architect
+- **Stop and escalate:** A failure reveals an architectural inconsistency (e.g., two parallel tasks made conflicting design decisions) — escalate to architect
 - **Escalate to user:** All tasks succeed but integration fails (incompatible outputs) — present the conflict to the user for resolution
 - **Hard stop:** User says "cancel" — stop all active tasks immediately, report partial results
 </Escalation_And_Stop_Conditions>

@@ -23,7 +23,7 @@ export async function main() {
         const taskLogPath = join(omaDir, 'task.log.json');
         const taskLog = loadJsonFile(taskLogPath);
         if (taskLog && taskLog.length > 0) {
-            const lastArchitect = [...taskLog].reverse().find((entry) => entry.agent === 'oma-architect' && entry.status === 'PASS');
+            const lastArchitect = [...taskLog].reverse().find((entry) => entry.agent === 'architect' && entry.status === 'PASS');
             if (lastArchitect) {
                 process.stdout.write('{}\n');
                 process.exit(0);
@@ -42,7 +42,7 @@ export async function main() {
     const output = {
         decision: 'block',
         reason: `${state.mode} mode is active. Cannot stop until verification is complete or iteration limit (${maxIterations}) is reached.`,
-        systemMessage: `Stop blocked: ${state.mode} mode active (iteration ${iteration + 1}/${maxIterations}). Wait for oma-architect verification or run /oma:cancel to force-stop.`,
+        systemMessage: `Stop blocked: ${state.mode} mode active (iteration ${iteration + 1}/${maxIterations}). Wait for architect verification or run /oma:cancel to force-stop.`,
     };
     console.error(JSON.stringify(output));
     process.exit(2);

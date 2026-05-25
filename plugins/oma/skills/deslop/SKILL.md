@@ -75,7 +75,7 @@ Remove AI slop and low-quality content patterns. Make writing concise and genuin
 - The user specifically wants verbose or decorative writing (e.g., marketing copy, storytelling)
 - The content is code or structured data — deslop operates on prose, not code
 - The content has a specific required format (e.g., PR descriptions, commit messages with conventional commits spec) where padding may be structural
-- When used inside another skill (e.g., as a sub-step of oma-writer) — deslop should be invoked intentionally, not accidentally triggered mid-output
+- When used inside another skill (e.g., as a sub-step of writer) — deslop should be invoked intentionally, not accidentally triggered mid-output
 </Do_Not_Use_When>
 
 <Examples>
