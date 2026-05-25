@@ -1,3 +1,10 @@
+# [0.6.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.5.9...v0.6.0) (2026-05-25)
+
+
+### Features
+
+* enable OMA trusted dual publishing ([51d03e1](https://github.com/r3dlex/oh-my-auggie/commit/51d03e1059dd89c3497e15bbbf8e443270a8b584))
+
 ## [0.5.9](https://github.com/r3dlex/oh-my-auggie/compare/v0.5.8...v0.5.9) (2026-04-21)
 
 ## [0.5.8](https://github.com/r3dlex/oh-my-auggie/compare/v0.5.7...v0.5.8) (2026-04-21)
