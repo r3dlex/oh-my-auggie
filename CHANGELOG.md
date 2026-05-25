@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.8.0...v0.8.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* repair e2e tests and team spawn after TypeScript migration ([30ccc10](https://github.com/r3dlex/oh-my-auggie/commit/30ccc10c27ea7d135d8184005e0cd2f8ce05a064))
+
 # [0.8.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.7.1...v0.8.0) (2026-05-25)
 
 
