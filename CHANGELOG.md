@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.7.0...v0.7.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* **oma:** read VERSION from package.json at runtime ([5e258c0](https://github.com/r3dlex/oh-my-auggie/commit/5e258c0010b345f7ea8c3c9c4c2df4c5b590d885))
+
 # [0.7.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.6.0...v0.7.0) (2026-05-25)
 
 
