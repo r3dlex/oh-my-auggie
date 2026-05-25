@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.6.0...v0.7.0) (2026-05-25)
+
+
+### Features
+
+* **oma:** ship oma CLI executable in npm package ([cda400d](https://github.com/r3dlex/oh-my-auggie/commit/cda400d93cfae71b071ffe96cd6cb6c09d67a46d))
+
 # [0.6.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.5.9...v0.6.0) (2026-05-25)
 
 
