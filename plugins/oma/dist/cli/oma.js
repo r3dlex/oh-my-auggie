@@ -2,6 +2,7 @@
 // plugins/oma/src/cli/oma.ts — OMA CLI main entry point
 // Ported from cli/oma.mjs + cli/super-oma.mjs (merged)
 import { resolveOmaDir } from './utils.js';
+import { launchAuggie } from './launch.js';
 import { teamSpawn, teamStatus, teamShutdown } from './team.js';
 import { hudSnapshot, hudWatch, statuslineSnapshot, statuslineWatch } from './hud.js';
 import { doctorOffline, doctorInstall, doctorCi } from './doctor.js';
@@ -36,6 +37,7 @@ Commands:
   oma panes list                 List live panes
   oma events tail [--lines <N>]  Tail events for the current session
   oma run <mode|command>         Run a mode or slash command
+  oma launch                    Start auggie in tmux with HUD status pane
 
 Global flags:
   --json   Machine-readable output
@@ -114,9 +116,12 @@ function parseArgs(argv) {
 async function main(argv) {
     const args = parseArgs(argv);
     const omaDir = resolveOmaDir();
-    if (!args.subcommand || args.subcommand === 'help') {
+    if (args.subcommand === "help") {
         printHelp();
         process.exit(0);
+    }
+    if (!args.subcommand) {
+        process.exit(await launchAuggie({ omaDir }));
     }
     try {
         switch (args.subcommand) {
@@ -236,6 +241,8 @@ async function main(argv) {
                 }
                 break;
             }
+            case 'launch':
+                process.exit(await launchAuggie({ omaDir }));
             case 'run':
                 process.exit(await runCommand(args.positional, { omaDir }));
             default:
