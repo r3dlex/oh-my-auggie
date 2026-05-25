@@ -1,5 +1,5 @@
 {
-  "name": "@r3dlex/oh-my-auggie",
+  "name": "oh-my-auggie",
   "version": "0.6.0",
   "description": "TypeScript hooks and tests for oh-my-auggie",
   "type": "module",
@@ -36,8 +36,5 @@
     "tsx": "^4.21.0",
     "typescript": "^5.4.0",
     "vitest": "^1.4.0"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }
