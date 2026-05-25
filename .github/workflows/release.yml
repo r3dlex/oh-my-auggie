@@ -70,17 +70,20 @@ jobs:
         id: ver
         run: |
           if [ -n "${{ needs.release.outputs.new-release-version }}" ]; then
-            echo "tag=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
+            echo "checkout_ref=v${{ needs.release.outputs.new-release-version }}" >> "$GITHUB_OUTPUT"
             echo "channel=${{ needs.release.outputs.new-release-channel }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "checkout_ref=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "channel=" >> "$GITHUB_OUTPUT"
           else
-            LATEST=$(git ls-remote --tags --sort=-v:refname origin 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
-            echo "tag=${LATEST}" >> "$GITHUB_OUTPUT"
+            LATEST=$(git ls-remote --tags --sort=-v:refname "https://github.com/${{ github.repository }}.git" 'refs/tags/v*' | head -1 | sed 's|.*refs/tags/||')
+            echo "checkout_ref=${LATEST}" >> "$GITHUB_OUTPUT"
             echo "channel=" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/checkout@v4
         with:
-          ref: ${{ steps.ver.outputs.tag }}
+          ref: ${{ steps.ver.outputs.checkout_ref }}
 
       - name: Setup Node.js for npmjs.com
         uses: actions/setup-node@v4
