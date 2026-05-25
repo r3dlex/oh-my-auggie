@@ -151,6 +151,10 @@ Optional MCP state persistence:
 /oma:mcp-setup
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=r3dlex/oh-my-auggie&type=date&legend=top-left)](https://www.star-history.com/?repos=r3dlex%2Foh-my-auggie&type=date&legend=top-left)
+
 ## Localized READMEs
 
 [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [中文](README.zh.md)
