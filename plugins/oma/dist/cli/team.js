@@ -1,7 +1,7 @@
 // plugins/oma/src/cli/team.ts — Worker team management for OMA CLI
 // Ported from cli/commands/team.mjs
 import { spawnSync } from 'node:child_process';
-import { existsSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { atomicWrite, isPidAlive, listWorkerDirs, nextWorkerId, readJsonSafe, resolveOmaDir, resolveInOmaDir } from './utils.js';
 // ── Detect stale workers ──────────────────────────────────────────────────
@@ -37,11 +37,12 @@ export async function teamSpawn(N, task, opts = {}) {
     for (let i = 0; i < N; i++) {
         const workerId = nextWorkerId(teamDir);
         const workerDir = resolveInOmaDir(`team/worker-${workerId}`);
+        mkdirSync(workerDir, { recursive: true });
         writeFileSync(join(workerDir, 'meta.json'), JSON.stringify({ worker_id: workerId, pid: 0, spawned_at: new Date().toISOString() }, null, 2));
         writeFileSync(join(workerDir, 'status.json'), JSON.stringify({ status: 'starting' }, null, 2));
         writeFileSync(join(workerDir, 'task.txt'), task);
         // Fork worker process
-        const worker = spawnSync(process.execPath, [wrapperPath, String(workerId), omaDir], {
+        const worker = spawnSync(process.execPath, [wrapperPath, '--id', String(workerId), '--oma-dir', omaDir, '--task', task], {
             cwd: process.cwd(),
             stdio: 'ignore',
         });

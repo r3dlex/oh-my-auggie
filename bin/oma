@@ -1,0 +1,5 @@
+#!/bin/sh
+# oma — OMA CLI Companion (shell wrapper)
+# Resolves to the compiled TypeScript entry point in plugins/oma/dist/cli/oma.js
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+exec node "$SCRIPT_DIR/plugins/oma/dist/cli/oma.js" "$@"
