@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/r3dlex/oh-my-auggie/compare/v0.7.1...v0.8.0) (2026-05-25)
+
+
+### Features
+
+* **oma:** TUI launcher — launch auggie in tmux with HUD status pane ([9a2f4b9](https://github.com/r3dlex/oh-my-auggie/commit/9a2f4b904333764339d7b30bbfd7ffe7957556e5))
+
 ## [0.7.1](https://github.com/r3dlex/oh-my-auggie/compare/v0.7.0...v0.7.1) (2026-05-25)
 
 
