@@ -9,7 +9,12 @@ import { sessionUp, sessionAttach, sessionReconcile, sessionsList, sessionsInspe
 import { eventsTail } from './events.js';
 import { runCommand } from './run.js';
 // ── Version ─────────────────────────────────────────────────────────────────
-const VERSION = '0.6.0'; // Will be read from package.json at runtime
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(readFileSync(join(__dirname, "..", "..", "package.json"), "utf8"));
+const VERSION = pkg.version;
 // ── Help text ───────────────────────────────────────────────────────────────
 const HELP = `oma — OMA CLI Companion
 Usage: oma <command> [options]
