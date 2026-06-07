@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "topology_type": "standalone",
+  "max_allowed_depth": 0,
+  "current_depth": 0,
+  "sync_strategy": "physical-copy",
+  "upstream_authority": {
+    "type": "git",
+    "url": "git@github.com:r3dlex/oh-my-auggie.git",
+    "ref": "codex/ai-sdlc-init-v3-rollout"
+  },
+  "managed_repositories": [],
+  "inherited_assets": [],
+  "sync_status": {
+    "last_synced_at": "2026-06-07T21:00:00Z",
+    "drift_detected": false
+  },
+  "memory": {"external_integration": false}
+}
