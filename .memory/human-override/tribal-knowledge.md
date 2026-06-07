@@ -1,2 +1,3 @@
 # Tribal Knowledge
-Human-authored facts about `r3dlex/oh-my-auggie`. The v3 scaffold never overwrites this file.
+
+Human-authored facts about the repo, the team, and the build environment. The scaffold never overwrites this file.
