@@ -7,7 +7,7 @@
   "upstream_authority": {
     "type": "git",
     "url": "git@github.com:r3dlex/oh-my-auggie.git",
-    "ref": "codex/ai-sdlc-init-v3-rollout"
+    "ref": "main"
   },
   "managed_repositories": [],
   "inherited_assets": [],
@@ -15,5 +15,7 @@
     "last_synced_at": "2026-06-07T21:00:00Z",
     "drift_detected": false
   },
-  "memory": {"external_integration": false}
+  "memory": {
+    "external_integration": false
+  }
 }
