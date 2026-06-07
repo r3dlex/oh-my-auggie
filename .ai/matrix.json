@@ -13,7 +13,8 @@
   "inherited_assets": [],
   "sync_status": {
     "last_synced_at": "2026-06-07T21:00:00Z",
-    "drift_detected": false
+    "drift_detected": false,
+    "last_drift_report": ".ai/drift/last-drift.json"
   },
   "memory": {
     "external_integration": false
