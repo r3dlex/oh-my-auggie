@@ -1,2 +1,2 @@
 # Custom Conventions
-Human override for `'"$REPO_NAME"'`. The v3 scaffold never overwrites this file.
+Human override for `r3dlex/oh-my-auggie`. The v3 scaffold never overwrites this file.
