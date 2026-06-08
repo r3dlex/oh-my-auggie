@@ -244,8 +244,11 @@ worker_dir() {
 @test "oma doctor: reports state when state.json exists" {
   local td="$(cat /tmp/oma_test_dir.txt)"
   echo '{"mode":"ralph","active":true,"iteration":2}' > "$td/.oma/state.json"
+  # oma doctor returns 1 when any check fails (e.g., tmux missing in CI).
+  # The output still contains the state_file line, which is the assertion
+  # target here.
   run_oma doctor
-  [ "$status" -eq 0 ]
+  [ "$status" -le 1 ]
   printf '%s\n' "$output" | grep -q 'state_file'
 }
 
