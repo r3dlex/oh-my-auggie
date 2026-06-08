@@ -1,0 +1,6 @@
+{
+  "name": "workspace-sync",
+  "version": "1.0.0",
+  "operations": ["sync.dry-run", "sync.apply", "drift.report"],
+  "requires_confirmation": ["sync.apply"]
+}

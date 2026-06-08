@@ -1,0 +1,6 @@
+{
+  "name": "git-ops",
+  "version": "1.0.0",
+  "operations": ["branch.create", "branch.checkout", "commit.create", "push.upload", "pr.open-draft"],
+  "requires_confirmation": ["push.upload", "pr.open-draft"]
+}

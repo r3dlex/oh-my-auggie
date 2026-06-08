@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T21:00:00Z",
+  "topology_type": "standalone",
+  "actions": [
+    {"path": ".ai/matrix.json", "action": "created"},
+    {"path": ".ai/system-prompts/architect.md", "action": "created"},
+    {"path": ".ai/system-prompts/developer.md", "action": "created"},
+    {"path": ".ai/system-prompts/qa-engineer.md", "action": "created"},
+    {"path": ".ai/skills/git-ops.json", "action": "created"},
+    {"path": ".ai/skills/workspace-sync.json", "action": "created"},
+    {"path": ".ai/rules/security.md", "action": "created"},
+    {"path": ".ai/rules/technical-bounds.md", "action": "created"},
+    {"path": ".ai/drift/README.md", "action": "created"},
+    {"path": ".ai/drift/last-generation.json", "action": "created"},
+    {"path": ".memory/human-override/custom-conventions.md", "action": "created"},
+    {"path": ".memory/human-override/tribal-knowledge.md", "action": "created"},
+    {"path": ".memory/self-learned/CHANGELOG.md", "action": "created"},
+    {"path": ".memory/self-learned/error-patterns.json", "action": "created"},
+    {"path": ".memory/self-learned/module-complexity.json", "action": "created"},
+    {"path": "docs/architecture/adr/0001-init.md", "action": "created"},
+    {"path": "docs/architecture/data-contracts/README.md", "action": "created"},
+    {"path": "docs/learning/troubleshooting-matrix.md", "action": "created"},
+    {"path": "AGENTS.md", "action": "appended-v3-marker-block"},
+    {"path": "CLAUDE.md", "action": "appended-v3-marker-block"},
+    {"path": "README.md", "action": "appended-v3-marker-block"},
+    {"path": "CONTRIBUTING.md", "action": "created"}
+  ]
+}

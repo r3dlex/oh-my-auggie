@@ -10,3 +10,8 @@ This repository uses the AI SDLC methodology. Before starting work:
 - Load `.agents/skills/karpathy-guidelines/SKILL.md` as a baseline for all tasks.
 
 <!-- ai-sdlc-init:end -->
+
+<!-- v3-ai-sdlc-init:start -->
+## v3
+See `.ai/matrix.json` and `AGENTS.md` for the operating contract.
+<!-- v3-ai-sdlc-init:end -->
