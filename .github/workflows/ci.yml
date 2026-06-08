@@ -21,9 +21,15 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  hooks-check:
-    name: Validate hook entry points
-    runs-on: ubuntu-latest
+  # ==========================================================================
+  # hooks-check
+  # ==========================================================================
+  _hooks-check-self-hosted:
+    name: "Validate hook entry points (self-hosted)"
+    runs-on: [self-hosted, ubuntu-latest]
+    continue-on-error: true
+    outputs:
+      passed: ${{ steps.mark.outputs.passed }}
     steps:
       - uses: actions/checkout@v4
       - name: Verify hooks.json has no .sh references
@@ -34,14 +40,39 @@ jobs:
             exit 1
           fi
           echo "hooks.json entry points are correct (all .js)"
+      - id: mark
+        if: success()
+        run: echo "passed=true" >> "$GITHUB_OUTPUT"
 
-  test:
-    name: Test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm]
+  hooks-check:
+    name: Validate hook entry points
+    needs: _hooks-check-self-hosted
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Route
+        run: echo "self-hosted passed=${{ needs._hooks-check-self-hosted.outputs.passed }}"
+      - uses: actions/checkout@v4
+        if: needs._hooks-check-self-hosted.outputs.passed != 'true'
+      - name: Verify hooks.json has no .sh references
+        if: needs._hooks-check-self-hosted.outputs.passed != 'true'
+        run: |
+          if grep -q '\.sh' plugins/oma/hooks/hooks.json; then
+            echo "ERROR: hooks.json still contains .sh references"
+            grep '\.sh' plugins/oma/hooks/hooks.json
+            exit 1
+          fi
+          echo "hooks.json entry points are correct (all .js)"
+
+  # ==========================================================================
+  # test (matrix: ubuntu-latest, ubuntu-24.04-arm)
+  # ==========================================================================
+  _test-self-hosted:
+    name: "Test (self-hosted)"
+    runs-on: [self-hosted, ubuntu-latest]
+    continue-on-error: true
+    outputs:
+      passed: ${{ steps.mark.outputs.passed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -55,20 +86,85 @@ jobs:
         run: cd plugins/oma && npx tsc --noEmit
       - name: Unit + integration tests with coverage
         run: cd plugins/oma && npx vitest run --coverage
+      - id: mark
+        if: success()
+        run: echo "passed=true" >> "$GITHUB_OUTPUT"
 
-  cli:
-    name: oma CLI e2e
-    runs-on: ubuntu-latest
+  test:
+    name: Test (${{ matrix.os }})
+    needs: _test-self-hosted
+    if: always()
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    steps:
+      - name: Route
+        run: echo "self-hosted passed=${{ needs._test-self-hosted.outputs.passed }}"
+      - uses: actions/checkout@v4
+        if: needs._test-self-hosted.outputs.passed != 'true'
+      - uses: actions/setup-node@v4
+        if: needs._test-self-hosted.outputs.passed != 'true'
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: plugins/oma/package-lock.json
+      - name: Install dependencies
+        if: needs._test-self-hosted.outputs.passed != 'true'
+        run: cd plugins/oma && npm ci
+      - name: TypeScript type check
+        if: needs._test-self-hosted.outputs.passed != 'true'
+        run: cd plugins/oma && npx tsc --noEmit
+      - name: Unit + integration tests with coverage
+        if: needs._test-self-hosted.outputs.passed != 'true'
+        run: cd plugins/oma && npx vitest run --coverage
+
+  # ==========================================================================
+  # cli — oma CLI e2e (bats)
+  # ==========================================================================
+  _cli-self-hosted:
+    name: "oma CLI e2e (self-hosted)"
+    runs-on: [self-hosted, ubuntu-latest]
+    continue-on-error: true
+    outputs:
+      passed: ${{ steps.mark.outputs.passed }}
     steps:
       - uses: actions/checkout@v4
       - name: Install bats
         run: sudo apt-get update && sudo apt-get install -y bats
       - name: Run CLI e2e tests
         run: bats e2e/oma-cli.bats
+      - id: mark
+        if: success()
+        run: echo "passed=true" >> "$GITHUB_OUTPUT"
 
-  validate-manifests:
-    name: Validate manifests
+  cli:
+    name: oma CLI e2e
+    needs: _cli-self-hosted
+    if: always()
     runs-on: ubuntu-latest
+    steps:
+      - name: Route
+        run: echo "self-hosted passed=${{ needs._cli-self-hosted.outputs.passed }}"
+      - uses: actions/checkout@v4
+        if: needs._cli-self-hosted.outputs.passed != 'true'
+      - name: Install bats
+        if: needs._cli-self-hosted.outputs.passed != 'true'
+        run: sudo apt-get update && sudo apt-get install -y bats
+      - name: Run CLI e2e tests
+        if: needs._cli-self-hosted.outputs.passed != 'true'
+        run: bats e2e/oma-cli.bats
+
+  # ==========================================================================
+  # validate-manifests
+  # ==========================================================================
+  _validate-manifests-self-hosted:
+    name: "Validate manifests (self-hosted)"
+    runs-on: [self-hosted, ubuntu-latest]
+    continue-on-error: true
+    outputs:
+      passed: ${{ steps.mark.outputs.passed }}
     steps:
       - uses: actions/checkout@v4
       - name: Validate JSON manifests
@@ -93,6 +189,92 @@ jobs:
             }
           "
       - name: Verify hook command entrypoints exist
+        run: |
+          node -e "
+            const fs = require('fs');
+            const hooksManifest = JSON.parse(fs.readFileSync('plugins/oma/hooks/hooks.json', 'utf8'));
+            const missing = [];
+            const invalid = [];
+            const seen = new Set();
+
+            for (const groups of Object.values(hooksManifest.hooks || {})) {
+              for (const group of groups || []) {
+                for (const hook of group.hooks || []) {
+                  const match = typeof hook.command === 'string' && hook.command.match(/dist\\/hooks\\/([A-Za-z0-9-]+\\.js)/);
+                  if (!match) {
+                    invalid.push(hook.command || '<missing command>');
+                    continue;
+                  }
+
+                  const entrypoint = 'plugins/oma/dist/hooks/' + match[1];
+                  if (seen.has(entrypoint)) continue;
+                  seen.add(entrypoint);
+
+                  if (!fs.existsSync(entrypoint)) {
+                    missing.push(entrypoint);
+                    continue;
+                  }
+
+                  console.log('OK: ' + entrypoint);
+                }
+              }
+            }
+
+            if (invalid.length) {
+              console.error('FAIL: non-dist hook commands in hooks.json');
+              for (const command of invalid) console.error('INVALID: ' + command);
+              process.exit(1);
+            }
+
+            if (!seen.size) {
+              console.error('FAIL: hooks.json did not declare any dist hook entrypoints');
+              process.exit(1);
+            }
+
+            if (missing.length) {
+              console.error('FAIL: missing compiled hook entrypoints');
+              for (const entrypoint of missing) console.error('MISSING: ' + entrypoint);
+              process.exit(1);
+            }
+          "
+      - id: mark
+        if: success()
+        run: echo "passed=true" >> "$GITHUB_OUTPUT"
+
+  validate-manifests:
+    name: Validate manifests
+    needs: _validate-manifests-self-hosted
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Route
+        run: echo "self-hosted passed=${{ needs._validate-manifests-self-hosted.outputs.passed }}"
+      - uses: actions/checkout@v4
+        if: needs._validate-manifests-self-hosted.outputs.passed != 'true'
+      - name: Validate JSON manifests
+        if: needs._validate-manifests-self-hosted.outputs.passed != 'true'
+        run: |
+          node -e "
+            const fs = require('fs');
+            const files = [
+              '.augment-plugin/marketplace.json',
+              'plugins/oma/.augment-plugin/plugin.json',
+              'plugins/oma/.augment-plugin/.mcp.json',
+              'plugins/oma/hooks/hooks.json',
+              '.claude-plugin/plugin.json'
+            ];
+            for (const f of files) {
+              try {
+                JSON.parse(fs.readFileSync(f));
+                console.log('OK: ' + f);
+              } catch(e) {
+                console.error('FAIL: ' + f + ' - ' + e.message);
+                process.exit(1);
+              }
+            }
+          "
+      - name: Verify hook command entrypoints exist
+        if: needs._validate-manifests-self-hosted.outputs.passed != 'true'
         run: |
           node -e "
             const fs = require('fs');
