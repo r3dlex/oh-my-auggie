@@ -253,15 +253,13 @@ worker_dir() {
 }
 
 @test "oma doctor --json: returns valid JSON" {
-  local td="$(cat /tmp/oma_test_dir.txt)"
-  local md="$(cat /tmp/oma_mock_dir.txt)"
   # oma doctor returns 1 when any check fails; the JSON output is still
   # valid and is the assertion target here. The summary `ok` field is
   # checked separately in the next test.
-  PATH="$md:$PATH" OMA_DIR="$td/.oma" node "$SCRIPT_DIR/cli/oma.mjs" doctor --json > /tmp/oma_doctor_json.txt 2>&1
-  local doctor_exit=$?
+  run_oma doctor --json
+  [ "$status" -le 1 ]
+  printf '%s' "$output" > /tmp/oma_doctor_json.txt
   node -e "const fs=require('fs');JSON.parse(fs.readFileSync('/tmp/oma_doctor_json.txt','utf8'));"
-  [ "$doctor_exit" -le 1 ]
 }
 
 @test "oma doctor --json: includes oma_dir and state fields" {
