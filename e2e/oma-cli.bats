@@ -260,8 +260,11 @@ worker_dir() {
 }
 
 @test "oma doctor --json: includes oma_dir and state fields" {
+  # oma doctor returns 1 when any check fails (e.g., tmux missing in CI),
+  # but the JSON output is still valid and the schema is what we assert.
+  # The summary `ok` field in the JSON is the source of truth for the run.
   run_oma doctor --json
-  [ "$status" -eq 0 ]
+  [ "$status" -le 1 ]
   printf '%s\n' "$output" | grep -q '"oma_dir"'
   printf '%s\n' "$output" | grep -q '"detail"'
   # workers field not present in doctor JSON output
@@ -274,7 +277,9 @@ worker_dir() {
   local md="$(cat /tmp/oma_mock_dir.txt)"
   PATH="$md:$PATH" OMA_DIR="$td/.oma" \
     run "$SCRIPT_DIR/cli/oma.mjs" doctor --install
-  [ "$status" -eq 0 ]
+  # oma doctor exits 1 when any check fails; --install is meant to be
+  # informative regardless. The output still contains the state_file line.
+  [ "$status" -le 1 ]
   printf '%s\n' "$output" | grep -q 'state_file'
 }
 
