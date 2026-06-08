@@ -7,15 +7,40 @@ on:
     branches: [main]
 
 jobs:
-  prek-check:
-    name: Pre-commit Hooks
-    runs-on: ubuntu-latest
-
+  _prek-check-self-hosted:
+    name: "Pre-commit Hooks (self-hosted)"
+    runs-on: [self-hosted, ubuntu-latest]
+    continue-on-error: true
+    outputs:
+      passed: ${{ steps.mark.outputs.passed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Run prek
+        uses: j178/prek-action@v2
+        with:
+          extra-args: '--all-files'
+
+      - id: mark
+        if: success()
+        run: echo "passed=true" >> "$GITHUB_OUTPUT"
+
+  prek-check:
+    name: Pre-commit Hooks
+    needs: _prek-check-self-hosted
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Route
+        run: echo "self-hosted passed=${{ needs._prek-check-self-hosted.outputs.passed }}"
+
+      - name: Checkout
+        if: needs._prek-check-self-hosted.outputs.passed != 'true'
+        uses: actions/checkout@v4
+
+      - name: Run prek
+        if: needs._prek-check-self-hosted.outputs.passed != 'true'
         uses: j178/prek-action@v2
         with:
           extra-args: '--all-files'
