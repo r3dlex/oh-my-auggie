@@ -16,7 +16,7 @@ Per the AI SDLC release-versioning module. Strategy is **semver** via `semantic-
 
 - Latest GitHub release/tag: **v0.8.2** (published 2026-06-08, `Latest` flag set).
 - `npm view oh-my-auggie version` returns **0.8.1** - v0.8.2 GitHub release exists but the corresponding npmjs.com publish did not succeed (or was skipped as already-exists due to the idempotent guard in the workflow). This is a known discrepancy - see checklist item below.
-- `plugins/oma/package.json` version field is `0.4.0` - this is **expected and normal**: `semantic-release` derives the release version from git tags and commits, not from the package.json version field. The workflow runs `npm ci` and `npm run prepare` before calling semantic-release; semantic-release updates package.json in-memory during a release run and publishes that ephemeral version. The stale static value in package.json is not authoritative.
+- The root `package.json` version field is `0.4.0` and is **not authoritative**: `semantic-release` derives the release version from git tags and conventional commits. The published package lives at `plugins/oma`, and the `@semantic-release/git` plugin commits the release bump back, so `plugins/oma/package.json` reads `0.8.2` (matching the latest release). The stale root value is expected and harmless.
 
 ## Tag format
 
@@ -39,7 +39,7 @@ Per the AI SDLC release-versioning module. Strategy is **semver** via `semantic-
 These five guardrails from the AI SDLC release-versioning module are evaluated against what the current workflow enforces:
 
 - [ ] **green_ci** - not enforced by release.yml itself; the release job runs independently of CI checks. The workflow does run `npm test` before semantic-release, but it does not gate on the `ci.yml` or `ci-prek.yml` check-run outcomes. Gap: add a CI-passing check before triggering release, or configure branch protection to block the push that triggers release. Wiring this in is a future decision.
-- [x] **conventional_commits** - enforced: semantic-release only creates a release when commits match the conventional commit grammar (`feat:`, `fix:`, `chore:`, etc.). Non-releasable commits result in no tag.
+- [ ] **conventional_commits** - partially enforced: semantic-release only creates a release when commits match the conventional commit grammar (`feat:`, `fix:`, `chore:`, etc.), so no tag is ever derived from bad grammar. However, there is no commit-message lint gate in `ci.yml` or `ci-prek.yml`, so non-conforming commits can still land on `main`. Adding a commitlint gate is a future decision.
 - [x] **secrets_permissions_preflight** - partially enforced: `release.yml` has explicit `permissions:` blocks on each job (`contents: write`, `id-token: write`, etc.). The workflow does not emit a preflight log of key names, but permissions are declared and scoped per job.
 - [x] **no_dirty_generated_state** - enforced implicitly: the release job checks out a fresh workspace (`actions/checkout@v4` with `fetch-depth: 0`); no local dirty state can carry over from a developer machine.
 - [ ] **protected_tag_policy** - not yet enforced: no GitHub tag protection ruleset for `v*` pattern exists. Tags can currently be created or deleted manually. Apply the ruleset (see admin checklist below).
