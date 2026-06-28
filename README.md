@@ -161,5 +161,5 @@ Optional MCP state persistence:
 
 <!-- v3-ai-sdlc-init:start -->
 ## AI SDLC v3
-This repo follows the v3 AI-SDLC layout. See `.ai/matrix.json`, `.memory/human-override/`, and `docs/architecture/adr/`. Modules at `r3dlex/skills/ai-sdlc-init/modules/`.
+This repo follows the v3 AI-SDLC layout. See [AGENTS.md](AGENTS.md) for the agent operating contract, the workflow doc [`.ai/workflows/repo-workflow.md`](.ai/workflows/repo-workflow.md), and the workflow manifest [`.ai/workflows/repo-workflow.json`](.ai/workflows/repo-workflow.json). Also see `.ai/matrix.json`, `.memory/human-override/`, and `docs/architecture/adr/`. Modules at `r3dlex/skills/init-ai-repo/modules/`.
 <!-- v3-ai-sdlc-init:end -->

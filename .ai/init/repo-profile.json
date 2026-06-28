@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-28T00:00:00Z",
+  "repo_id": "oma-root",
+  "repo_name": "oh-my-auggie",
+  "remote": "git@github.com:r3dlex/oh-my-auggie.git",
+  "description": "Multi-agent orchestration layer for Augment Code's auggie CLI. Provides specialized agents, slash commands, skills, and hooks for automated, multi-step AI workflows.",
+  "language": "TypeScript",
+  "runtime": "node",
+  "node_version_minimum": "18",
+  "package_manager": "npm",
+  "workspace_layout": "monorepo-lite",
+  "workspace_packages": [
+    "plugins/oma"
+  ],
+  "topology": {
+    "topology_type": "standalone",
+    "current_depth": 0,
+    "max_allowed_depth": 0,
+    "sync_strategy": "physical-copy"
+  },
+  "ci": {
+    "provider": "GitHub Actions",
+    "workflow_files": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/ci-prek.yml",
+      ".github/workflows/release.yml"
+    ],
+    "pre_commit": "prek",
+    "pre_commit_config": "prek.toml"
+  },
+  "scripts": {
+    "test": "npm --prefix plugins/oma run test",
+    "build": "npm --prefix plugins/oma run build",
+    "typecheck": "npm --prefix plugins/oma run typecheck",
+    "coverage": "npm --prefix plugins/oma run coverage"
+  },
+  "test_framework": "vitest",
+  "build_tool": "tsc",
+  "tracker": {
+    "host": "github",
+    "repo": "r3dlex/oh-my-auggie",
+    "issues_url": "https://github.com/r3dlex/oh-my-auggie/issues"
+  },
+  "branch_policy": {
+    "protected_branch": "main",
+    "delivery": "PR-only",
+    "auto_merge": "squash (when CI + approval green)"
+  },
+  "conventions": {
+    "adr_dir": "docs/architecture/adr/",
+    "spec_dir": "docs/specifications/",
+    "plugin_source": "plugins/oma/",
+    "dist_generated": true,
+    "entry_scripts": ["bin/oma", "bin/super-oma"]
+  },
+  "archgate_rules": ".rules.ts",
+  "release_config": ".releaserc.json",
+  "existing_governance": {
+    "ai_rules": [".ai/rules/security.md", ".ai/rules/technical-bounds.md"],
+    "ai_skills": [".ai/skills/git-ops.json", ".ai/skills/workspace-sync.json"],
+    "ai_system_prompts": [
+      ".ai/system-prompts/architect.md",
+      ".ai/system-prompts/developer.md",
+      ".ai/system-prompts/qa-engineer.md"
+    ],
+    "memory_layer": ".memory/"
+  }
+}

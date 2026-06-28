@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "init-ai-repo",
+  "topology_type": "standalone",
+  "human_doc": ".ai/workflows/repo-workflow.md",
+  "manifest": ".ai/workflows/repo-workflow.json",
+  "entry_surfaces": [
+    "AGENTS.md",
+    "README.md"
+  ],
+  "phases": [
+    {
+      "id": "01-discover-decide",
+      "title": "Discover & Decide",
+      "required": true,
+      "status_path": ".ai/phases/01-discover-decide/status.json",
+      "outputs": [
+        ".ai/matrix.json",
+        ".ai/init/repo-profile.json",
+        ".ai/init/sdlc-path.md"
+      ]
+    },
+    {
+      "id": "02-govern-plan",
+      "title": "Govern & Plan",
+      "required": true,
+      "status_path": ".ai/phases/02-govern-plan/status.json",
+      "outputs": [
+        "AGENTS.md",
+        "CONTRIBUTING.md",
+        "docs/specifications/ACTIVE/"
+      ]
+    },
+    {
+      "id": "03-configure-generate",
+      "title": "Configure & Generate",
+      "required": true,
+      "status_path": ".ai/phases/03-configure-generate/status.json",
+      "outputs": [
+        ".ai/policies/",
+        ".ai/commands/omx/",
+        ".ai/commands/omc/",
+        ".github/workflows/"
+      ]
+    },
+    {
+      "id": "04-validate-handoff",
+      "title": "Validate & Handoff",
+      "required": true,
+      "status_path": ".ai/phases/04-validate-handoff/status.json",
+      "outputs": [
+        ".ai/validation/report.md",
+        ".ai/drift/migration-manifest.json",
+        ".ai/handoff/init-ai-repo-handoff.md"
+      ]
+    }
+  ],
+  "optional_branches": [
+    {
+      "id": "multi-repo-cascade",
+      "enabled_when": "topology_type == umbrella",
+      "status": "not-applicable-standalone"
+    },
+    {
+      "id": "hosted-tracker-first",
+      "enabled_when": "configured tracker is authorized",
+      "status": "available"
+    },
+    {
+      "id": "legacy-migration",
+      "enabled_when": "legacy scaffold artifacts are detected",
+      "status": "available"
+    },
+    {
+      "id": "skill-modernization",
+      "enabled_when": "target repo owns a skill catalog",
+      "status": "not-applicable-not-a-catalog"
+    }
+  ],
+  "handoff": ".ai/handoff/init-ai-repo-handoff.md",
+  "validation": {
+    "entry_surfaces_must_link_doc": true,
+    "entry_surfaces_must_link_manifest": true,
+    "phase_status_required": true
+  }
+}

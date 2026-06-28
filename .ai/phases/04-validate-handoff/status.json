@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "init-ai-repo",
+  "phase_id": "04-validate-handoff",
+  "title": "Validate & Handoff",
+  "required": true,
+  "status": "complete",
+  "inputs": [
+    ".ai/phases/03-configure-generate/status.json"
+  ],
+  "outputs": [
+    ".ai/validation/report.md",
+    ".ai/drift/migration-manifest.json",
+    ".ai/handoff/init-ai-repo-handoff.md"
+  ],
+  "evidence": "Validation report emitted; migration manifest records additive v3 upgrade; handoff index links workflow, traceability, and validation surfaces.",
+  "next_actions": []
+}
