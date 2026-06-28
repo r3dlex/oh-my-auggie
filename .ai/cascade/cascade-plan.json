@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "cascade_id": "cascade:oma-root:init-ai-repo",
+  "root_repo_id": "oma-root",
+  "topology_type": "standalone",
+  "matrix_path": ".ai/matrix.json",
+  "managed_repositories": [],
+  "first_run_confirmation_required": true,
+  "confirmation_token_pattern": "^ct-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",
+  "idempotency_key": "init-ai-repo:oma-root:cascade",
+  "parent_item": null,
+  "child_items": [],
+  "safety": {
+    "no_first_run_apply_without_confirmation": true,
+    "no_duplicate_child_items": true,
+    "no_secret_material": true,
+    "host_policy_mutations_out_of_scope": true,
+    "standalone_noop_without_explicit_multi_repo_selection": true
+  },
+  "cascade_mode": "no-op-standalone"
+}

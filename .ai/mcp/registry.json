@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "generated_by": "init-ai-repo",
+  "adr": "ADR-0005",
+  "description": "MCP-server registry stub. Offline/deterministic: declared servers are stubs; init-ai-repo resolves no live endpoint and makes no network call.",
+  "servers": [
+    {
+      "name": "filesystem",
+      "transport": "stdio",
+      "status": "stub",
+      "endpoint": null,
+      "tools": [
+        "read_file",
+        "write_file",
+        "list_directory"
+      ]
+    },
+    {
+      "name": "git",
+      "transport": "stdio",
+      "status": "stub",
+      "endpoint": null,
+      "tools": [
+        "git_status",
+        "git_diff",
+        "git_log"
+      ]
+    }
+  ],
+  "a2a": {
+    "protocol": "A2A",
+    "handoff_convention": ".ai/mcp/a2a-handoff.md",
+    "correlation_id_required": true
+  }
+}

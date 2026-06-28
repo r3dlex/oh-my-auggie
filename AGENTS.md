@@ -129,5 +129,29 @@ Before starting work on an issue:
 
 <!-- v3-ai-sdlc-init:start -->
 ## AI SDLC v3
-This repo follows the v3 AI-SDLC layout. See `.ai/matrix.json`, `.memory/human-override/`, and `docs/architecture/adr/`. Modules at `r3dlex/skills/ai-sdlc-init/modules/`.
+
+This repo follows the v3 AI-SDLC layout (`topology_type: standalone`, depth 0). It is the single source of truth for the agent operating contract; `CLAUDE.md` and `GEMINI.md` are thin pointers to this file (ADR-0004).
+
+### Workflow
+
+- Workflow doc: [`.ai/workflows/repo-workflow.md`](.ai/workflows/repo-workflow.md)
+- Workflow manifest: [`.ai/workflows/repo-workflow.json`](.ai/workflows/repo-workflow.json)
+- Handoff index: [`.ai/handoff/init-ai-repo-handoff.md`](.ai/handoff/init-ai-repo-handoff.md)
+
+Continue through the mandatory phases and record status in `.ai/phases/<phase>/status.json`. See `.ai/matrix.json`, `.memory/human-override/`, and `docs/architecture/adr/`. Modules at `r3dlex/skills/init-ai-repo/modules/`.
+
+### Harness Map
+
+The six context types this harness assembles, and where each lives (ADR-0005):
+
+| Context type | Canonical source | Static or dynamic |
+| --- | --- | --- |
+| `Instructions` | `AGENTS.md`, `.ai/system-prompts/`, `.ai/rules/` | Static |
+| `Knowledge` | `docs/architecture/`, `docs/specifications/`, `docs/learning/` | Static |
+| `Memory` | `.memory/human-override/`, `.memory/self-learned/` | Dynamic |
+| `Examples` | `.ai/evals/<set>/`, `docs/learning/concept-maps/` | Static |
+| `Tools` | `.ai/skills/`, `.ai/mcp/registry.json` | Dynamic |
+| `Guardrails` | `.ai/rules/security.md`, `.ai/rules/technical-bounds.md`, `.ai/policies/` | Static |
+
+**Static-vs-dynamic boundary.** Static context is fixed at the start of a task and is reviewed and versioned in-repo; dynamic context is assembled per-run (memory written by local agents, tool/MCP results resolved at call time). This boundary is a reviewed, versioned decision (ADR-0005); moving a context type across it requires an ADR update.
 <!-- v3-ai-sdlc-init:end -->

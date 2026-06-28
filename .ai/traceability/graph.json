@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.1",
+  "root_repo_id": "oma-root",
+  "topology_type": "standalone",
+  "generated_at": "2026-06-28T00:00:00Z",
+  "nodes": [
+    {
+      "id": "adr:oma-root:init",
+      "type": "adr",
+      "title": "v3 AI-SDLC scaffold adoption",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": "docs/architecture/adr/0001-init.md",
+      "backlinks": []
+    },
+    {
+      "id": "adr:oma-root:governance-v3-upgrade",
+      "type": "adr",
+      "title": "Governance upgrade to v3 standard",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": "docs/architecture/adr/0003-init-ai-repo-v3-upgrade.md",
+      "backlinks": [
+        "adr:oma-root:init"
+      ]
+    },
+    {
+      "id": "workflow:oma-root:repo-workflow",
+      "type": "workflow",
+      "title": "Repo workflow manifest",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": ".ai/workflows/repo-workflow.json",
+      "backlinks": [
+        "adr:oma-root:governance-v3-upgrade"
+      ]
+    },
+    {
+      "id": "validation:oma-root:traceability-report",
+      "type": "validation",
+      "title": "Traceability validation report",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": ".ai/traceability/validation-report.md",
+      "backlinks": [
+        "workflow:oma-root:repo-workflow"
+      ]
+    },
+    {
+      "id": "handoff:oma-root:init-ai-repo",
+      "type": "handoff",
+      "title": "init-ai-repo handoff",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": ".ai/handoff/init-ai-repo-handoff.md",
+      "backlinks": [
+        "validation:oma-root:traceability-report"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "adr:oma-root:init",
+      "target": "adr:oma-root:governance-v3-upgrade",
+      "relation": "refines-to",
+      "created_by": "init-ai-repo",
+      "evidence_path": ".ai/traceability/index.md"
+    },
+    {
+      "source": "adr:oma-root:governance-v3-upgrade",
+      "target": "workflow:oma-root:repo-workflow",
+      "relation": "constrains",
+      "created_by": "init-ai-repo",
+      "evidence_path": ".ai/traceability/index.md"
+    },
+    {
+      "source": "workflow:oma-root:repo-workflow",
+      "target": "validation:oma-root:traceability-report",
+      "relation": "validated-by",
+      "created_by": "init-ai-repo",
+      "evidence_path": ".ai/traceability/index.md"
+    },
+    {
+      "source": "validation:oma-root:traceability-report",
+      "target": "handoff:oma-root:init-ai-repo",
+      "relation": "summarized-by",
+      "created_by": "init-ai-repo",
+      "evidence_path": ".ai/traceability/index.md"
+    }
+  ],
+  "coverage": {
+    "required_types": [
+      "adr",
+      "workflow",
+      "validation",
+      "handoff"
+    ]
+  }
+}
