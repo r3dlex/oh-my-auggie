@@ -4,7 +4,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 import { eventsRoot, resolveSessionId } from './tmux.js';
 
 interface EventsOpts {
@@ -15,7 +15,7 @@ interface EventsOpts {
 }
 
 export async function eventsTail(opts: EventsOpts = {}): Promise<number> {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const sessionId = resolveSessionId(omaDir, opts.session || null);
   const limit = opts.lines || 30;
 

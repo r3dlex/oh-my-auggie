@@ -3,7 +3,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { atomicWrite, isPidAlive, listWorkerDirs, nextWorkerId, readJsonSafe, resolveOmaDir, resolveInOmaDir } from './utils.js';
+import { atomicWrite, isPidAlive, listWorkerDirs, nextWorkerId, readJsonSafe, findOmaDir, resolveInOmaDir } from '../utils.js';
 // ── Detect stale workers ──────────────────────────────────────────────────
 export function detectStaleWorkers(teamDir) {
     if (!existsSync(teamDir))
@@ -18,7 +18,7 @@ export function detectStaleWorkers(teamDir) {
 }
 // ── Spawn ─────────────────────────────────────────────────────────────────
 export async function teamSpawn(N, task, opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const teamDir = resolveInOmaDir('team');
     const wrapperPath = resolveInOmaDir('workers/wrapper.mjs');
     // Check for stale workers
@@ -58,7 +58,7 @@ export async function teamSpawn(N, task, opts = {}) {
 }
 // ── Status ────────────────────────────────────────────────────────────────
 export async function teamStatus(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const teamDir = resolveInOmaDir('team');
     const workers = listWorkerDirs(teamDir).map(dir => {
         const id = Number.parseInt(dir.split('/worker-').pop() || '0', 10);
@@ -82,7 +82,7 @@ export async function teamStatus(opts = {}) {
 }
 // ── Shutdown ──────────────────────────────────────────────────────────────
 export async function teamShutdown(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const teamDir = resolveInOmaDir('team');
     const workers = listWorkerDirs(teamDir).map(dir => {
         const id = Number.parseInt(dir.split('/worker-').pop() || '0', 10);

@@ -2,17 +2,17 @@
 // Merged from cli/commands/hud.mjs + cli/commands/super-oma-hud.mjs +
 // cli/commands/super-oma-statusline.mjs
 import { readHudSnapshot, renderHud, renderStatusline, renderWatchFrame } from './ui.js';
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 // ── HUD snapshot ─────────────────────────────────────────────────────────
 export async function hudSnapshot(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const snapshot = readHudSnapshot({ omaDir, sessionId: opts.sessionId });
     process.stdout.write(renderHud(snapshot) + '\n');
     return true;
 }
 // ── HUD watch loop ───────────────────────────────────────────────────────
 export async function hudWatch(intervalMs = 1500, opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const cleanup = () => {
         process.stdout.write('\noma hud: exiting (Ctrl+C)\n');
         process.exit(0);
@@ -33,13 +33,13 @@ export async function hudWatch(intervalMs = 1500, opts = {}) {
 }
 // ── Statusline snapshot ──────────────────────────────────────────────────
 export async function statuslineSnapshot(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const snapshot = readHudSnapshot({ omaDir, sessionId: opts.sessionId });
     process.stdout.write(renderStatusline(snapshot) + '\n');
     return true;
 }
 export async function statuslineWatch(intervalMs = 1500, opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const cleanup = () => {
         process.stdout.write('\noma statusline: exiting (Ctrl+C)\n');
         process.exit(0);

@@ -3,7 +3,7 @@
 
 import { basename } from 'node:path';
 import { hasTmux, runTmux } from './tmux.js';
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 
 // ── Exports ─────────────────────────────────────────────────────────────────
 
@@ -29,7 +29,7 @@ export function buildOmaSessionName(): string {
  * can resolve it without needing a --oma-dir flag on oma.ts.
  */
 export function buildHudCommand(opts: { omaDir?: string; intervalMs?: number } = {}): string {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const interval = opts.intervalMs || 2000;
   const entryPath = process.argv[1];
   const quoted = entryPath.includes(' ') ? `'${entryPath}'` : entryPath;
@@ -55,7 +55,7 @@ export function isTmuxAvailable(): boolean {
  * Attaches to the session. When auggie exits or user detaches, cleans up.
  */
 export async function launchAuggie(opts: LaunchOpts = {}): Promise<number> {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
 
   // ── Preflight ───────────────────────────────────────────────────────────
   if (!isTmuxAvailable()) {

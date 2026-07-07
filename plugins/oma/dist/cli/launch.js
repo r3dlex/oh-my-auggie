@@ -2,7 +2,7 @@
 // MVP: creates a named tmux session, splits into auggie (top) + HUD status (bottom)
 import { basename } from 'node:path';
 import { hasTmux, runTmux } from './tmux.js';
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 /**
  * Build a unique tmux session name from the current working directory.
  * Format: oma-<dirname>-<pid>
@@ -19,7 +19,7 @@ export function buildOmaSessionName() {
  * can resolve it without needing a --oma-dir flag on oma.ts.
  */
 export function buildHudCommand(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const interval = opts.intervalMs || 2000;
     const entryPath = process.argv[1];
     const quoted = entryPath.includes(' ') ? `'${entryPath}'` : entryPath;
@@ -43,7 +43,7 @@ export function isTmuxAvailable() {
  * Attaches to the session. When auggie exits or user detaches, cleans up.
  */
 export async function launchAuggie(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     // ── Preflight ───────────────────────────────────────────────────────────
     if (!isTmuxAvailable()) {
         process.stderr.write('oma: tmux is required for the TUI launcher.\n' +

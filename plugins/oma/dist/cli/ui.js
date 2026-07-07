@@ -2,7 +2,7 @@
 // Merged from cli/commands/hud.mjs + cli/commands/super-oma-ui.mjs
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { listWorkerDirs, readJsonSafe, resolveOmaDir, tailLines } from './utils.js';
+import { listWorkerDirs, readJsonSafe, findOmaDir, tailLines } from '../utils.js';
 const WIDTH = 96;
 const DEFAULT_EVENT_LIMIT = 6;
 // ── Text helpers ──────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ function readRecentEvents(omaDir, sessionId, limit = DEFAULT_EVENT_LIMIT) {
     return { file: eventFile, items, corruptCount: parsed.corruptCount };
 }
 export function readHudSnapshot(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const state = readJsonSafe(join(omaDir, 'state.json'), {});
     const workers = readWorkers(omaDir);
     const sessions = readKnownSessions(omaDir);

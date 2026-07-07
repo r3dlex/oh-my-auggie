@@ -3,7 +3,7 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { listWorkerDirs, readJsonSafe, resolveOmaDir, tailLines } from './utils.js';
+import { listWorkerDirs, readJsonSafe, findOmaDir, tailLines } from '../utils.js';
 
 const WIDTH = 96;
 const DEFAULT_EVENT_LIMIT = 6;
@@ -242,7 +242,7 @@ export interface HudSnapshot {
 }
 
 export function readHudSnapshot(opts: { omaDir?: string; sessionId?: string; eventLimit?: number } = {}): HudSnapshot {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const state = readJsonSafe(join(omaDir, 'state.json'), {}) as Record<string, unknown>;
   const workers = readWorkers(omaDir);
   const sessions = readKnownSessions(omaDir);

@@ -3,10 +3,10 @@
 import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 // ── Offline diagnostics ───────────────────────────────────────────────────
 export async function doctorOffline(opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     const checks = [];
     // OMA_DIR
     checks.push({ check: 'oma_dir', ok: existsSync(omaDir), detail: omaDir });

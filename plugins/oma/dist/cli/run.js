@@ -1,9 +1,9 @@
 // plugins/oma/src/cli/run.ts — Run a mode or slash command via OMA CLI
 // Ported from cli/commands/super-run.mjs
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 import { loadCommandManifest } from './tmux.js';
 export async function runCommand(args, opts = {}) {
-    const omaDir = opts.omaDir || resolveOmaDir();
+    const omaDir = opts.omaDir || findOmaDir();
     if (args.length === 0) {
         process.stderr.write('run: missing command. Usage: oma run <mode|/oma:command> [args...]\n');
         return 2;
