@@ -2,7 +2,7 @@
 // plugins/oma/src/cli/oma.ts — OMA CLI main entry point
 // Ported from cli/oma.mjs + cli/super-oma.mjs (merged)
 
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 import { launchAuggie } from './launch.js';
 import { teamSpawn, teamStatus, teamShutdown, detectStaleWorkers } from './team.js';
 import { hudSnapshot, hudWatch, statuslineSnapshot, statuslineWatch } from './hud.js';
@@ -92,7 +92,7 @@ function parseArgs(argv: string[]): ParsedArgs {
 // ── Main ────────────────────────────────────────────────────────────────────
 async function main(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
-  const omaDir = resolveOmaDir();
+  const omaDir = findOmaDir();
 
   if (args.subcommand === "help") { printHelp(); process.exit(0); }
   if (!args.subcommand) {

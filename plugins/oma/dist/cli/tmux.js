@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { atomicWrite, listWorkerDirs, readJsonSafe, resolveOmaDir } from './utils.js';
+import { atomicWrite, listWorkerDirs, readJsonSafe, findOmaDir } from '../utils.js';
 export const SUPER_OMA_SCHEMA_VERSION = '1';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,7 +22,7 @@ export function superOmaCliPath() {
 }
 // ── Directory resolution ─────────────────────────────────────────────────────
 export function resolveSuperOmaDir(opts = {}) {
-    return opts.omaDir || resolveOmaDir();
+    return opts.omaDir || findOmaDir();
 }
 export function ensureDir(path) {
     mkdirSync(path, { recursive: true });

@@ -100,6 +100,26 @@
       "backlinks": [
         "validation:oma-root:traceability-report"
       ]
+    },
+    {
+      "id": "plan:oma-root:northstar-consolidate-oma-utils",
+      "type": "plan",
+      "title": "northstar sliced plan: consolidate-oma-utils",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": ".ai/handoff/northstar-consolidate-oma-utils.md",
+      "backlinks": []
+    },
+    {
+      "id": "handoff:oma-root:northstar-consolidate-oma-utils",
+      "type": "handoff",
+      "title": "northstar A->B handoff: consolidate-oma-utils",
+      "status": "active",
+      "repo_id": "oma-root",
+      "path": ".ai/handoff/northstar-consolidate-oma-utils.md",
+      "backlinks": [
+        "plan:oma-root:northstar-consolidate-oma-utils"
+      ]
     }
   ],
   "edges": [
@@ -158,6 +178,13 @@
       "relation": "summarized-by",
       "created_by": "init-ai-repo",
       "evidence_path": ".ai/traceability/index.md"
+    },
+    {
+      "source": "plan:oma-root:northstar-consolidate-oma-utils",
+      "target": "handoff:oma-root:northstar-consolidate-oma-utils",
+      "relation": "summarized-by",
+      "created_by": "northstar",
+      "evidence_path": ".ai/handoff/northstar-consolidate-oma-utils.md"
     }
   ],
   "coverage": {

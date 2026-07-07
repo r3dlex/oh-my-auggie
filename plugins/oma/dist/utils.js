@@ -1,4 +1,25 @@
-import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from 'fs';
+/**
+ * Canonical OMA utilities module — the single home for path resolution,
+ * JSON file I/O, config merging, and CLI runtime helpers.
+ *
+ * ── The four `.oma` directory resolvers ─────────────────────────────────────
+ * This module deliberately exposes FOUR distinct resolvers. They are not
+ * duplicates; each has a different contract:
+ *
+ * - `resolveOmaDir()`       — pure; `<projectDir>/.oma` via AUGMENT_PROJECT_DIR /
+ *                             WORKSPACE_ROOT / cwd. For hook contexts (public API).
+ * - `findOmaDir()`          — discovery with side effects; honors OMA_DIR (mkdir),
+ *                             walks up from cwd to find an existing `.oma`, falls
+ *                             back to `$HOME/.oma`. For CLI invocations from
+ *                             arbitrary working directories.
+ * - `resolveGlobalOmaDir()` — `~/.oma`, the global config tier.
+ * - `resolveLocalOmaDir()`  — `<cwd>/.oma`, the local config tier.
+ *
+ * Unifying their semantics is an explicit non-goal of the consolidation that
+ * created this module (see docs/specifications/ACTIVE/consolidate-oma-utils.md);
+ * doing so would change behavior and requires its own ADR.
+ */
+import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync, openSync, readdirSync } from 'fs';
 import { execSync } from 'child_process';
 import { resolve, join, dirname } from 'path';
 import { homedir } from 'os';
@@ -105,9 +126,57 @@ export function resolveProjectDir() {
 /**
  * Returns the OMA state directory for the current project.
  * Uses resolveProjectDir() so it always points into the workspace, not the plugin dir.
+ *
+ * Contract: pure (no filesystem side effects), driven by the project
+ * environment (AUGMENT_PROJECT_DIR / WORKSPACE_ROOT / cwd). Use this in HOOK
+ * contexts, where auggie guarantees the project env. It does NOT honor
+ * OMA_DIR, search parent directories, or create anything — for CLI
+ * invocations from arbitrary working directories use findOmaDir() instead.
  */
 export function resolveOmaDir() {
     return join(resolveProjectDir(), '.oma');
+}
+/**
+ * Locates (or designates) the OMA state directory for a CLI invocation.
+ *
+ * Contract: discovery with side effects, for CLI contexts where the process
+ * may start in any subdirectory of a project and no auggie env is guaranteed:
+ *   1. If OMA_DIR is set, resolve it to an absolute path, CREATE it
+ *      (mkdir -p), and return it.
+ *   2. Otherwise walk upward from cwd and return the first EXISTING `.oma`
+ *      directory found.
+ *   3. Otherwise fall back to `$HOME/.oma` (or `/tmp/.oma` without HOME).
+ *
+ * Hooks must keep using resolveOmaDir(): it is pure and pinned to the
+ * project env rather than dependent on cwd ancestry.
+ */
+export function findOmaDir() {
+    if (process.env.OMA_DIR) {
+        const abs = resolve(process.env.OMA_DIR);
+        mkdirSync(abs, { recursive: true });
+        return abs;
+    }
+    let dir = process.cwd();
+    while (true) {
+        const candidate = join(dir, '.oma');
+        if (existsSync(candidate))
+            return candidate;
+        const parent = dirname(dir);
+        if (parent === dir)
+            break;
+        dir = parent;
+    }
+    return join(process.env.HOME || '/tmp', '.oma');
+}
+/**
+ * Resolves a path relative to the CLI OMA dir (findOmaDir()) and ensures the
+ * parent directory of the result exists.
+ */
+export function resolveInOmaDir(rel) {
+    const omaDir = findOmaDir();
+    const full = resolve(omaDir, rel);
+    mkdirSync(dirname(full), { recursive: true });
+    return full;
 }
 // ─── OS detection ─────────────────────────────────────────────────────────
 /**
@@ -365,5 +434,94 @@ export function resetConfig(scope = 'global') {
     if (existsSync(configPath)) {
         const fs = require('fs');
         fs.unlinkSync(configPath);
+    }
+}
+// ─── CLI runtime utilities (merged from src/cli/utils.ts) ───────────────────
+/**
+ * Atomically writes a JSON file via temp-file + rename, creating parent
+ * directories as needed. Unlike writeJsonFile(), the temp name includes the
+ * pid (safe under concurrent CLI processes) and there is no EXDEV fallback.
+ */
+export function atomicWrite(path, data) {
+    mkdirSync(dirname(path), { recursive: true });
+    const tmp = path + '.tmp.' + process.pid + '.' + Date.now();
+    writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+    try {
+        openSync(tmp, 'r+');
+    }
+    catch {
+        // non-fatal on tmpfs / network mounts
+    }
+    renameSync(tmp, path);
+}
+/**
+ * Reads and parses a JSON file, returning `fallback` (default null) when the
+ * file is absent or corrupt. Unlike loadJsonFile(), this never throws.
+ */
+export function readJsonSafe(path, fallback = null) {
+    if (!existsSync(path))
+        return fallback;
+    try {
+        return JSON.parse(readFileSync(path, 'utf8'));
+    }
+    catch {
+        return fallback;
+    }
+}
+// ─── Worker directory helpers ────────────────────────────────────────────────
+/**
+ * Lists `worker-<n>` directories under a team dir, sorted by worker number.
+ * Returns [] when the team dir is absent or unreadable.
+ */
+export function listWorkerDirs(teamDir) {
+    if (!existsSync(teamDir))
+        return [];
+    try {
+        return readdirSync(teamDir)
+            .filter(n => /^worker-\d+$/.test(n))
+            .sort((a, b) => parseInt(a.split('-')[1]) - parseInt(b.split('-')[1]))
+            .map(n => join(teamDir, n));
+    }
+    catch {
+        return [];
+    }
+}
+/**
+ * Returns the next free worker id for a team dir (1 when none exist).
+ */
+export function nextWorkerId(teamDir) {
+    const dirs = listWorkerDirs(teamDir);
+    if (dirs.length === 0)
+        return 1;
+    return dirs.reduce((max, d) => {
+        const n = parseInt(d.split('/worker-').pop());
+        return n > max ? n : max;
+    }, 0) + 1;
+}
+/**
+ * Returns true when `pid` refers to a live process (signal-0 probe).
+ */
+export function isPidAlive(pid) {
+    try {
+        process.kill(pid, 0);
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+/**
+ * Returns the last `n` non-empty lines of a text file ([] if absent/unreadable).
+ */
+export function tailLines(path, n = 3) {
+    if (!existsSync(path))
+        return [];
+    try {
+        const content = readFileSync(path, 'utf8');
+        const lines = content.split('\n').filter(l => l.length > 0);
+        return lines.slice(-n);
+    }
+    catch {
+        return [];
     }
 }

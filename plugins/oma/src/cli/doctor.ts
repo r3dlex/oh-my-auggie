@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { resolveOmaDir } from './utils.js';
+import { findOmaDir } from '../utils.js';
 
 interface DoctorOpts {
   omaDir?: string;
@@ -15,7 +15,7 @@ interface DoctorOpts {
 // ── Offline diagnostics ───────────────────────────────────────────────────
 
 export async function doctorOffline(opts: DoctorOpts = {}): Promise<number> {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const checks: Record<string, unknown>[] = [];
 
   // OMA_DIR

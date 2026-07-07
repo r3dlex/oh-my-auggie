@@ -75,6 +75,11 @@
       "id": "skill-modernization",
       "enabled_when": "target repo owns a skill catalog",
       "status": "not-applicable-not-a-catalog"
+    },
+    {
+      "id": "northstar-handoff-consolidate-oma-utils",
+      "enabled_when": "northstar_handoff_present",
+      "status": "available"
     }
   ],
   "handoff": ".ai/handoff/init-ai-repo-handoff.md",

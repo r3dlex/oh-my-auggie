@@ -7,8 +7,9 @@ vi.mock('../../../src/cli/tmux.js', () => ({
   runTmux: vi.fn(() => ({ status: 0, stdout: '', stderr: '' })),
 }));
 
-vi.mock('../../../src/cli/utils.js', () => ({
-  resolveOmaDir: vi.fn(() => '/tmp/.oma'),
+vi.mock('../../../src/utils.js', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  findOmaDir: vi.fn(() => '/tmp/.oma'),
 }));
 
 // ── Tests ─────────────────────────────────────────────────────────────────

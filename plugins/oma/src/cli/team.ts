@@ -5,7 +5,7 @@ import { execSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { atomicWrite, isPidAlive, listWorkerDirs, nextWorkerId, readJsonSafe, resolveOmaDir, resolveInOmaDir } from './utils.js';
+import { atomicWrite, isPidAlive, listWorkerDirs, nextWorkerId, readJsonSafe, findOmaDir, resolveInOmaDir } from '../utils.js';
 
 // ── Detect stale workers ──────────────────────────────────────────────────
 
@@ -23,7 +23,7 @@ export function detectStaleWorkers(teamDir: string): number[] {
 // ── Spawn ─────────────────────────────────────────────────────────────────
 
 export async function teamSpawn(N: number, task: string, opts: { force?: boolean; omaDir?: string } = {}): Promise<void> {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const teamDir = resolveInOmaDir('team');
   const wrapperPath = resolveInOmaDir('workers/wrapper.mjs');
 
@@ -68,7 +68,7 @@ export async function teamSpawn(N: number, task: string, opts: { force?: boolean
 // ── Status ────────────────────────────────────────────────────────────────
 
 export async function teamStatus(opts: { json?: boolean; omaDir?: string } = {}): Promise<boolean> {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const teamDir = resolveInOmaDir('team');
   const workers = listWorkerDirs(teamDir).map(dir => {
     const id = Number.parseInt(dir.split('/worker-').pop() || '0', 10);
@@ -91,7 +91,7 @@ export async function teamStatus(opts: { json?: boolean; omaDir?: string } = {})
 // ── Shutdown ──────────────────────────────────────────────────────────────
 
 export async function teamShutdown(opts: { stale?: boolean; omaDir?: string } = {}): Promise<boolean> {
-  const omaDir = opts.omaDir || resolveOmaDir();
+  const omaDir = opts.omaDir || findOmaDir();
   const teamDir = resolveInOmaDir('team');
   const workers = listWorkerDirs(teamDir).map(dir => {
     const id = Number.parseInt(dir.split('/worker-').pop() || '0', 10);

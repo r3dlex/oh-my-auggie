@@ -5,7 +5,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
 import { createInterface } from 'readline/promises';
-import { atomicWrite, readJsonSafe, resolveOmaDir } from '../plugins/oma/dist/cli/utils.js';
+import { atomicWrite, readJsonSafe, findOmaDir } from '../plugins/oma/dist/utils.js';
 
 const UPDATE_CACHE_FILE = 'update-check.json';
 const RELEASES_API_URL = 'https://api.github.com/repos/r3dlex/oh-my-auggie/releases/latest';
@@ -72,7 +72,7 @@ function readCurrentVersion() {
 }
 
 function resolveCachePath(omaDir) {
-  const baseDir = omaDir || resolveOmaDir();
+  const baseDir = omaDir || findOmaDir();
   return join(baseDir, UPDATE_CACHE_FILE);
 }
 
