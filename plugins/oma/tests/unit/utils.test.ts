@@ -5,6 +5,7 @@ import {
   listWorkerDirs, nextWorkerId, isPidAlive, tailLines,
 } from '../../src/utils.js';
 import { writeFileSync, unlinkSync, rmSync, mkdirSync, existsSync, readFileSync, realpathSync } from 'fs';
+import { execSync } from 'child_process';
 import { join, resolve } from 'path';
 import { tmpdir } from 'os';
 import { mkdtempSync } from 'fs';
@@ -343,5 +344,29 @@ describe('tailLines', () => {
 
   it('returns [] for a missing file', () => {
     expect(tailLines('/nonexistent/log.txt')).toEqual([]);
+  });
+});
+
+// ─── guard: the deleted cli/utils module must stay deleted ──────────────────
+
+describe('no imports of deleted cli/utils', () => {
+  it('no tracked file imports src/cli/utils or dist/cli/utils.js', () => {
+    // src/cli/utils.ts was consolidated into src/utils.ts (spec:
+    // docs/specifications/ACTIVE/consolidate-oma-utils.md). tsc only sees
+    // TypeScript sources; hand-written runtime files (e.g. cli/*.mjs) import
+    // the compiled dist/ output directly, so guard ALL tracked files.
+    const repoRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
+    const tracked = execSync('git ls-files', { cwd: repoRoot, encoding: 'utf8' })
+      .split('\n')
+      .filter(f => /\.(ts|tsx|js|mjs|cjs)$/.test(f));
+    const importsCliUtils = /(from\s+|require\(\s*|import\(\s*)['"][^'"]*cli\/utils(\.js)?['"]/;
+    const offenders = tracked.filter(f => {
+      try {
+        return importsCliUtils.test(readFileSync(join(repoRoot, f), 'utf8'));
+      } catch {
+        return false; // deleted-but-still-tracked paths etc.
+      }
+    });
+    expect(offenders).toEqual([]);
   });
 });

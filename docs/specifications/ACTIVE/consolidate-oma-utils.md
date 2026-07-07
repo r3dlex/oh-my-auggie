@@ -12,7 +12,12 @@ Two overlapping utility modules with an accidental seam between them:
 - `plugins/oma/src/utils.ts` (~403 lines) — used by hooks; re-exported as
   public API via `src/index.ts` (`export * from './utils.js'`).
 - `plugins/oma/src/cli/utils.ts` (~114 lines) — used by 9 CLI entrypoints
-  (`doctor`, `events`, `hud`, `launch`, `oma`, `run`, `team`, `tmux`, `ui`).
+  (`doctor`, `events`, `hud`, `launch`, `oma`, `run`, `team`, `tmux`, `ui`)
+  **plus two hand-written runtime consumers outside `src/` (invisible to
+  tsc) that import the compiled `dist/cli/utils.js` directly**:
+  `cli/update.mjs` (uses `atomicWrite`, `readJsonSafe`, and the CLI
+  `resolveOmaDir` discovery semantics) and `cli/workers/wrapper.mjs`
+  (uses `atomicWrite`; spawned at runtime by `team.ts`).
 
 Overlaps: path resolution (`resolveOmaDir` exported from BOTH, with
 **different semantics**), JSON I/O (`loadJsonFile` vs `readJsonSafe`,
@@ -41,6 +46,11 @@ One canonical `plugins/oma/src/utils.ts`; `src/cli/utils.ts` **deleted**
   the module header lists all four `.oma` resolvers (`resolveOmaDir`,
   `findOmaDir`, `resolveGlobalOmaDir`, `resolveLocalOmaDir`) in one place.
 - The 9 CLI files import `findOmaDir` (and friends) from `../utils.js`.
+- The two `.mjs` runtime consumers repoint to `plugins/oma/dist/utils.js`;
+  `cli/update.mjs` renames `resolveOmaDir` → `findOmaDir` because it relies
+  on the CLI discovery semantics (`OMA_DIR` / upward walk / HOME fallback) —
+  a naive repoint to the hooks' `resolveOmaDir` would be a silent behavior
+  change.
 - Dead code dropped with the deleted module: unexported `BOX_*` constants and
   the never-imported `pad()` helper (not part of the package public API).
 
@@ -53,7 +63,10 @@ One canonical `plugins/oma/src/utils.ts`; `src/cli/utils.ts` **deleted**
       parses; all `hooks.json` dist entrypoints exist after build).
 - [ ] No API change for hooks: `resolveOmaDir` semantics and every existing
       `src/utils.ts` export unchanged; `src/index.ts` untouched.
-- [ ] `src/cli/utils.ts` deleted; no source file imports `cli/utils`.
+- [ ] `src/cli/utils.ts` deleted; no file in the repo — TypeScript sources
+      AND hand-written `.mjs`/`.cjs` runtime files alike — imports
+      `src/cli/utils` or `dist/cli/utils.js`, enforced by a guard test
+      ("no imports of deleted cli/utils" in `tests/unit/utils.test.ts`).
 
 ## Out of scope (explicit follow-up)
 

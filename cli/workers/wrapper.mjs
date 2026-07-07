@@ -8,7 +8,7 @@
 import { spawn } from 'child_process';
 import { mkdirSync, createWriteStream } from 'fs';
 import { join, dirname } from 'path';
-import { atomicWrite } from '../../plugins/oma/dist/cli/utils.js';
+import { atomicWrite } from '../../plugins/oma/dist/utils.js';
 
 // ── Argument parsing ──────────────────────────────────────────────────────────
 
