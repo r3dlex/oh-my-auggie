@@ -1,6 +1,6 @@
 {
   "name": "oh-my-auggie",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "TypeScript hooks and tests for oh-my-auggie",
   "type": "module",
   "main": "./dist/index.js",
