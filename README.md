@@ -1,163 +1,190 @@
-# oh-my-auggie (oma)
+# oh-my-auggie (OMA)
 
-> **Sister projects:** [oh-my-claudecode (OMC)](https://github.com/Yeachan-Heo/oh-my-claudecode) | [oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex) | [oh-my-githubcopilot (OMP)](https://github.com/r3dlex/oh-my-githubcopilot) | [oh-my-antigravity (OMG)](https://github.com/r3dlex/oh-my-antigravity) | [oh-my-auggie (OMA)](https://github.com/r3dlex/oh-my-auggie)
+> **Sister projects:** [oh-my-claudecode (OMC)](https://github.com/Yeachan-Heo/oh-my-claudecode) | [oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex) | [oh-my-githubcopilot (OMP)](https://github.com/r3dlex/oh-my-githubcopilot) | [oh-my-antigravity (OMG)](https://github.com/r3dlex/oh-my-antigravity)
 
-**Multi-agent orchestration for Augment Code's auggie CLI. Zero learning curve.**
+Multi-agent orchestration for [Augment Code's `auggie` CLI](https://docs.augmentcode.com/cli/overview). OMA adds `/oma:*` commands, specialized agents, workflow skills, hooks, persistent project state, and an optional terminal companion.
 
-_Don't learn Augment Code's auggie CLI. Just use oma._
+[Quick Start](#quick-start) · [Choose an install](#plugin-or-wrapper) · [Health check](#health-check) · [Troubleshooting](#troubleshooting) · [Discord](https://discord.gg/PUwSMR9XNk)
 
-[Get Started](#quick-start) • [CLI Reference](#cli-reference) • [Workflows](#workflows) • [Discord](https://discord.gg/PUwSMR9XNk)
+## Identity
 
----
+| Surface | Repository identity |
+| --- | --- |
+| Source repository | `r3dlex/oh-my-auggie` |
+| Auggie marketplace | `oh-my-auggie` |
+| Auggie plugin | `oma` |
+| Auggie install token | `oma@oh-my-auggie` |
+| npm package and terminal command | `oh-my-auggie` → `oma` |
 
-## Why oma?
+The Auggie plugin is the product. The npm package adds the optional `oma` terminal companion; it does not replace plugin registration in Auggie.
 
-Every software team juggles implementation, architecture, security review, testing, and DevOps — all simultaneously. oma orchestrates specialized agents so every dimension gets expert attention, in parallel, without you herding cats.
+## Prerequisites
 
-OMA meets Auggie where it already works: marketplace plugins, `/oma:*` slash commands, and optional `oma`/`super-oma` shell wrappers. It preserves Augment Code's agentic coding loop while adding durable state, team orchestration, HUD visibility, and workflow skills for planning, execution, review, and QA.
-
----
+- [Augment Code's `auggie` CLI](https://docs.augmentcode.com/cli/overview) 0.22.0 or newer.
+- Node.js 18 or newer.
+- `npm` only if you install the optional terminal companion.
+- `tmux` only for the `oma` TUI launcher, HUD sessions, and terminal team/session workflows. Plugin commands can run in `auggie` without it.
 
 ## Quick Start
 
-```bash
-npm install -g oh-my-auggie
-oma setup --scope project
-oma
-```
-
-After setup, restart your CLI for the `/` commands to appear.
-
-```bash
-oma doctor              # check prerequisites
-oma team run --task "..." --workers 2   # parallel work
-oma hud --watch         # live status
-```
-
----
-
-## Features
-
-| Feature | Description |
-|---------|-------------|
-| **Specialized Agents** | 20+ agents (analyst, architect, executor, debugger, critic, verifier, test-engineer, writer, and more) |
-| **Parallel Team Mode** | tmux-based multi-worker orchestration with shared task state |
-| **Workflow Skills** | 36+ built-in skills — plan, deep-interview, ralph, autopilot, ultrawork, code-review, and more |
-| **Persistent Hooks** | Automatic tool tracking, project memory, session management |
-| **Real-time HUD** | Live status overlay showing agents, costs, and progress |
-| **CI/CD Ready** | Verification gates, test integration, release workflows |
-| **Multilingual** | README in 12 languages |
-
----
-
-## CLI Reference
-
-| Command | Description |
-|---------|-------------|
-| `oma` | Launch interactive session |
-| `oma setup` | Configure Augment Code's auggie CLI integration |
-| `oma doctor` | Check prerequisites and fix issues |
-| `oma team run` | Start parallel team execution |
-| `oma team status` | Check team progress |
-| `oma hud --watch` | Show live status overlay |
-| `oma trace` | Show execution trace |
-
-See the [full documentation](SPEC.md) for all commands.
-
----
-
-## Workflows
-
-oma ships execution-mode and planning-mode workflows as built-in skills.
-
-### Execution Modes
-
-| Skill | Purpose |
-|-------|---------|
-| `$autopilot` | Idea → working code end-to-end |
-| `$team` | N coordinated agents on a shared task |
-| `$ralph` | Persistent completion loop until verified |
-| `$ultrawork` | Maximum parallel throughput execution |
-| `$ultraqa` | QA cycling until goals are met |
-
-### Planning Modes
-
-| Skill | Purpose |
-|-------|---------|
-| `$plan` | Strategic planning with optional interviews |
-| `$deep-interview` | Socratic clarification before execution |
-| `$ralplan` | Consensus planning with Architect + Critic review |
-
-### Utility Modes
-
-| Skill | Purpose |
-|-------|---------|
-| `$code-review` | Comprehensive code review |
-| `$security-review` | Security audit |
-| `$doctor` | Diagnose and fix installation issues |
-| `$trace` | Agent flow trace and summary |
-| `$note` | Save session notes |
-| `$wiki` | Persistent project wiki |
-
----
-
-## Team Mode
-
-tmux-first multi-worker orchestration with persistent state and lifecycle controls.
-
-```bash
-oma team run --task "review src/ for reliability gaps" --workers 4
-oma team status --team oma --json
-oma team resume --team oma
-oma team shutdown --team oma --force
-```
-
-OMA team mode is tmux-first when a terminal is available, stores durable state under `.oma/`, and keeps `/oma:team`, `oma team`, and `super-oma` aligned so Auggie users can resume or inspect runs without losing context.
-
----
-
-## Documentation
-
-- [Full Documentation](SPEC.md)
-- [Contributing](CONTRIBUTING.md)
-- [Security Policy](SECURITY.md)
-
----
-
-## License
-
-oma is open source under the [Apache License 2.0](LICENSE).
-
----
-
-## Sponsors
-
-If oma saves you time, consider [sponsoring the project](https://github.com/sponsors/r3dlex) ❤️
-
-
-## Install as an Auggie plugin
-
-If you prefer native Auggie plugin installation instead of the global wrapper:
+The recommended installation is the native Auggie plugin:
 
 ```bash
 auggie plugin marketplace add r3dlex/oh-my-auggie
 auggie plugin install oma@oh-my-auggie
-/oma:setup
+auggie
 ```
 
-Optional MCP state persistence:
+Then run this inside Auggie:
+
+```text
+/oma:help
+/oma:version
+/oma:doctor
+```
+
+Success is observable when `/oma:help` lists the `/oma:*` command surface and `/oma:version` prints the installed OMA version. `/oma:doctor` then provides the fuller diagnostic report. Restart Auggie once if newly installed slash commands do not appear.
+
+## Plugin or wrapper?
+
+| Choose | What it installs | Use it when |
+| --- | --- | --- |
+| **Auggie plugin (recommended)** | `/oma:*` commands, agents, skills, hooks, and plugin integration | You want to use OMA inside Auggie |
+| **npm terminal companion (optional)** | The `oma` executable for offline doctor output, HUD/status views, tmux sessions, and terminal team controls | You also want terminal-level orchestration and observability |
+
+Install the companion after registering the plugin:
 
 ```bash
-/oma:mcp-setup
+npm install -g oh-my-auggie
+oma version
+oma help
 ```
 
-## Star History
+`oma` with no subcommand starts Auggie in a tmux session with a HUD pane. If tmux is unavailable, run `auggie` directly and use the native plugin.
 
-[![Star History Chart](https://api.star-history.com/chart?repos=r3dlex/oh-my-auggie&type=date&legend=top-left)](https://www.star-history.com/?repos=r3dlex%2Foh-my-auggie&type=date&legend=top-left)
+## Health check
+
+Inside Auggie, use the plugin diagnostic:
+
+```text
+/oma:doctor
+```
+
+With the optional companion installed, run this from the same project directory as the Auggie session:
+
+```bash
+oma doctor --json
+```
+
+The companion check reports the resolved `.oma/` directory, state file, `auggie`, `tmux`, and Node.js. It is intentionally strict and exits non-zero when any listed check is false, including optional tmux or a missing state file. Read the individual checks in context: tmux is still optional for native plugin use, while a new project without `.oma/state.json` has not initialized runtime state yet.
+
+For repository development, the full local gate is:
+
+```bash
+npm run typecheck
+npm test
+npm run test:docs
+```
+
+## First-time setup and managed files
+
+Plugin installation and `/oma:setup` are separate operations. Installation registers OMA with Auggie. `/oma:setup` can configure a project or user environment; inspect its prompts before accepting changes.
+
+Use verification mode to inspect the current environment without requesting re-initialization:
+
+```text
+/oma:setup --verify
+```
+
+OMA uses these file classes:
+
+| Files | Ownership model |
+| --- | --- |
+| Auggie marketplace/plugin cache | Managed by Auggie's plugin installation; edit the source checkout, not the installed cache |
+| `.oma/` runtime artifacts other than `config.json` | Generated state, events, notes, task data, and caches; `.oma/` is ignored by this repository |
+| `~/.oma/config.json` and `.oma/config.json` | User- or command-managed global and project overrides; may contain sensitive values |
+| `.claude/CLAUDE.md`, `~/.claude/CLAUDE.md`, `~/.auggie/settings.json`, `~/.claude/hud-wrapper.sh`, `.augment/rules/`, `.git/info/exclude` | Files that `/oma:setup` may create or update; setup documents backups for existing instruction/rule files |
+| `plugins/oma/src/` | Canonical TypeScript source in this repository |
+| `plugins/oma/dist/` | Generated build output; do not edit it directly |
+
+## Core workflows
+
+OMA workflows are invoked as Auggie slash commands:
+
+| Command | Purpose |
+| --- | --- |
+| `/oma:plan` | Strategic planning |
+| `/oma:deep-interview` | Clarify ambiguous requirements before execution |
+| `/oma:autopilot` | End-to-end autonomous execution |
+| `/oma:ralph` | Persistent completion loop |
+| `/oma:team` | Coordinated multi-agent work |
+| `/oma:ultrawork` | Parallel execution |
+| `/oma:ultraqa` | Iterative QA |
+| `/oma:cancel` | End an active mode and clean up its runtime state |
+
+Run `/oma:help` in Auggie for the installed command surface. With the terminal companion, run `oma help`; its syntax is intentionally different from `/oma:*` commands.
+
+## Safety
+
+- Install only from a source you trust. OMA hooks and commands run with the permissions of the Auggie session.
+- Review `/oma:setup` prompts before allowing project-level or home-directory changes. Use `/oma:setup --verify` when you only want inspection.
+- Treat `.oma/` as local runtime data. It can contain task context, notes, configuration, and execution history; do not commit or publish it.
+- Keep secrets out of tracked files. If a command stores credentials in `.oma/config.json`, protect that file as sensitive local configuration.
+- Use `/oma:cancel` to stop an active persistent workflow; do not delete state files during a live run unless recovery guidance explicitly calls for it.
+- Report vulnerabilities privately through [GitHub Security Advisories](https://github.com/r3dlex/oh-my-auggie/security/advisories).
+
+## Updating
+
+For the optional npm companion:
+
+```bash
+npm install -g oh-my-auggie@latest
+```
+
+Inside Auggie, `/oma:update --check` performs a release check and `/oma:update` follows the package-channel update flow defined by the installed command. Automatic wrapper prompts can be disabled with `OMA_AUTO_UPDATE=0` or `OMA_DISABLE_AUTO_UPDATE=true`.
+
+Native marketplace-plugin lifecycle is owned by Auggie's plugin manager. This repository does not define a stable marketplace-update subcommand, so do not treat the npm command as proof that Auggie refreshed its installed plugin copy.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| `/oma:*` commands are missing | Confirm the install token was `oma@oh-my-auggie`, restart Auggie, then run `/oma:help` |
+| `/oma:doctor` reports missing plugin files or hooks | Re-check the marketplace source and plugin installation; do not hand-edit the installed plugin cache |
+| `oma: command not found` | Reinstall `oh-my-auggie` globally and ensure npm's global binary directory is on `PATH` |
+| `oma` says tmux is required | Install tmux, or run `auggie` directly; tmux is not required for the native plugin command surface |
+| `oma doctor --json` reports no state file | Run from the intended project and inspect first-time setup with `/oma:setup --verify` |
+| Update checks cannot reach GitHub or npm | Check network and package-registry access; update checks are non-fatal and can be retried |
+| A workflow appears stuck | Inspect `/oma:status` and use `/oma:cancel` when you intend to stop it |
+
+When asking for help, include the exact install model (plugin, companion, or both), `auggie` version, Node.js version, and doctor output with secrets removed.
+
+## Documentation and advanced use
+
+- [`SPEC.md`](SPEC.md) — architecture, state, hooks, and command reference.
+- [`CHANGELOG.md`](CHANGELOG.md) — release history and migrations.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — local development, tests, and pull requests.
+- [`SECURITY.md`](SECURITY.md) — supported security-reporting channel.
+- [`docs/learning/troubleshooting-matrix.md`](docs/learning/troubleshooting-matrix.md) — deeper symptom-to-diagnostic mapping.
+- [`plugins/oma/commands/`](plugins/oma/commands/) — exact installed slash-command definitions.
+- [`plugins/oma/examples/`](plugins/oma/examples/) — programmatic examples.
 
 ## Localized READMEs
 
 [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [中文](README.zh.md)
+
+The English README is the canonical source for install, safety, update, and troubleshooting behavior. Localized files keep the verified command path and link back to these canonical sections.
+
+## Contributing and community
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+- Use [GitHub Issues](https://github.com/r3dlex/oh-my-auggie/issues) for reproducible bugs and feature proposals.
+- Join the community on [Discord](https://discord.gg/PUwSMR9XNk).
+- If OMA saves you time, you can [sponsor the project](https://github.com/sponsors/r3dlex).
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE).
 
 <!-- v3-ai-sdlc-init:start -->
 ## AI SDLC v3
