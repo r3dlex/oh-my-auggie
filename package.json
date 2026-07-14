@@ -15,6 +15,7 @@
   },
   "scripts": {
     "test": "npm --prefix plugins/oma run test",
+    "test:docs": "node scripts/validate-readmes.mjs",
     "test:coverage": "npm --prefix plugins/oma run coverage",
     "build": "npm --prefix plugins/oma run build",
     "typecheck": "npm --prefix plugins/oma run typecheck"

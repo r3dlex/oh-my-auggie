@@ -84,6 +84,8 @@ jobs:
         run: cd plugins/oma && npm ci
       - name: TypeScript type check
         run: cd plugins/oma && npx tsc --noEmit
+      - name: Validate human-facing READMEs
+        run: npm run test:docs
       - name: Unit + integration tests with coverage
         run: cd plugins/oma && npx vitest run --coverage
       - id: mark
@@ -116,6 +118,9 @@ jobs:
       - name: TypeScript type check
         if: needs._test-self-hosted.outputs.passed != 'true'
         run: cd plugins/oma && npx tsc --noEmit
+      - name: Validate human-facing READMEs
+        if: needs._test-self-hosted.outputs.passed != 'true'
+        run: npm run test:docs
       - name: Unit + integration tests with coverage
         if: needs._test-self-hosted.outputs.passed != 'true'
         run: cd plugins/oma && npx vitest run --coverage
