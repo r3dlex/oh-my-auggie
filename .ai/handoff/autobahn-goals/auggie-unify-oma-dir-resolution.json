@@ -33,8 +33,8 @@
     "plugins/oma/mcp/oma-dir.mjs",
     "plugins/oma/src/utils.ts",
     "vscode-oma/src/state/adapter.ts",
-    "plugins/oma/tests/mcp/state-server.test.mjs",
-    "plugins/oma/tests/mcp/oma-dir-parity.test.mjs",
+    "plugins/oma/tests/mcp/state-server.test.ts",
+    "plugins/oma/tests/mcp/oma-dir-parity.test.ts",
     ".ai/handoff/autobahn-goals/auggie-unify-oma-dir-resolution.json",
     ".ai/evidence/auggie-unify-oma-dir-resolution.json"
   ],
@@ -42,5 +42,6 @@
     "npm test"
   ],
   "coverage_percent": 90,
-  "state": "implementation_ready"
+  "state": "done",
+  "merged_pr": "https://github.com/r3dlex/oh-my-auggie/pull/56"
 }
