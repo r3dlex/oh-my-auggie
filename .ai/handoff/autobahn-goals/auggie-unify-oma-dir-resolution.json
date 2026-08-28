@@ -1,0 +1,46 @@
+{
+  "id": "auggie-unify-oma-dir-resolution",
+  "implementation_ready": true,
+  "issue_ref": "plugins/oma/mcp/state-server.mjs:15",
+  "context": "The .oma state directory has four incompatible resolution contracts. Hooks read/write <project>/.oma via src/utils.ts resolveOmaDir (AUGMENT_PROJECT_DIR|WORKSPACE_ROOT|cwd); the MCP server (plugins/oma/mcp/state-server.mjs) derives OMA_DIR as join(__dirname,'..','.oma') - the plugin install dir - and ignores the OMA_DIR env var that e2e/oma-cli.bats passes it; src/utils.ts findOmaDir uses OMA_DIR env + cwd walk-up + ~/.oma; vscode-oma reads <workspaceRoot>/.oma. State forks per entry point: when installed from a marketplace cache, oma_mode_set persists shared state into the install dir, writeState throws JSON-RPC -32603 on read-only install dirs, and oma_skill_list/oma_skill_inject are cwd-relative and fail when cwd is not the repo root. SPEC.md/ADR-0001 state each working copy gets its own MCP server for state persistence.",
+  "root_causes": [
+    "state-server.mjs is outside the TS build and re-derives dir logic by hand instead of consuming the shared contract",
+    "no test ever pinned where state-server.mjs writes state; the bats suite passed vacuously because a missing team dir yields {ok:true,workers:[]}"
+  ],
+  "evidence": [
+    "plugins/oma/mcp/state-server.mjs:15 OMA_DIR = join(__dirname, '..', '.oma') ignores the OMA_DIR env var",
+    "e2e/oma-cli.bats passes OMA_DIR to the MCP server and the test still passes with the var ignored (vacuous)",
+    "plugins/oma/mcp/state-server.mjs:334,387 resolve skills via cwd-relative 'plugins/oma/skills'",
+    "docs/specifications/ACTIVE/consolidate-oma-utils.md declares unifying the resolvers a non-goal 'requires its own ADR'; its scope covers CLI-vs-hook discovery, not the MCP server's __dirname derivation, which no doc claims"
+  ],
+  "solutions": [
+    "one canonical resolveOmaDir contract (OMA_DIR env -> AUGMENT_PROJECT_DIR -> cwd walk-up -> ~/.oma) in a single dependency-free module consumed by state-server.mjs; align src/utils.ts to the same precedence order",
+    "state-server.mjs consumes the shared module (relative .mjs import, zero npm deps preserved) instead of re-deriving OMA_DIR via __dirname",
+    "skills paths in state-server.mjs resolve relative to the plugin install root (__dirname) instead of cwd, since skills ship with the plugin",
+    "vscode-oma consumes the same contract via its state adapter if its build supports the cross-package import; otherwise pin its resolution to the same precedence order with a parity test",
+    "add a real test surface: spawn the actual state-server.mjs process with OMA_DIR set, speak JSON-RPC, assert state lands in the OMA_DIR dir; add a parity test asserting the shared module and src/utils.ts agree on a scenario matrix"
+  ],
+  "acceptance_criteria": [
+    "state-server.mjs honors the OMA_DIR env var; state written via oma_mode_set lands under $OMA_DIR (spawn test proves it)",
+    "state-server.mjs never persists state into the plugin install dir via __dirname derivation",
+    "one shared module is the only place the dir-resolution contract is implemented for the MCP server; src/utils.ts and the shared module agree on a documented precedence matrix (parity test)",
+    "skills paths resolve from the plugin install root, working from any cwd",
+    "npm test passes with the new spawn + parity tests included in the suite",
+    "no npm dependencies added; state-server.mjs stays zero-dep plain .mjs"
+  ],
+  "scope": [
+    "plugins/oma/mcp/state-server.mjs",
+    "plugins/oma/mcp/oma-dir.mjs",
+    "plugins/oma/src/utils.ts",
+    "vscode-oma/src/state/adapter.ts",
+    "plugins/oma/tests/mcp/state-server.test.mjs",
+    "plugins/oma/tests/mcp/oma-dir-parity.test.mjs",
+    ".ai/handoff/autobahn-goals/auggie-unify-oma-dir-resolution.json",
+    ".ai/evidence/auggie-unify-oma-dir-resolution.json"
+  ],
+  "verification": [
+    "npm test"
+  ],
+  "coverage_percent": 90,
+  "state": "implementation_ready"
+}

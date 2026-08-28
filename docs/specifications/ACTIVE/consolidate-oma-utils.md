@@ -74,3 +74,12 @@ One canonical `plugins/oma/src/utils.ts`; `src/cli/utils.ts` **deleted**
 (e.g. `OMA_DIR` → project env → upward walk → fallback in one function) is a
 behavior change for both hooks and CLI. It is deliberately NOT done here and
 requires its own ADR + spec before any attempt.
+
+**Update (2026-08-28):** done — see
+[ADR-0006](../../architecture/adr/0006-oma-dir-resolution-contract.md), which
+records the single canonical contract (`OMA_DIR` → `AUGMENT_PROJECT_DIR` →
+`WORKSPACE_ROOT` → cwd walk-up → `~/.oma`), implemented in
+`plugins/oma/src/utils.ts` and `plugins/oma/mcp/oma-dir.mjs` with a parity test
+(`tests/mcp/oma-dir-parity.test.ts`); the MCP server
+(`plugins/oma/mcp/state-server.mjs`) now consumes it and no longer derives the
+state dir from the install dir.

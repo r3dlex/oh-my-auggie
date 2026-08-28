@@ -2,22 +2,19 @@
  * Canonical OMA utilities module — the single home for path resolution,
  * JSON file I/O, config merging, and CLI runtime helpers.
  *
- * ── The four `.oma` directory resolvers ─────────────────────────────────────
- * This module deliberately exposes FOUR distinct resolvers. They are not
- * duplicates; each has a different contract:
+ * ── The `.oma` directory resolvers ─────────────────────────────────────────
+ * The dir-resolution contract (ADR-0006,
+ * docs/architecture/adr/0006-oma-dir-resolution-contract.md) is: OMA_DIR env
+ * (mkdir) → AUGMENT_PROJECT_DIR → WORKSPACE_ROOT → cwd walk-up for an existing
+ * `.oma` → `$HOME/.oma` fallback. It is implemented here for the TypeScript
+ * surface and, with identical behavior, in plugins/oma/mcp/oma-dir.mjs for the
+ * MCP server (which sits outside the tsc build); tests/mcp/oma-dir-parity.test.ts
+ * pins both sides to identical results across the precedence matrix.
  *
- * - `resolveOmaDir()`       — pure; `<projectDir>/.oma` via AUGMENT_PROJECT_DIR /
- *                             WORKSPACE_ROOT / cwd. For hook contexts (public API).
- * - `findOmaDir()`          — discovery with side effects; honors OMA_DIR (mkdir),
- *                             walks up from cwd to find an existing `.oma`, falls
- *                             back to `$HOME/.oma`. For CLI invocations from
- *                             arbitrary working directories.
+ * - `resolveOmaDir()`       — the canonical resolver (public API, hooks + CLI).
+ * - `findOmaDir()`          — CLI-facing alias of resolveOmaDir() (same contract).
  * - `resolveGlobalOmaDir()` — `~/.oma`, the global config tier.
  * - `resolveLocalOmaDir()`  — `<cwd>/.oma`, the local config tier.
- *
- * Unifying their semantics is an explicit non-goal of the consolidation that
- * created this module (see docs/specifications/ACTIVE/consolidate-oma-utils.md);
- * doing so would change behavior and requires its own ADR.
  */
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync, openSync, readdirSync } from 'fs';
 import { execSync } from 'child_process';
@@ -136,38 +133,31 @@ export function resolveProjectDir(): string {
 }
 
 /**
- * Returns the OMA state directory for the current project.
- * Uses resolveProjectDir() so it always points into the workspace, not the plugin dir.
+ * Returns the OMA state directory per the canonical dir-resolution contract
+ * (ADR-0006). Precedence:
+ *   1. OMA_DIR env — resolved to an absolute path and created (mkdir -p).
+ *   2. AUGMENT_PROJECT_DIR env — auggie's project dir; state is <dir>/.oma.
+ *   3. WORKSPACE_ROOT env — some hook contexts carry the workspace root.
+ *   4. cwd walk-up — nearest ancestor (starting at cwd) with an existing `.oma`.
+ *   5. $HOME/.oma fallback — or /tmp/.oma when HOME is unset.
  *
- * Contract: pure (no filesystem side effects), driven by the project
- * environment (AUGMENT_PROJECT_DIR / WORKSPACE_ROOT / cwd). Use this in HOOK
- * contexts, where auggie guarantees the project env. It does NOT honor
- * OMA_DIR, search parent directories, or create anything — for CLI
- * invocations from arbitrary working directories use findOmaDir() instead.
+ * In hook contexts auggie guarantees AUGMENT_PROJECT_DIR, so resolution is
+ * pure and pinned to the workspace there (the OMA_DIR mkdir and the walk-up
+ * only engage when that env is absent). Implemented with identical behavior in
+ * plugins/oma/mcp/oma-dir.mjs; parity is pinned by
+ * tests/mcp/oma-dir-parity.test.ts.
  */
 export function resolveOmaDir(): string {
-  return join(resolveProjectDir(), '.oma');
-}
-
-/**
- * Locates (or designates) the OMA state directory for a CLI invocation.
- *
- * Contract: discovery with side effects, for CLI contexts where the process
- * may start in any subdirectory of a project and no auggie env is guaranteed:
- *   1. If OMA_DIR is set, resolve it to an absolute path, CREATE it
- *      (mkdir -p), and return it.
- *   2. Otherwise walk upward from cwd and return the first EXISTING `.oma`
- *      directory found.
- *   3. Otherwise fall back to `$HOME/.oma` (or `/tmp/.oma` without HOME).
- *
- * Hooks must keep using resolveOmaDir(): it is pure and pinned to the
- * project env rather than dependent on cwd ancestry.
- */
-export function findOmaDir(): string {
   if (process.env.OMA_DIR) {
     const abs = resolve(process.env.OMA_DIR);
     mkdirSync(abs, { recursive: true });
     return abs;
+  }
+  if (process.env.AUGMENT_PROJECT_DIR) {
+    return join(resolve(process.env.AUGMENT_PROJECT_DIR), '.oma');
+  }
+  if (process.env.WORKSPACE_ROOT) {
+    return join(resolve(process.env.WORKSPACE_ROOT), '.oma');
   }
   let dir = process.cwd();
   while (true) {
@@ -178,6 +168,15 @@ export function findOmaDir(): string {
     dir = parent;
   }
   return join(process.env.HOME || '/tmp', '.oma');
+}
+
+/**
+ * CLI-facing alias of resolveOmaDir() — the canonical dir-resolution contract
+ * (ADR-0006). Kept as a named export for existing call sites (doctor, launch,
+ * team, cli/update.mjs) that read better with the "find" wording.
+ */
+export function findOmaDir(): string {
+  return resolveOmaDir();
 }
 
 /**

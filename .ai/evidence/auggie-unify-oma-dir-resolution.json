@@ -1,0 +1,11 @@
+{
+  "goal_id": "auggie-unify-oma-dir-resolution",
+  "green": {
+    "command": "npm test",
+    "exit_code": 0
+  },
+  "red": {
+    "command": "npm test",
+    "exit_code": 1
+  }
+}

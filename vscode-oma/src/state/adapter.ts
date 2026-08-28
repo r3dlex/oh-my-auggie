@@ -15,6 +15,9 @@ export class OmaStateAdapter implements StateReader {
   constructor(private readonly workspaceRoot: string) {}
 
   private get omaDir(): string {
+    // Pinned to the project tier of the canonical .oma dir contract
+    // (docs/architecture/adr/0006-oma-dir-resolution-contract.md): VS Code
+    // supplies the workspace root directly, so env/walk-up resolution does not apply.
     return path.join(this.workspaceRoot, '.oma');
   }
 
