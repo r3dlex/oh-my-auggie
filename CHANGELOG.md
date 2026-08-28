@@ -1,3 +1,10 @@
+## [0.8.5](https://github.com/r3dlex/oh-my-auggie/compare/v0.8.4...v0.8.5) (2026-08-28)
+
+
+### Bug Fixes
+
+* **mcp:** honor OMA_DIR via one canonical dir-resolution contract (auggie-unify-oma-dir-resolution) ([734efc8](https://github.com/r3dlex/oh-my-auggie/commit/734efc819f5e441467b6fd4a470ca7c523bca16a))
+
 ## [0.8.4](https://github.com/r3dlex/oh-my-auggie/compare/v0.8.3...v0.8.4) (2026-07-14)
 
 ## [0.8.3](https://github.com/r3dlex/oh-my-auggie/compare/v0.8.2...v0.8.3) (2026-07-07)
