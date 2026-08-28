@@ -7,12 +7,16 @@ import { createInterface } from 'readline';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { homedir } from 'os';
+// Canonical .oma dir contract (ADR-0006) — honors OMA_DIR env, project env,
+// cwd walk-up, and the $HOME/.oma fallback instead of the install dir.
+import { resolveOmaDir } from './oma-dir.mjs';
 
-// OMA_DIR is derived from the script's location: <plugin-root>/.oma
-// This ensures state is always stored in the plugin's .oma dir regardless of cwd
+// Plugin install root — skills ship with the plugin, so skill paths resolve
+// from here, independent of cwd.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const OMA_DIR = join(__dirname, '..', '.oma');
+const SKILLS_DIR = join(__dirname, '..', 'skills');
+const OMA_DIR = resolveOmaDir();
 const STATE_FILE = `${OMA_DIR}/state.json`;
 const NOTEPAD_FILE = `${OMA_DIR}/notepad.json`;
 const TASK_LOG_FILE = `${OMA_DIR}/task.log.json`;
@@ -330,8 +334,7 @@ const tools = {
       }
     },
     handler: ({ category } = {}) => {
-      const { readFileSync, readdirSync, existsSync } = { readFileSync, readdirSync, existsSync };
-      const skillsDir = 'plugins/oma/skills';
+      const skillsDir = SKILLS_DIR;
       const skills = [];
 
       if (existsSync(skillsDir)) {
@@ -383,8 +386,7 @@ const tools = {
       required: ['skill']
     },
     handler: ({ skill, prompt } = {}) => {
-      const { readFileSync, existsSync } = { readFileSync, existsSync };
-      const skillPath = `plugins/oma/skills/${skill}/SKILL.md`;
+      const skillPath = join(SKILLS_DIR, skill, 'SKILL.md');
 
       if (!existsSync(skillPath)) {
         return { ok: false, error: `Skill not found: ${skill}` };
