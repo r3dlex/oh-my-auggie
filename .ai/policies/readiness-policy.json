@@ -1,0 +1,148 @@
+{
+  "approval": {
+    "accept": [
+      "agent-self",
+      "ssh-tag",
+      "in-session"
+    ],
+    "anchor_sha256": null,
+    "default_mode": "agent",
+    "max_age_days": 14
+  },
+  "branch_pattern": "^(feat|fix|chore)/<plan_id>-<goal_id>$",
+  "gates": [
+    {
+      "binding": {
+        "roles": [
+          "owner"
+        ]
+      },
+      "id": "own-execution",
+      "kind": "ownership",
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "binding": {
+        "roles": [
+          "reviewer"
+        ]
+      },
+      "id": "own-review",
+      "kind": "ownership",
+      "scope": {
+        "repository": true
+      },
+      "stage": "merge"
+    },
+    {
+      "id": "branch-target",
+      "kind": "branch_target",
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "id": "branch-target-merge",
+      "kind": "branch_target",
+      "scope": {
+        "repository": true
+      },
+      "stage": "merge"
+    },
+    {
+      "id": "plan-approval",
+      "kind": "plan_approval",
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "id": "plan-approval-merge",
+      "kind": "plan_approval",
+      "scope": {
+        "repository": true
+      },
+      "stage": "merge"
+    },
+    {
+      "id": "tooling",
+      "kind": "tooling",
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "id": "planning-inputs-on-main",
+      "kind": "git_ancestor",
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "id": "fixtures",
+      "kind": "fixture",
+      "not_applicable": {
+        "reason": "no-fixture-dependency"
+      },
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "id": "harness-trust",
+      "kind": "harness_trust",
+      "not_applicable": {
+        "reason": "no-pinned-harness"
+      },
+      "scope": {
+        "repository": true
+      },
+      "stage": "implementation"
+    },
+    {
+      "id": "hosted-checks",
+      "kind": "hosted_checks",
+      "scope": {
+        "repository": true
+      },
+      "stage": "merge"
+    },
+    {
+      "id": "review-lane",
+      "kind": "review",
+      "scope": {
+        "repository": true
+      },
+      "stage": "merge"
+    }
+  ],
+  "identity_model": "multi",
+  "repository": {
+    "id": "oh-my-auggie"
+  },
+  "required_checks": [],
+  "reviewer_requirements": {
+    "independent_lane": true
+  },
+  "schema": "readiness-policy/2",
+  "skippable_checks": [],
+  "sources": [
+    "AGENTS.md"
+  ],
+  "target": "main",
+  "tools": [
+    "bash",
+    "python3",
+    "git",
+    "ssh-keygen",
+    "gh"
+  ]
+}
